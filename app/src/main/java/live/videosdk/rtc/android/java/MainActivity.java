@@ -16,19 +16,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
+import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.VideoTrack;
+
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
+import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
+import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
+import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
-    private ParticipantAdapter mParticipantAdapter;
+    private SurfaceViewRenderer svrLocal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        svrLocal = findViewById(R.id.svrLocal);
+        svrLocal.init(PeerConnectionUtils.getEglContext(), null);
 
         final String token = getIntent().getStringExtra("token");
         final String meetingId = getIntent().getStringExtra("meetingId");
@@ -51,20 +60,15 @@ public class MainActivity extends AppCompatActivity {
         //
         final TextView tvMeetingId = findViewById(R.id.tvMeetingId);
         tvMeetingId.setText(meetingId);
-
-        tvMeetingId.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Copied text", meetingId);
-            clipboard.setPrimaryClip(clip);
-
-            Toast.makeText(MainActivity.this, "Copied to clipboard!", Toast.LENGTH_SHORT).show();
-        });
+        tvMeetingId.setOnClickListener(v -> copyTextToClipboard(meetingId));
 
         //
         final RecyclerView rvParticipants = findViewById(R.id.rvParticipants);
-        mParticipantAdapter = new ParticipantAdapter(meeting);
         rvParticipants.setLayoutManager(new GridLayoutManager(this, 2));
-        rvParticipants.setAdapter(mParticipantAdapter);
+        rvParticipants.setAdapter(new ParticipantAdapter(meeting));
+
+        //
+        setLocalVideo();
 
         //
         checkPermissions();
@@ -94,14 +98,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private final PermissionHandler permissionHandler =
-            new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    if (meeting != null) meeting.join();
-                }
-            };
-
+    private final PermissionHandler permissionHandler = new PermissionHandler() {
+        @Override
+        public void onGranted() {
+            if (meeting != null) meeting.join();
+        }
+    };
 
     private void checkPermissions() {
         String[] permissions = {
@@ -114,6 +116,26 @@ public class MainActivity extends AppCompatActivity {
         Permissions.Options options =
                 new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
         Permissions.check(this, permissions, rationale, options, permissionHandler);
+    }
+
+    private void setLocalVideo() {
+        meeting.getLocalParticipant().addEventListener(new ParticipantEventListener() {
+            @Override
+            public void onStreamEnabled(Stream stream) {
+                if (stream.getKind().equalsIgnoreCase("video")) {
+                    VideoTrack track = (VideoTrack) stream.getTrack();
+                    track.addSink(svrLocal);
+                }
+            }
+        });
+    }
+
+    private void copyTextToClipboard(String text) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Copied text", text);
+        clipboard.setPrimaryClip(clip);
+
+        Toast.makeText(MainActivity.this, "Copied to clipboard!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

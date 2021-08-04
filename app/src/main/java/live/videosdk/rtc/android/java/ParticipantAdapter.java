@@ -19,6 +19,7 @@ import java.util.Map;
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
+import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 
@@ -78,7 +79,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             Stream stream = entry.getValue();
             if (stream.getKind().equalsIgnoreCase("video")) {
                 VideoTrack videoTrack = (VideoTrack) stream.getTrack();
-                videoTrack.addSink(holder.videoRenderer);
+                videoTrack.addSink(holder.svrParticipant);
                 break;
             }
         }
@@ -88,7 +89,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
-                    videoTrack.addSink(holder.videoRenderer);
+                    videoTrack.addSink(holder.svrParticipant);
                 }
             }
         });
@@ -102,7 +103,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
 
     static class PeerViewHolder extends RecyclerView.ViewHolder {
-        public SurfaceViewRenderer videoRenderer;
+        public SurfaceViewRenderer svrParticipant;
         public View itemView;
 
         PeerViewHolder(@NonNull View view) {
@@ -110,8 +111,8 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
             itemView = view;
 
-            videoRenderer = view.findViewById(R.id.video_renderer);
-            videoRenderer.init(MainApplication.getEglContext(), null);
+            svrParticipant = view.findViewById(R.id.svrParticipant);
+            svrParticipant.init(PeerConnectionUtils.getEglContext(), null);
         }
     }
 }

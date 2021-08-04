@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <org.webrtc.SurfaceViewRenderer
-        android:id="@+id/video_renderer"
+        android:id="@+id/svrParticipant"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
