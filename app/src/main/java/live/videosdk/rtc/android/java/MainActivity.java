@@ -1,9 +1,13 @@
 package live.videosdk.rtc.android.java;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,10 +31,6 @@ public class MainActivity extends AppCompatActivity {
         final String meetingId = getIntent().getStringExtra("meetingId");
         final String participantName = "John Doe";
 
-
-        final TextView tvMeetingId = findViewById(R.id.tvMeetingId);
-        tvMeetingId.setText(meetingId);
-
         final boolean micEnabled = true;
         final boolean webcamEnabled = true;
 
@@ -45,6 +45,19 @@ public class MainActivity extends AppCompatActivity {
 
         meeting.addEventListener(meetingEventListener);
 
+        //
+        final TextView tvMeetingId = findViewById(R.id.tvMeetingId);
+        tvMeetingId.setText(meetingId);
+
+        tvMeetingId.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Copied text", meetingId);
+            clipboard.setPrimaryClip(clip);
+
+            Toast.makeText(MainActivity.this, "Copied to clipboard!", Toast.LENGTH_SHORT).show();
+        });
+
+        //
         checkPermissions();
     }
 
