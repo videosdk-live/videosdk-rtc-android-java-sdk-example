@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
@@ -21,6 +23,7 @@ import live.videosdk.rtc.android.listeners.MeetingEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
+    private ParticipantAdapter mParticipantAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //
+        final RecyclerView rvParticipants = findViewById(R.id.rvParticipants);
+        mParticipantAdapter = new ParticipantAdapter(meeting);
+        rvParticipants.setLayoutManager(new GridLayoutManager(this, 2));
+        rvParticipants.setAdapter(mParticipantAdapter);
+
+        //
         checkPermissions();
     }
 
@@ -74,12 +83,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onParticipantJoined(Participant participant) {
-            Log.d("#meeting", "onParticipantJoined()");
+            Toast.makeText(MainActivity.this, participant.getDisplayName() + " joined",
+                    Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onParticipantLeft(Participant participant) {
-            Log.d("#meeting", "onParticipantLeft()");
+            Toast.makeText(MainActivity.this, participant.getDisplayName() + " left",
+                    Toast.LENGTH_SHORT).show();
         }
     };
 

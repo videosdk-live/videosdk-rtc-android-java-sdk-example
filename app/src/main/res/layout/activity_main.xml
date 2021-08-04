@@ -20,4 +20,10 @@
         android:layout_marginTop="16dp"
         android:text="Tip: Click the meeting id to copy!" />
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvParticipants"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>
