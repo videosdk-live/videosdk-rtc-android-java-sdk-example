@@ -1,4 +1,4 @@
-# Video SDK Android App
+# Video SDK Android(Java) Code Sample
 
 ## What is it?
 
