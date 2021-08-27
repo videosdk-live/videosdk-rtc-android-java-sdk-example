@@ -34,33 +34,26 @@ You must have the following installed:
 - Android SDK
 - Emulator or physical android device
 
-## Running the Authentication server
+## Getting started
 
-Before running app, you need to run the authentication server
+1. Run the authentication server
+   Follow [videosdk-rtc-nodejs-sdk-example](https://github.com/videosdk-live/videosdk-rtc-nodejs-sdk-example) to run authentication server.
 
-Use our official [videosdk-rtc-nodejs-sdk-example](https://github.com/videosdk-live/videosdk-rtc-nodejs-sdk-example) to perform server authentication.
+2. Clone the repo
 
-```sh
-$ git clone https://github.com/videosdk-live/videosdk-rtc-nodejs-sdk-example
-```
+   ```sh
+   $ git clone https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
+   ```
 
-Add API Key and Secret in `.env` of your project.
+3. Create a `local.properties` file in the root directory of your android project with the api server url that points to the authentication server.
 
-```sh
-VIDEOSDK_API_KEY=''
-VIDEOSDK_SECRET_KEY=''
-VIDEOSDK_API_ENDPOINT=https://api.zujonow.com
-```
+   ```
+   api_server_url='http://192.168.0.101:9000'
+   ```
 
-Visit, [https://www.videosdk.live/](https://www.videosdk.live/) to generate API keys and secret.
+4. Run the android app with `Shift+F10` or the `Run` button from toolbar
 
-## Authentication server url in app
-
-Set the authentication server base url in `local.properties` file in the android project.
-
-```
-api_server_url='http://192.168.0.101:9000'
-```
+For more information, visit [official documentation](https://docs.videosdk.live/docs/realtime-communication/sdk-reference/android-sdk/setup)
 
 Related
 
