@@ -49,7 +49,7 @@ You must have the following installed:
 3. Create a `local.properties` file in the root directory of your android project with the api server url that points to the authentication server.
 
    ```
-   api_server_url='http://192.168.0.101:9000'
+   api_server_url=http://192.168.0.101:9000
    ```
 
 4. Run the android app with `Shift+F10` or the `Run` button from toolbar
