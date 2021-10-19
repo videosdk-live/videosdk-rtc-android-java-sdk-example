@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
     private SurfaceViewRenderer svrLocal;
 
+    private boolean micEnabled = true;
+    private boolean webcamEnabled = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +45,6 @@ public class MainActivity extends AppCompatActivity {
         final String token = getIntent().getStringExtra("token");
         final String meetingId = getIntent().getStringExtra("meetingId");
         final String participantName = "John Doe";
-
-        final boolean micEnabled = true;
-        final boolean webcamEnabled = true;
 
         // pass the token generated from api server
         VideoSDK.config(token);
@@ -67,11 +67,14 @@ public class MainActivity extends AppCompatActivity {
         rvParticipants.setLayoutManager(new GridLayoutManager(this, 2));
         rvParticipants.setAdapter(new ParticipantAdapter(meeting));
 
-        //
-        setLocalVideo();
+        // Local participant listeners
+        setLocalListeners();
 
         //
         checkPermissions();
+
+        // Actions
+        setActionListeners();
     }
 
     private final MeetingEventListener meetingEventListener = new MeetingEventListener() {
@@ -118,13 +121,34 @@ public class MainActivity extends AppCompatActivity {
         Permissions.check(this, permissions, rationale, options, permissionHandler);
     }
 
-    private void setLocalVideo() {
+    private void setLocalListeners() {
         meeting.getLocalParticipant().addEventListener(new ParticipantEventListener() {
             @Override
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     track.addSink(svrLocal);
+
+                    webcamEnabled = true;
+                    Toast.makeText(MainActivity.this, "Webcam enabled", Toast.LENGTH_SHORT).show();
+                } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                    micEnabled = true;
+                    Toast.makeText(MainActivity.this, "Mic enabled", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onStreamDisabled(Stream stream) {
+                if (stream.getKind().equalsIgnoreCase("video")) {
+                    VideoTrack track = (VideoTrack) stream.getTrack();
+                    track.removeSink(svrLocal);
+                    svrLocal.clearImage();
+
+                    webcamEnabled = false;
+                    Toast.makeText(MainActivity.this, "Webcam disabled", Toast.LENGTH_SHORT).show();
+                } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                    micEnabled = false;
+                    Toast.makeText(MainActivity.this, "Mic disabled", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -136,6 +160,27 @@ public class MainActivity extends AppCompatActivity {
         clipboard.setPrimaryClip(clip);
 
         Toast.makeText(MainActivity.this, "Copied to clipboard!", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void setActionListeners() {
+        // Toggle mic
+        findViewById(R.id.btnMic).setOnClickListener(view -> {
+            if (micEnabled) {
+                meeting.muteMic();
+            } else {
+                meeting.unmuteMic();
+            }
+        });
+
+        // Toggle webcam
+        findViewById(R.id.btnWebcam).setOnClickListener(view -> {
+            if (webcamEnabled) {
+                meeting.disableWebcam();
+            } else {
+                meeting.enableWebcam();
+            }
+        });
     }
 
     @Override
