@@ -33,6 +33,27 @@
                 android:layout_marginTop="8dp"
                 android:text="Tip: Click the meeting id to copy!" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btnMic"
+                    style="@style/Widget.AppCompat.Button.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Toggle mic" />
+
+                <Button
+                    android:id="@+id/btnWebcam"
+                    style="@style/Widget.AppCompat.Button.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Toggle cam" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <org.webrtc.SurfaceViewRenderer
