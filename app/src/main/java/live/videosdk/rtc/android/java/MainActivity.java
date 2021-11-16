@@ -181,6 +181,12 @@ public class MainActivity extends AppCompatActivity {
                 meeting.enableWebcam();
             }
         });
+
+        // Leave meeting
+        findViewById(R.id.btnLeave).setOnClickListener(view -> {
+            meeting.leave();
+            finish();
+        });
     }
 
     @Override
