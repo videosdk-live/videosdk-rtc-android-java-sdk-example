@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VideoSDK RTC</string>
+    <string name="participants_list">Participants list</string>
 </resources>
