@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,6 +76,8 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         layoutParams.height = containerHeight / 3;
         holder.itemView.setLayoutParams(layoutParams);
 
+        holder.tvName.setText(participant.getDisplayName());
+
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
             Stream stream = entry.getValue();
             if (stream.getKind().equalsIgnoreCase("video")) {
@@ -104,12 +107,15 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
     static class PeerViewHolder extends RecyclerView.ViewHolder {
         public SurfaceViewRenderer svrParticipant;
+        public TextView tvName;
         public View itemView;
 
         PeerViewHolder(@NonNull View view) {
             super(view);
 
             itemView = view;
+
+            tvName = view.findViewById(R.id.tvName);
 
             svrParticipant = view.findViewById(R.id.svrParticipant);
             svrParticipant.init(PeerConnectionUtils.getEglContext(), null);

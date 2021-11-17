@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">VideoSDK RTC</string>
     <string name="participants_list">Participants list</string>
+    <string name="leave_meeting">Leave meeting</string>
+    <string name="toggle_mic">Toggle mic</string>
+    <string name="toggle_camera">Toggle camera</string>
 </resources>
