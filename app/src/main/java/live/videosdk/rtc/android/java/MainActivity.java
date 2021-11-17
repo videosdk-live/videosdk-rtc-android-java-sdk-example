@@ -13,11 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
+
+import java.util.Iterator;
 
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
@@ -187,6 +190,33 @@ public class MainActivity extends AppCompatActivity {
             meeting.leave();
             finish();
         });
+
+        // Participants list
+        findViewById(R.id.btnParticipants).setOnClickListener(view -> {
+            showParticipantsDialog();
+        });
+    }
+
+    private void showParticipantsDialog() {
+        // Prepare list
+        final int nParticipants = meeting.getParticipants().size();
+
+        final String[] items = nParticipants > 0
+                ? new String[nParticipants]
+                : new String[]{"No participants have joined yet."};
+
+        final Iterator<Participant> participants = meeting.getParticipants().values().iterator();
+
+        for (int i = 0; i < nParticipants; i++) {
+            final Participant participant = participants.next();
+            items[i] = participant.getId() + " - " + participant.getDisplayName();
+        }
+
+        // Display list in dialog
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle(getString(R.string.participants_list))
+                .setItems(items, null)
+                .show();
     }
 
     @Override
