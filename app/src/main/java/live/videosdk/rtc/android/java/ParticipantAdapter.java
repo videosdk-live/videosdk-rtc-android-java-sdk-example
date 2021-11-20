@@ -81,8 +81,11 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
             Stream stream = entry.getValue();
             if (stream.getKind().equalsIgnoreCase("video")) {
+                holder.svrParticipant.setVisibility(View.VISIBLE);
+
                 VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                 videoTrack.addSink(holder.svrParticipant);
+
                 break;
             }
         }
@@ -91,8 +94,21 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             @Override
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
+                    holder.svrParticipant.setVisibility(View.VISIBLE);
+
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     videoTrack.addSink(holder.svrParticipant);
+                }
+            }
+
+            @Override
+            public void onStreamDisabled(Stream stream) {
+                if (stream.getKind().equalsIgnoreCase("video")) {
+                    VideoTrack track = (VideoTrack) stream.getTrack();
+                    if (track != null) track.removeSink(holder.svrParticipant);
+
+                    holder.svrParticipant.clearImage();
+                    holder.svrParticipant.setVisibility(View.GONE);
                 }
             }
         });

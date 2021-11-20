@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/md_grey_700">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#99000000"
+        android:contentDescription="@string/webcam_turned_off"
+        android:gravity="center"
+        android:padding="4dp"
+        android:src="@drawable/ic_outline_videocam_off_24"
+        app:tint="@color/white" />
+
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/svrParticipant"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tvName"

@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -129,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
+                    svrLocal.setVisibility(View.VISIBLE);
+
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     track.addSink(svrLocal);
 
@@ -144,8 +147,10 @@ public class MainActivity extends AppCompatActivity {
             public void onStreamDisabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
-                    track.removeSink(svrLocal);
+                    if (track != null) track.removeSink(svrLocal);
+
                     svrLocal.clearImage();
+                    svrLocal.setVisibility(View.GONE);
 
                     webcamEnabled = false;
                     Toast.makeText(MainActivity.this, "Webcam disabled", Toast.LENGTH_SHORT).show();

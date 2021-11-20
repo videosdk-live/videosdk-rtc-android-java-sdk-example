@@ -4,4 +4,5 @@
     <string name="leave_meeting">Leave meeting</string>
     <string name="toggle_mic">Toggle mic</string>
     <string name="toggle_camera">Toggle camera</string>
+    <string name="webcam_turned_off">Webcam turned off</string>
 </resources>
