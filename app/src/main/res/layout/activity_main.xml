@@ -36,11 +36,29 @@
 
         </LinearLayout>
 
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/svrLocal"
+        <FrameLayout
             android:layout_width="80dp"
             android:layout_height="100dp"
-            android:layout_gravity="end" />
+            android:layout_gravity="end"
+            android:background="@color/md_grey_700">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#99000000"
+                android:contentDescription="@string/webcam_turned_off"
+                android:gravity="center"
+                android:padding="4dp"
+                android:src="@drawable/ic_outline_videocam_off_24"
+                app:tint="@color/white" />
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/svrLocal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </FrameLayout>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -1,7 +1,5 @@
 package live.videosdk.rtc.android.java;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +28,12 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     private int containerHeight;
 
     public ParticipantAdapter(Meeting meeting) {
-        Handler mHandler = new Handler(Looper.getMainLooper());
 
         meeting.addEventListener(new MeetingEventListener() {
             @Override
             public void onParticipantJoined(Participant participant) {
                 participants.add(participant);
-                mHandler.post(() -> notifyItemInserted(participants.size() - 1));
+                notifyItemInserted(participants.size() - 1);
             }
 
             @Override
@@ -52,8 +49,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                 participants.remove(participant);
 
                 if (pos >= 0) {
-                    int finalPos = pos;
-                    mHandler.post(() -> notifyItemRemoved(finalPos));
+                    notifyItemRemoved(pos);
                 }
             }
         });
