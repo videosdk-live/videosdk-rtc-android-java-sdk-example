@@ -38,8 +38,7 @@ android {
 }
 
 dependencies {
-    implementation 'live.videosdk:android-sdk:0.0.3'
-//    implementation project(path: ':zn-android-sdk')
+    implementation 'live.videosdk:android-sdk:0.0.4'
 
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'

@@ -1,11 +1,14 @@
 package live.videosdk.rtc.android.java;
 
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.webrtc.SurfaceViewRenderer;
@@ -68,12 +71,15 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     public void onBindViewHolder(@NonNull PeerViewHolder holder, int position) {
         final Participant participant = participants.get(position);
 
+        //
         ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
         layoutParams.height = containerHeight / 3;
         holder.itemView.setLayoutParams(layoutParams);
 
+        //
         holder.tvName.setText(participant.getDisplayName());
 
+        //
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
             Stream stream = entry.getValue();
             if (stream.getKind().equalsIgnoreCase("video")) {
@@ -109,7 +115,68 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             }
         });
 
+        //
+        holder.btnMenu.setOnClickListener(v -> showPopup(holder, participant));
     }
+
+    private void showPopup(PeerViewHolder holder, Participant participant) {
+        PopupMenu popup = new PopupMenu(holder.itemView.getContext(), holder.btnMenu);
+
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_participant, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.remove) {
+                participant.remove();
+                return true;
+            } else if (item.getItemId() == R.id.toggleMic) {
+                toggleMic(participant);
+                return true;
+            } else if (item.getItemId() == R.id.toggleWebcam) {
+                toggleWebcam(participant);
+                return true;
+            }
+
+            return false;
+        });
+
+        popup.show();
+    }
+
+    private void toggleMic(Participant participant) {
+        boolean micEnabled = false;
+
+        for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
+            if (entry.getValue().getKind().equalsIgnoreCase("audio")) {
+                micEnabled = true;
+                break;
+            }
+        }
+
+        if (micEnabled) {
+            participant.disableMic();
+        } else {
+            participant.enableMic();
+        }
+    }
+
+    private void toggleWebcam(Participant participant) {
+        boolean webcamEnabled = false;
+
+        for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
+            if (entry.getValue().getKind().equalsIgnoreCase("video")) {
+                webcamEnabled = true;
+                break;
+            }
+        }
+
+        if (webcamEnabled) {
+            participant.disableWebcam();
+        } else {
+            participant.enableWebcam();
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -121,6 +188,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         public SurfaceViewRenderer svrParticipant;
         public TextView tvName;
         public View itemView;
+        public ImageButton btnMenu;
 
         PeerViewHolder(@NonNull View view) {
             super(view);
@@ -128,6 +196,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             itemView = view;
 
             tvName = view.findViewById(R.id.tvName);
+            btnMenu = view.findViewById(R.id.btnMenu);
 
             svrParticipant = view.findViewById(R.id.svrParticipant);
             svrParticipant.init(PeerConnectionUtils.getEglContext(), null);

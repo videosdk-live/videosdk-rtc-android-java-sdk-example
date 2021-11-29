@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/md_grey_700">
+    android:background="@color/md_grey_700"
+    tools:layout_height="200dp">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -32,5 +34,15 @@
         android:gravity="center"
         android:padding="4dp"
         android:textColor="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:contentDescription="@string/more_options"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        app:elevation="2dp"
+        app:fabSize="mini" />
 
 </FrameLayout>

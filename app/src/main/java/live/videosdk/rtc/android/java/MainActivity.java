@@ -21,7 +21,9 @@ import com.nabinbhandari.android.permissions.Permissions;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
@@ -29,7 +31,10 @@ import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
+import live.videosdk.rtc.android.listeners.MicRequestListener;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
+import live.videosdk.rtc.android.listeners.WebcamRequestListener;
+import live.videosdk.rtc.android.model.LivestreamOutput;
 
 public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
@@ -37,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean micEnabled = true;
     private boolean webcamEnabled = true;
+    private boolean recording = false;
+    private boolean livestreaming = false;
+
+    private static final String YOUTUBE_RTMP_URL = null;
+    private static final String YOUTUBE_RTMP_STREAM_KEY = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()");
+            meeting = null;
+            finish();
         }
 
         @Override
@@ -102,6 +114,44 @@ public class MainActivity extends AppCompatActivity {
         public void onParticipantLeft(Participant participant) {
             Toast.makeText(MainActivity.this, participant.getDisplayName() + " left",
                     Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onRecordingStarted() {
+            recording = true;
+            Toast.makeText(MainActivity.this, "Recording started",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onRecordingStopped() {
+            recording = false;
+            Toast.makeText(MainActivity.this, "Recording stopped",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onLivestreamStarted() {
+            livestreaming = true;
+            Toast.makeText(MainActivity.this, "Livestream started",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onLivestreamStopped() {
+            livestreaming = false;
+            Toast.makeText(MainActivity.this, "Livestream stopped",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onMicRequested(String participantId, MicRequestListener listener) {
+            showMicRequestDialog(listener);
+        }
+
+        @Override
+        public void onWebcamRequested(String participantId, WebcamRequestListener listener) {
+            showWebcamRequestDialog(listener);
         }
     };
 
@@ -192,14 +242,30 @@ public class MainActivity extends AppCompatActivity {
 
         // Leave meeting
         findViewById(R.id.btnLeave).setOnClickListener(view -> {
-            meeting.leave();
-            finish();
+            showLeaveOrEndDialog();
         });
 
         // Participants list
         findViewById(R.id.btnParticipants).setOnClickListener(view -> {
             showParticipantsDialog();
         });
+
+        findViewById(R.id.btnMore).setOnClickListener(v -> showMoreOptionsDialog());
+    }
+
+    private void showLeaveOrEndDialog() {
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle("Leave or End meeting")
+                .setMessage("Leave from meeting or end the meeting for everyone ?")
+                .setPositiveButton("Leave", (dialog, which) -> {
+                    meeting.leave();
+                    finish();
+                })
+                .setNegativeButton("End", (dialog, which) -> {
+                    meeting.end();
+                    finish();
+                })
+                .show();
     }
 
     private void showParticipantsDialog() {
@@ -222,6 +288,75 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle(getString(R.string.participants_list))
                 .setItems(items, null)
                 .show();
+    }
+
+    private void showMoreOptionsDialog() {
+        final String[] items = new String[]{
+                recording ? "Stop recording" : "Start recording",
+                livestreaming ? "Stop livestreaming" : "Start livestreaming"
+        };
+
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle(getString(R.string.more_options))
+                .setItems(items, (dialog, which) -> {
+                    switch (which) {
+                        case 0: {
+                            toggleRecording();
+                            break;
+                        }
+                        case 1: {
+                            toggleLivestreaming();
+                            break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    private void toggleRecording() {
+        if (!recording) {
+            meeting.startRecording(null);
+        } else {
+            meeting.stopRecording();
+        }
+    }
+
+    private void toggleLivestreaming() {
+        if (!livestreaming) {
+            if (YOUTUBE_RTMP_URL == null || YOUTUBE_RTMP_STREAM_KEY == null) {
+                throw new Error("RTMP url or stream key missing.");
+            }
+
+            List<LivestreamOutput> outputs = new ArrayList<>();
+            outputs.add(new LivestreamOutput(YOUTUBE_RTMP_URL, YOUTUBE_RTMP_STREAM_KEY));
+
+            meeting.startLivestream(outputs);
+        } else {
+            meeting.stopLivestream();
+        }
+    }
+
+    private void showMicRequestDialog(MicRequestListener listener) {
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle("Mic requested")
+                .setMessage("Host is asking you to unmute your mic, do you want to allow ?")
+                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
+                .setNegativeButton("No", (dialog, which) -> listener.reject())
+                .show();
+    }
+
+    private void showWebcamRequestDialog(WebcamRequestListener listener) {
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle("Webcam requested")
+                .setMessage("Host is asking you to enable your webcam, do you want to allow ?")
+                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
+                .setNegativeButton("No", (dialog, which) -> listener.reject())
+                .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        showLeaveOrEndDialog();
     }
 
     @Override

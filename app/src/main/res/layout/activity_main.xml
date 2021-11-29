@@ -75,35 +75,48 @@
             android:id="@+id/btnMic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginVertical="8dp"
             android:contentDescription="@string/toggle_mic"
-            android:src="@drawable/ic_outline_mic_none_24" />
+            android:src="@drawable/ic_outline_mic_none_24"
+            app:fabSize="mini" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnLeave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginVertical="8dp"
             android:contentDescription="@string/leave_meeting"
             android:src="@drawable/ic_outline_call_end_24"
             app:backgroundTint="@color/md_red_500"
+            app:fabSize="mini"
             app:tint="@color/white" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnWebcam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginVertical="8dp"
             android:contentDescription="@string/toggle_camera"
-            android:src="@drawable/ic_outline_videocam_24" />
+            android:src="@drawable/ic_outline_videocam_24"
+            app:fabSize="mini" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnParticipants"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginVertical="8dp"
             android:contentDescription="@string/participants_list"
-            android:src="@drawable/ic_outline_people_24" />
+            android:src="@drawable/ic_outline_people_24"
+            app:fabSize="mini" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:contentDescription="@string/more_options"
+            android:src="@drawable/ic_baseline_more_vert_24"
+            app:fabSize="mini" />
     </LinearLayout>
 
 
