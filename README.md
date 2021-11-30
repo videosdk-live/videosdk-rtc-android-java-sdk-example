@@ -22,7 +22,7 @@ This code sample demonstrates a one-to-one and group video call application buil
 
 ## Device support
 
-Visit our official [documentation](https://docs.videosdk.live/docs/guide/video-and-audio-calling-api-sdk/android-sdk) for more information
+Visit our official [documentation](https://docs.videosdk.live/docs/realtime-communication/see-also/device-browser-support) for more information
 
 ## Prerequisites
 
