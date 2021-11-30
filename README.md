@@ -2,7 +2,7 @@
 
 ## What is it?
 
-This code sample demonstrates a one-to-one and group video call application built with [Video SDK RTC Android SDK](https://docs.videosdk.live/docs/realtime-communication/sdk-reference/android-sdk/setup)
+This code sample demonstrates a one-to-one and group video call application built with [Video SDK RTC Android SDK](https://docs.videosdk.live/docs/guide/video-and-audio-calling-api-sdk/android-sdk)
 
 - Built for serverless video calling experience in Android.
 - Scale it upto 5,000 participants with low code.
@@ -22,7 +22,7 @@ This code sample demonstrates a one-to-one and group video call application buil
 
 ## Device support
 
-Visit our official [documentation](https://docs.videosdk.live/docs/realtime-communication/sdk-reference/android-sdk/setup) for more information
+Visit our official [documentation](https://docs.videosdk.live/docs/guide/video-and-audio-calling-api-sdk/android-sdk) for more information
 
 ## Prerequisites
 
@@ -41,7 +41,7 @@ You must have the following installed:
 2. Clone the repo
 
    ```sh
-   $ git clone https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
+   git clone https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
    ```
 
 3. Create a `local.properties` file in the root directory of your android project with the api server url that points to the authentication server.
@@ -52,7 +52,7 @@ You must have the following installed:
 
 4. Run the android app with `Shift+F10` or the `Run` button from toolbar
 
-For more information, visit [official documentation](https://docs.videosdk.live/docs/realtime-communication/sdk-reference/android-sdk/setup)
+For more information, visit [official documentation](https://docs.videosdk.live/docs/guide/video-and-audio-calling-api-sdk/getting-started)
 
 Related
 
