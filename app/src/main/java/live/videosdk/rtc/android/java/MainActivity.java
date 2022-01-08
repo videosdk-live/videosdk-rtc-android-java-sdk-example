@@ -38,7 +38,7 @@ import live.videosdk.rtc.android.model.LivestreamOutput;
 
 public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
-    private SurfaceViewRenderer svrLocal;
+    private SurfaceViewRenderer svrLocal, svrShare;
 
     private boolean micEnabled = true;
     private boolean webcamEnabled = true;
@@ -56,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
         svrLocal = findViewById(R.id.svrLocal);
         svrLocal.init(PeerConnectionUtils.getEglContext(), null);
 
+        svrShare = findViewById(R.id.svrShare);
+        svrShare.init(PeerConnectionUtils.getEglContext(), null);
+
+        //
         final String token = getIntent().getStringExtra("token");
         final String meetingId = getIntent().getStringExtra("meetingId");
         final String participantName = "John Doe";
@@ -117,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onPresenterChanged(String participantId) {
+            updatePresenter(participantId);
+        }
+
+        @Override
         public void onRecordingStarted() {
             recording = true;
             Toast.makeText(MainActivity.this, "Recording started",
@@ -155,6 +164,51 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void updatePresenter(String participantId) {
+        if (participantId == null) {
+            svrShare.clearImage();
+            svrShare.setVisibility(View.GONE);
+            return;
+        }
+
+        // find participant
+        Participant participant = meeting.getParticipants().get(participantId);
+        if (participant == null) return;
+
+        // find share stream in participant
+        Stream shareStream = null;
+
+        for (Stream stream : participant.getStreams().values()) {
+            if (stream.getKind().equals("share")) {
+                shareStream = stream;
+                break;
+            }
+        }
+
+        if (shareStream == null) return;
+
+        // display share video
+        svrShare.setVisibility(View.VISIBLE);
+        svrShare.setZOrderMediaOverlay(true);
+
+        VideoTrack videoTrack = (VideoTrack) shareStream.getTrack();
+        videoTrack.addSink(svrShare);
+
+        // listen for share stop event
+        participant.addEventListener(new ParticipantEventListener() {
+            @Override
+            public void onStreamDisabled(Stream stream) {
+                if (stream.getKind().equals("share")) {
+                    VideoTrack track = (VideoTrack) stream.getTrack();
+                    if (track != null) track.removeSink(svrShare);
+
+                    svrShare.clearImage();
+                    svrShare.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
     private final PermissionHandler permissionHandler = new PermissionHandler() {
         @Override
         public void onGranted() {
@@ -181,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
                     svrLocal.setVisibility(View.VISIBLE);
+                    svrLocal.setZOrderMediaOverlay(true);
 
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     track.addSink(svrLocal);

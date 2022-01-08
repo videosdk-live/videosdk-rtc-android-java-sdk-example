@@ -72,12 +72,13 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         final Participant participant = participants.get(position);
 
         //
-        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-        layoutParams.height = containerHeight / 3;
-        holder.itemView.setLayoutParams(layoutParams);
+//        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+//        layoutParams.height = containerHeight / 3;
+//        holder.itemView.setLayoutParams(layoutParams);
 
         //
         holder.tvName.setText(participant.getDisplayName());
+        holder.svrParticipant.setZOrderMediaOverlay(false);
 
         //
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {

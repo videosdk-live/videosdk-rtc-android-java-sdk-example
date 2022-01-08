@@ -61,6 +61,14 @@
         </FrameLayout>
     </LinearLayout>
 
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/svrShare"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvParticipants"
         android:layout_width="match_parent"
