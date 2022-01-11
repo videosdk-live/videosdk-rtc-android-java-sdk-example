@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 public class JoinActivity extends AppCompatActivity {
 
-    private final String baseUrl = BuildConfig.API_SERVER_URL;
+    private final String Token = BuildConfig.TOKEN;
 
     private EditText etMeetingId;
 
@@ -32,75 +32,47 @@ public class JoinActivity extends AppCompatActivity {
         etMeetingId = findViewById(R.id.etMeetingId);
 
         btnCreate.setOnClickListener(v -> {
-            getToken(null);
+            createMeeting(Token);
         });
 
         btnJoin.setOnClickListener(v -> {
             String meetingId = etMeetingId.getText().toString();
-            getToken(meetingId);
+            joinMeeting(Token, meetingId);
         });
 
     }
 
-    private void getToken(@Nullable String meetingId) {
-        AndroidNetworking.get(baseUrl + "/get-token")
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String token = response.getString("token");
-
-                            if (meetingId == null) {
-                                createMeeting(token);
-                            } else {
-                                joinMeeting(token, meetingId);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        anError.printStackTrace();
-                        Toast.makeText(JoinActivity.this, anError.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     private void createMeeting(String token) {
-        AndroidNetworking.post(baseUrl + "/create-meeting")
-                .addBodyParameter("token", token)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            final String meetingId = response.getString("meetingId");
+        AndroidNetworking.post("https://api.zujonow.com/api/meetings")
+                .addHeaders("Content-Type", "application/json")
+                .addHeaders("Authorization",token)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    final String meetingId = response.getString("meetingId");
 
-                            Intent intent = new Intent(JoinActivity.this, MainActivity.class);
-                            intent.putExtra("token", token);
-                            intent.putExtra("meetingId", meetingId);
+                    Intent intent = new Intent(JoinActivity.this, MainActivity.class);
+                    intent.putExtra("token", token);
+                    intent.putExtra("meetingId", meetingId);
 
-                            startActivity(intent);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    startActivity(intent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        anError.printStackTrace();
-                        Toast.makeText(JoinActivity.this, anError.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onError(ANError anError) {
+                anError.printStackTrace();
+                Toast.makeText(JoinActivity.this, anError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void joinMeeting(String token, String meetingId) {
-        AndroidNetworking.post(baseUrl + "/validate-meeting/{meetingId}")
-                .addPathParameter("meetingId", meetingId)
-                .addBodyParameter("token", token)
+        AndroidNetworking.post("https://api.zujonow.com/api/meetings/"+meetingId)
+                .addHeaders("Authorization",token)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
