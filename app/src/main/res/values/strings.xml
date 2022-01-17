@@ -7,4 +7,5 @@
     <string name="webcam_turned_off">Webcam turned off</string>
     <string name="more_options">More options</string>
     <string name="remove">Remove</string>
+    <string name="content_description_start_icon">TypeWritter Icon</string>
 </resources>

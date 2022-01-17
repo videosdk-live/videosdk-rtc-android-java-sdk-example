@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
     private SurfaceViewRenderer svrLocal, svrShare;
 
-    private boolean micEnabled = true;
-    private boolean webcamEnabled = true;
+    private boolean micEnabled=true;
+    private boolean webcamEnabled=true;
     private boolean recording = false;
     private boolean livestreaming = false;
 
@@ -53,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("VideoSDK RTC");
+        setSupportActionBar(toolbar);
+
         svrLocal = findViewById(R.id.svrLocal);
         svrLocal.init(PeerConnectionUtils.getEglContext(), null);
 
@@ -62,7 +68,12 @@ public class MainActivity extends AppCompatActivity {
         //
         final String token = getIntent().getStringExtra("token");
         final String meetingId = getIntent().getStringExtra("meetingId");
-        final String participantName = "John Doe";
+        micEnabled = getIntent().getBooleanExtra("micEnabled",true);
+        webcamEnabled = getIntent().getBooleanExtra("webcamEnabled",true);
+        String participantName = getIntent().getStringExtra("ParticipantName");
+        if(participantName == null){
+            participantName = "John Doe";
+        }
 
         // pass the token generated from api server
         VideoSDK.config(token);
@@ -314,10 +325,14 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Leave from meeting or end the meeting for everyone ?")
                 .setPositiveButton("Leave", (dialog, which) -> {
                     meeting.leave();
+                    Intent intent = new Intent(MainActivity.this, CreateOrJoinActivity.class);
+                    startActivity(intent);
                     finish();
                 })
                 .setNegativeButton("End", (dialog, which) -> {
                     meeting.end();
+                    Intent intent = new Intent(MainActivity.this, CreateOrJoinActivity.class);
+                    startActivity(intent);
                     finish();
                 })
                 .show();
@@ -417,7 +432,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if (meeting != null) meeting.leave();
-
         super.onDestroy();
     }
 }
