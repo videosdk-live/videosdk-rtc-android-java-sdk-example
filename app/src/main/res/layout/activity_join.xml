@@ -9,7 +9,7 @@
         tools:context=".JoinActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -63,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_outline_videocam_off_24"
+                    android:src="@drawable/ic_baseline_videocam_off_24"
                     app:backgroundTint="@color/md_red_500"
                     app:tint="@color/white" />
 
@@ -82,7 +82,8 @@
             app:startIconTint="@color/white"
             app:boxStrokeColor="@color/text_input_layout_stroke_color">
 
-            <EditText
+
+         <EditText
                 android:id="@+id/etName"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"

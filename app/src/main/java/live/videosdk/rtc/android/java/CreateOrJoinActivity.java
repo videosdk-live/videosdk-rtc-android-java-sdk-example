@@ -1,13 +1,7 @@
 package live.videosdk.rtc.android.java;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,23 +9,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.webrtc.Camera1Enumerator;
-import org.webrtc.PeerConnectionFactory;
-import org.webrtc.SurfaceTextureHelper;
-import org.webrtc.SurfaceViewRenderer;
-import org.webrtc.VideoCapturer;
-import org.webrtc.VideoSource;
-import org.webrtc.VideoTrack;
-
-import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 
 public class CreateOrJoinActivity extends AppCompatActivity {
 
@@ -44,7 +32,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_or_join);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         toolbar.setTitle("VideoSDK RTC");
         setSupportActionBar(toolbar);
         isNetworkAvailable();
@@ -154,7 +142,6 @@ public class CreateOrJoinActivity extends AppCompatActivity {
                     Intent intent = new Intent(CreateOrJoinActivity.this, MainActivity.class);
                     intent.putExtra("token", token);
                     intent.putExtra("meetingId", meetingId);
-
                     startActivity(intent);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -179,8 +166,8 @@ public class CreateOrJoinActivity extends AppCompatActivity {
                         Intent intent = new Intent(CreateOrJoinActivity.this, JoinActivity.class);
                         intent.putExtra("token", token);
                         intent.putExtra("meetingId", meetingId);
-
                         startActivity(intent);
+                        etMeetingId.getText().clear();
                     }
 
                     @Override
