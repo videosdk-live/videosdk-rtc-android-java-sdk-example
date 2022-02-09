@@ -33,7 +33,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_or_join);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("VideoSDK RTC");
 
         setSupportActionBar(toolbar);
@@ -142,7 +142,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
 
     private void createMeeting(String token) {
-        AndroidNetworking.post("https://api.zujonow.com/api/meetings")
+        AndroidNetworking.post("https://api.videosdk.live/v1/meetings")
                 .addHeaders("Authorization", token)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -171,7 +171,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
     }
 
     private void joinMeeting(String token, String meetingId) {
-        AndroidNetworking.post("https://api.zujonow.com/api/meetings/" + meetingId)
+        AndroidNetworking.post("https://api.videosdk.live/v1/meetings/" + meetingId)
                 .addHeaders("Authorization", token)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

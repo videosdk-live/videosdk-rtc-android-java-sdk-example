@@ -51,32 +51,33 @@ public class JoinActivity extends AppCompatActivity {
     private final PermissionHandler permissionHandler = new PermissionHandler() {
         @Override
         public void onGranted() {
-            permissionsAllowed();
+            permissionsGranted = true;
+
+            micEnabled = true;
+            btnMic.setImageResource(R.drawable.ic_baseline_mic_24);
+            changeFloatingActionButtonLayout(btnMic, micEnabled);
+
+            webcamEnabled = true;
+            btnWebcam.setImageResource(R.drawable.ic_baseline_videocam_24);
+            changeFloatingActionButtonLayout(btnWebcam, webcamEnabled);
+
+            updateCameraView();
         }
 
         @Override
         public void onDenied(Context context, ArrayList<String> deniedPermissions) {
             super.onDenied(context, deniedPermissions);
-            Toast.makeText(JoinActivity.this, "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
+            Toast.makeText(JoinActivity.this,
+                    "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public boolean onBlocked(Context context, ArrayList<String> blockedList) {
-            Toast.makeText(JoinActivity.this, "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
+            Toast.makeText(JoinActivity.this,
+                    "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
             return super.onBlocked(context, blockedList);
         }
     };
-
-    private void permissionsAllowed() {
-        permissionsGranted = true;
-        micEnabled = true;
-        webcamEnabled = true;
-        btnMic.setImageResource(R.drawable.ic_baseline_mic_24);
-        btnWebcam.setImageResource(R.drawable.ic_baseline_videocam_24);
-        changeFloatingActionButtonLayout(btnMic, micEnabled);
-        changeFloatingActionButtonLayout(btnWebcam, webcamEnabled);
-        updateCameraView();
-    }
 
 
     @Override
@@ -89,9 +90,10 @@ public class JoinActivity extends AppCompatActivity {
         btnWebcam = findViewById(R.id.btnWebcam);
         svrJoin = findViewById(R.id.svrJoiningView);
         etName = findViewById(R.id.etName);
+
         checkPermissions();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Join Meeting");
         setSupportActionBar(toolbar);
 
@@ -144,14 +146,13 @@ public class JoinActivity extends AppCompatActivity {
         Permissions.check(this, permissions, rationale, options, permissionHandler);
     }
 
-    private void changeFloatingActionButtonLayout(FloatingActionButton btn, boolean Enabled) {
-        if (Enabled) {
+    private void changeFloatingActionButtonLayout(FloatingActionButton btn, boolean enabled) {
+        if (enabled) {
             btn.setColorFilter(Color.BLACK);
             btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.md_grey_300)));
         } else {
             btn.setColorFilter(Color.WHITE);
             btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.md_red_500)));
-
         }
     }
 
@@ -197,18 +198,20 @@ public class JoinActivity extends AppCompatActivity {
             svrJoin.init(PeerConnectionUtils.getEglContext(), null);
 
             SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", PeerConnectionUtils.getEglContext());
+
             // create VideoCapturer
             videoCapturer = createCameraCapturer();
             videoSource = peerConnectionFactory.createVideoSource(videoCapturer.isScreencast());
             videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
             videoCapturer.startCapture(480, 640, 30);
+
             // create VideoTrack
             videoTrack = peerConnectionFactory.createVideoTrack("100", videoSource);
+
             // display in localView
             videoTrack.addSink(svrJoin);
         } else {
-            if (videoTrack != null)
-                videoTrack.removeSink(svrJoin);
+            if (videoTrack != null) videoTrack.removeSink(svrJoin);
             svrJoin.clearImage();
             svrJoin.release();
         }
@@ -247,14 +250,18 @@ public class JoinActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         videoTrack.removeSink(svrJoin);
+
         svrJoin.clearImage();
         svrJoin.release();
-        closeInternal();
+
+        closeCapturer();
+
         super.onDestroy();
     }
 
-    private void closeInternal() {
+    private void closeCapturer() {
         final String TAG = "PeerConnectionUtils";
+
         if (videoCapturer != null) {
             try {
                 videoCapturer.stopCapture();
@@ -264,20 +271,24 @@ public class JoinActivity extends AppCompatActivity {
             videoCapturer.dispose();
             videoCapturer = null;
         }
+
         Log.d(TAG, "Stopped capture.");
+
         if (videoSource != null) {
             videoSource.dispose();
             videoSource = null;
         }
+
         if (peerConnectionFactory != null) {
             peerConnectionFactory.stopAecDump();
             peerConnectionFactory.dispose();
             peerConnectionFactory = null;
         }
+
         Log.d(TAG, "Closed video source.");
+
         PeerConnectionFactory.stopInternalTracingCapture();
         PeerConnectionFactory.shutdownInternalTracer();
-        Log.d(TAG, "Closed peer connection done.");
-
+        Log.d(TAG, "Closed peer connection.");
     }
 }
