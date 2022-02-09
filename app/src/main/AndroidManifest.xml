@@ -17,17 +17,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoSDKRTC"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CreateOrJoinActivity">
+
+        <activity
+            android:name=".CreateOrJoinActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".JoinActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".CreateOrJoinActivity"/>
+            android:parentActivityName=".CreateOrJoinActivity"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity android:name=".MainActivity" />
     </application>
 

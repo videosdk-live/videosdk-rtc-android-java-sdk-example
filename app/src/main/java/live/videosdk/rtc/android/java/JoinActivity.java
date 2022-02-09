@@ -33,15 +33,14 @@ import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 
 public class JoinActivity extends AppCompatActivity {
 
-    private final String AUTH_TOKEN = BuildConfig.AUTH_TOKEN;
-    private final String AUTH_URL = BuildConfig.AUTH_URL;
-
-    private FloatingActionButton btnMic, btnWebcam;
     private boolean micEnabled = false;
     private boolean webcamEnabled = false;
+
+    private FloatingActionButton btnMic, btnWebcam;
     private SurfaceViewRenderer svrJoin;
-    VideoTrack videoTrack;
     private EditText etName;
+
+    VideoTrack videoTrack;
     VideoCapturer videoCapturer;
     PeerConnectionFactory.InitializationOptions initializationOptions;
     PeerConnectionFactory peerConnectionFactory;
