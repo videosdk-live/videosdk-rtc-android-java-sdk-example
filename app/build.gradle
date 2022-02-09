@@ -21,14 +21,17 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "API_SERVER_URL", "\"" + localProperties['api_server_url'] + "\"")
+            buildConfigField("String", "AUTH_TOKEN", "\"" + localProperties['auth_token'] + "\"")
+            buildConfigField("String", "AUTH_URL", "\"" + localProperties['auth_url'] + "\"")
+
         }
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField("String", "API_SERVER_URL", "\"" + "https://api.yourserver.com" + "\"")
+            buildConfigField("String", "AUTH_URL", "\"" + "https://api.yourserver.com" + "\"")
+
         }
     }
     compileOptions {

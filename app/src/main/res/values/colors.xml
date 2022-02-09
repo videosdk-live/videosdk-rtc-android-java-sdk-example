@@ -303,4 +303,12 @@
     <color name="md_blue_grey_900">#263238</color>
 
 
+    <color name="colorbackground">#212032</color>
+    <color name="colorPrimary">#1178F8</color>
+    <color name="colorPrimaryVariant">#076ce9</color>
+    <color name="mtrl_textinput_default_box_stroke_color">#FAFAFA</color>
+    <color name="text_input_layout_stroke_color">#1178F8</color>
+
+
+
 </resources>

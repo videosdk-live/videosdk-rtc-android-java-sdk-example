@@ -7,4 +7,7 @@
     <string name="webcam_turned_off">Webcam turned off</string>
     <string name="more_options">More options</string>
     <string name="remove">Remove</string>
+    <string name="create_meeting">Create meeting</string>
+    <string name="enter_meeting_id">Enter meeting id</string>
+    <string name="join_meeting">Join meeting</string>
 </resources>

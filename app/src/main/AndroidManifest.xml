@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".JoinActivity"
+            android:name=".CreateOrJoinActivity"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +28,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".JoinActivity"
+            android:parentActivityName=".CreateOrJoinActivity"
+            android:windowSoftInputMode="adjustResize" />
 
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
