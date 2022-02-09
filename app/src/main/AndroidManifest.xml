@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="live.videosdk.rtc.android.java" >
+    package="live.videosdk.rtc.android.java">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -16,23 +16,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoSDKRTC"
-        android:usesCleartextTraffic="true" >
+        android:usesCleartextTraffic="true">
+
         <activity
             android:name=".CreateOrJoinActivity"
-            android:exported="true">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
         <activity
             android:name=".JoinActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".CreateOrJoinActivity">
-        </activity>
-        <activity android:name=".MainActivity"
-            android:parentActivityName=".CreateOrJoinActivity"/>
+            android:parentActivityName=".CreateOrJoinActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

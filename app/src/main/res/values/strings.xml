@@ -10,4 +10,7 @@
     <string name="remove">Remove</string>
     <string name="content_description_start_icon">TypeWritter Icon</string>
     <string name="content_copy">Content Copy</string>
+    <string name="create_meeting">Create meeting</string>
+    <string name="enter_meeting_id">Enter meeting id</string>
+    <string name="join_meeting">Join meeting</string>
 </resources>
