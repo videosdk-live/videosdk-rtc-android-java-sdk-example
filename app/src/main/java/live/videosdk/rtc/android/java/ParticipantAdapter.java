@@ -29,13 +29,13 @@ import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.PeerViewHolder> {
 
     private final List<Participant> participants = new ArrayList<>();
+    private final Participant localParticipant;
     private int containerHeight;
-    private final Participant localparticipant;
 
     public ParticipantAdapter(Meeting meeting) {
 
-        localparticipant = meeting.getLocalParticipant();
-        participants.add(localparticipant);
+        localParticipant = meeting.getLocalParticipant();
+        participants.add(localParticipant);
 
         meeting.addEventListener(new MeetingEventListener() {
             @Override
@@ -77,7 +77,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         Participant participant = participants.get(position);
 
         if (position == 0) {
-            participant = localparticipant;
+            participant = localParticipant;
             holder.btnMenu.setVisibility(View.INVISIBLE);
         }
 
@@ -98,6 +98,8 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                 videoTrack.addSink(holder.svrParticipant);
 
                 break;
+            } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_24);
             }
         }
 
