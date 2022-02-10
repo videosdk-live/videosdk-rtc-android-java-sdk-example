@@ -40,7 +40,8 @@ import live.videosdk.rtc.android.model.LivestreamOutput;
 
 public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
-    private SurfaceViewRenderer svrLocal, svrShare;
+    private SurfaceViewRenderer svrShare;
+    private FloatingActionButton btnMic, btnWebcam;
 
     private boolean micEnabled = true;
     private boolean webcamEnabled = true;
@@ -50,15 +51,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String YOUTUBE_RTMP_URL = null;
     private static final String YOUTUBE_RTMP_STREAM_KEY = null;
 
-    FloatingActionButton btnMic, btnWebcam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        svrLocal = findViewById(R.id.svrLocal);
-//        svrLocal.init(PeerConnectionUtils.getEglContext(), null);
 
         svrShare = findViewById(R.id.svrShare);
         svrShare.init(PeerConnectionUtils.getEglContext(), null);
@@ -77,16 +74,15 @@ public class MainActivity extends AppCompatActivity {
 
         //
         toggleMicIcon();
-
-        //
         toggleWebcamIcon();
 
         //
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(meetingId);
         toolbar.setOnMenuItemClickListener(menu -> {
-            if (menu.getItemId() == R.id.contentCopy)
+            if (menu.getItemId() == R.id.contentCopy) {
                 copyTextToClipboard(meetingId);
+            }
             return true;
         });
 
@@ -154,8 +150,7 @@ public class MainActivity extends AppCompatActivity {
         public void onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()");
             meeting = null;
-            if (!isDestroyed())
-                finish();
+            if (!isDestroyed()) finish();
         }
 
         @Override
@@ -178,17 +173,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onRecordingStarted() {
             recording = true;
+
+            (findViewById(R.id.recordIcon)).setVisibility(View.VISIBLE);
+
             Toast.makeText(MainActivity.this, "Recording started",
                     Toast.LENGTH_SHORT).show();
-            (findViewById(R.id.recordIcon)).setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onRecordingStopped() {
             recording = false;
+
+            (findViewById(R.id.recordIcon)).setVisibility(View.GONE);
+
             Toast.makeText(MainActivity.this, "Recording stopped",
                     Toast.LENGTH_SHORT).show();
-            (findViewById(R.id.recordIcon)).setVisibility(View.GONE);
         }
 
         @Override
@@ -286,11 +285,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
-//                    svrLocal.setVisibility(View.VISIBLE);
-//                    svrLocal.setZOrderMediaOverlay(true);
-
-//                    VideoTrack track = (VideoTrack) stream.getTrack();
-//                    track.addSink(svrLocal);
                     webcamEnabled = true;
                     toggleWebcamIcon();
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
@@ -302,11 +296,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStreamDisabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
-                    VideoTrack track = (VideoTrack) stream.getTrack();
-                    if (track != null) track.removeSink(svrLocal);
-
-//                    svrLocal.clearImage();
-//                    svrLocal.setVisibility(View.GONE);
                     webcamEnabled = false;
                     toggleWebcamIcon();
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
@@ -365,7 +354,6 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Leave", (dialog, which) -> {
                     meeting.leave();
                     finish();
-
                 })
                 .setNegativeButton("End", (dialog, which) -> {
                     meeting.end();
@@ -445,11 +433,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-
         if (meeting != null) meeting.leave();
 
-//        if (svrLocal != null) svrLocal.release();
-//        if (svrShare != null) svrShare.release();
+        if (svrShare != null) svrShare.release();
 
         super.onDestroy();
     }
