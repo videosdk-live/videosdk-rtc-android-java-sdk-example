@@ -29,13 +29,11 @@ import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.PeerViewHolder> {
 
     private final List<Participant> participants = new ArrayList<>();
-    private final Participant localParticipant;
     private int containerHeight;
 
     public ParticipantAdapter(Meeting meeting) {
 
-        localParticipant = meeting.getLocalParticipant();
-        participants.add(localParticipant);
+        participants.add(meeting.getLocalParticipant());
 
         meeting.addEventListener(new MeetingEventListener() {
             @Override
@@ -77,7 +75,6 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         Participant participant = participants.get(position);
 
         if (position == 0) {
-            participant = localParticipant;
             holder.btnMenu.setVisibility(View.INVISIBLE);
         }
 
