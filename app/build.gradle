@@ -30,6 +30,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
+            buildConfigField("String", "AUTH_TOKEN", "\"\"")
             buildConfigField("String", "AUTH_URL", "\"" + "https://api.yourserver.com" + "\"")
 
         }
@@ -41,7 +42,7 @@ android {
 }
 
 dependencies {
-    implementation 'live.videosdk:android-sdk:0.0.7'
+    implementation 'live.videosdk:android-sdk:0.0.8'
 
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
