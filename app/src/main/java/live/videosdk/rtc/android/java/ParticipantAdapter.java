@@ -5,6 +5,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,8 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     private int containerHeight;
 
     public ParticipantAdapter(Meeting meeting) {
+
+        participants.add(meeting.getLocalParticipant());
 
         meeting.addEventListener(new MeetingEventListener() {
             @Override
@@ -69,18 +72,20 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull PeerViewHolder holder, int position) {
-        final Participant participant = participants.get(position);
+        Participant participant = participants.get(position);
+
+        if (position == 0) {
+            holder.btnMenu.setVisibility(View.INVISIBLE);
+        }
 
         //
-//        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-//        layoutParams.height = containerHeight / 3;
-//        holder.itemView.setLayoutParams(layoutParams);
+        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        layoutParams.height = containerHeight / 3;
+        holder.itemView.setLayoutParams(layoutParams);
 
         //
         holder.tvName.setText(participant.getDisplayName());
-        holder.svrParticipant.setZOrderMediaOverlay(false);
 
-        //
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
             Stream stream = entry.getValue();
             if (stream.getKind().equalsIgnoreCase("video")) {
@@ -90,6 +95,8 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                 videoTrack.addSink(holder.svrParticipant);
 
                 break;
+            } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_24);
             }
         }
 
@@ -101,6 +108,8 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     videoTrack.addSink(holder.svrParticipant);
+                } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                    holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_24);
                 }
             }
 
@@ -112,12 +121,15 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
                     holder.svrParticipant.clearImage();
                     holder.svrParticipant.setVisibility(View.GONE);
+                } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                    holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_off_24);
                 }
             }
         });
 
         //
-        holder.btnMenu.setOnClickListener(v -> showPopup(holder, participant));
+        final Participant finalParticipant = participant;
+        holder.btnMenu.setOnClickListener(v -> showPopup(holder, finalParticipant));
     }
 
     private void showPopup(PeerViewHolder holder, Participant participant) {
@@ -190,6 +202,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         public TextView tvName;
         public View itemView;
         public ImageButton btnMenu;
+        public ImageView ivMicStatus;
 
         PeerViewHolder(@NonNull View view) {
             super(view);
@@ -201,6 +214,8 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
             svrParticipant = view.findViewById(R.id.svrParticipant);
             svrParticipant.init(PeerConnectionUtils.getEglContext(), null);
+
+            ivMicStatus = view.findViewById(R.id.ivMicStatus);
         }
     }
 }

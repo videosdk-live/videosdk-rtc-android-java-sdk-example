@@ -9,66 +9,24 @@
     tools:context=".MainActivity">
 
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        app:menu="@menu/top_app_bar_menu"
         android:background="?attr/colorPrimary"
-        app:titleTextColor="@color/white"
-        app:popupTheme="@style/Theme.VideoSDKRTC" />
+        app:titleTextColor="@color/white">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/recordIcon"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="25dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingHorizontal="8dp">
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_recording_on"
+            android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tvMeetingId"
-                style="@style/TextAppearance.AppCompat.Display1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello World!" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Tip: Click the meeting id to copy!" />
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="80dp"
-            android:layout_height="100dp"
-            android:layout_gravity="end"
-            android:background="@color/md_grey_700">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="#99000000"
-                android:contentDescription="@string/webcam_turned_off"
-                android:gravity="center"
-                android:padding="4dp"
-                android:src="@drawable/ic_outline_videocam_off_24"
-                app:tint="@color/white" />
-
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/svrLocal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
-        </FrameLayout>
-    </LinearLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/svrShare"
@@ -89,24 +47,26 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnMic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            android:contentDescription="@string/toggle_mic"
-            android:src="@drawable/ic_outline_mic_none_24"
-            app:fabSize="mini" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnLeave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:contentDescription="@string/leave_meeting"
             android:src="@drawable/ic_outline_call_end_24"
-            app:backgroundTint="@color/md_red_500"
+            app:backgroundTint="@color/md_red_700"
             app:fabSize="mini"
             app:tint="@color/white" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnMic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:contentDescription="@string/toggle_mic"
+            android:src="@drawable/ic_baseline_mic_24"
+            app:fabSize="mini" />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnWebcam"
@@ -114,16 +74,26 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:contentDescription="@string/toggle_camera"
-            android:src="@drawable/ic_outline_videocam_24"
+            android:src="@drawable/ic_baseline_videocam_24"
             app:fabSize="mini" />
 
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnParticipants"
+            android:id="@+id/btnSwitchCameraMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
-            android:contentDescription="@string/participants_list"
-            android:src="@drawable/ic_outline_people_24"
+            android:contentDescription="@string/switch_camera"
+            android:src="@drawable/ic_baseline_flip_camera_android_24"
+            app:fabSize="mini" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:contentDescription="@string/chat"
+            android:src="@drawable/ic_baseline_chat_24"
             app:fabSize="mini" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

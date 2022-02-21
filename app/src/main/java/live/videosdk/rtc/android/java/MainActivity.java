@@ -5,10 +5,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -24,7 +26,6 @@ import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import live.videosdk.rtc.android.Meeting;
@@ -40,40 +41,51 @@ import live.videosdk.rtc.android.model.LivestreamOutput;
 
 public class MainActivity extends AppCompatActivity {
     private Meeting meeting;
-    private SurfaceViewRenderer svrLocal, svrShare;
+    private SurfaceViewRenderer svrShare;
+    private FloatingActionButton btnMic, btnWebcam;
 
-    private boolean micEnabled=true;
-    private boolean webcamEnabled=true;
+    private boolean micEnabled = true;
+    private boolean webcamEnabled = true;
     private boolean recording = false;
     private boolean livestreaming = false;
 
     private static final String YOUTUBE_RTMP_URL = null;
     private static final String YOUTUBE_RTMP_STREAM_KEY = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("VideoSDK RTC");
-        setSupportActionBar(toolbar);
-
-        svrLocal = findViewById(R.id.svrLocal);
-        svrLocal.init(PeerConnectionUtils.getEglContext(), null);
-
         svrShare = findViewById(R.id.svrShare);
         svrShare.init(PeerConnectionUtils.getEglContext(), null);
 
-        //
+        btnMic = findViewById(R.id.btnMic);
+        btnWebcam = findViewById(R.id.btnWebcam);
+
         final String token = getIntent().getStringExtra("token");
         final String meetingId = getIntent().getStringExtra("meetingId");
-        micEnabled = getIntent().getBooleanExtra("micEnabled",true);
-        webcamEnabled = getIntent().getBooleanExtra("webcamEnabled",true);
-        String participantName = getIntent().getStringExtra("ParticipantName");
-        if(participantName == null){
+        micEnabled = getIntent().getBooleanExtra("micEnabled", true);
+        webcamEnabled = getIntent().getBooleanExtra("webcamEnabled", true);
+        String participantName = getIntent().getStringExtra("paticipantName");
+        if (participantName == null) {
             participantName = "John Doe";
         }
+
+        //
+        toggleMicIcon();
+        toggleWebcamIcon();
+
+        //
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(meetingId);
+        toolbar.setOnMenuItemClickListener(menu -> {
+            if (menu.getItemId() == R.id.contentCopy) {
+                copyTextToClipboard(meetingId);
+            }
+            return true;
+        });
 
         // pass the token generated from api server
         VideoSDK.config(token);
@@ -87,9 +99,7 @@ public class MainActivity extends AppCompatActivity {
         meeting.addEventListener(meetingEventListener);
 
         //
-        final TextView tvMeetingId = findViewById(R.id.tvMeetingId);
-        tvMeetingId.setText(meetingId);
-        tvMeetingId.setOnClickListener(v -> copyTextToClipboard(meetingId));
+        ((MainApplication) this.getApplication()).setMeeting(meeting);
 
         //
         final RecyclerView rvParticipants = findViewById(R.id.rvParticipants);
@@ -104,7 +114,34 @@ public class MainActivity extends AppCompatActivity {
 
         // Actions
         setActionListeners();
+
     }
+
+    private void toggleMicIcon() {
+        if (micEnabled) {
+            btnMic.setImageResource(R.drawable.ic_baseline_mic_24);
+            btnMic.setColorFilter(Color.WHITE);
+            btnMic.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+        } else {
+            btnMic.setImageResource(R.drawable.ic_baseline_mic_off_24);
+            btnMic.setColorFilter(Color.BLACK);
+            btnMic.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.md_grey_300)));
+        }
+    }
+
+    private void toggleWebcamIcon() {
+        if (webcamEnabled) {
+            btnWebcam.setImageResource(R.drawable.ic_baseline_videocam_24);
+            btnWebcam.setColorFilter(Color.WHITE);
+            btnWebcam.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+
+        } else {
+            btnWebcam.setImageResource(R.drawable.ic_baseline_videocam_off_24);
+            btnWebcam.setColorFilter(Color.BLACK);
+            btnWebcam.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.md_grey_300)));
+        }
+    }
+
 
     private final MeetingEventListener meetingEventListener = new MeetingEventListener() {
         @Override
@@ -116,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         public void onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()");
             meeting = null;
-            finish();
+            if (!isDestroyed()) finish();
         }
 
         @Override
@@ -139,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onRecordingStarted() {
             recording = true;
+
+            (findViewById(R.id.recordIcon)).setVisibility(View.VISIBLE);
+
             Toast.makeText(MainActivity.this, "Recording started",
                     Toast.LENGTH_SHORT).show();
         }
@@ -146,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onRecordingStopped() {
             recording = false;
+
+            (findViewById(R.id.recordIcon)).setVisibility(View.GONE);
+
             Toast.makeText(MainActivity.this, "Recording stopped",
                     Toast.LENGTH_SHORT).show();
         }
@@ -212,13 +255,13 @@ public class MainActivity extends AppCompatActivity {
                 if (stream.getKind().equals("share")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     if (track != null) track.removeSink(svrShare);
-
                     svrShare.clearImage();
                     svrShare.setVisibility(View.GONE);
                 }
             }
         });
     }
+
 
     private final PermissionHandler permissionHandler = new PermissionHandler() {
         @Override
@@ -245,34 +288,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
-                    svrLocal.setVisibility(View.VISIBLE);
-                    svrLocal.setZOrderMediaOverlay(true);
-
-                    VideoTrack track = (VideoTrack) stream.getTrack();
-                    track.addSink(svrLocal);
-
                     webcamEnabled = true;
-                    Toast.makeText(MainActivity.this, "Webcam enabled", Toast.LENGTH_SHORT).show();
+                    toggleWebcamIcon();
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     micEnabled = true;
-                    Toast.makeText(MainActivity.this, "Mic enabled", Toast.LENGTH_SHORT).show();
+                    toggleMicIcon();
                 }
             }
 
             @Override
             public void onStreamDisabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
-                    VideoTrack track = (VideoTrack) stream.getTrack();
-                    if (track != null) track.removeSink(svrLocal);
-
-                    svrLocal.clearImage();
-                    svrLocal.setVisibility(View.GONE);
-
                     webcamEnabled = false;
-                    Toast.makeText(MainActivity.this, "Webcam disabled", Toast.LENGTH_SHORT).show();
+                    toggleWebcamIcon();
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     micEnabled = false;
-                    Toast.makeText(MainActivity.this, "Mic disabled", Toast.LENGTH_SHORT).show();
+                    toggleMicIcon();
                 }
             }
         });
@@ -289,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setActionListeners() {
         // Toggle mic
-        findViewById(R.id.btnMic).setOnClickListener(view -> {
+        btnMic.setOnClickListener(view -> {
             if (micEnabled) {
                 meeting.muteMic();
             } else {
@@ -298,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Toggle webcam
-        findViewById(R.id.btnWebcam).setOnClickListener(view -> {
+        btnWebcam.setOnClickListener(view -> {
             if (webcamEnabled) {
                 meeting.disableWebcam();
             } else {
@@ -311,52 +342,32 @@ public class MainActivity extends AppCompatActivity {
             showLeaveOrEndDialog();
         });
 
-        // Participants list
-        findViewById(R.id.btnParticipants).setOnClickListener(view -> {
-            showParticipantsDialog();
+        findViewById(R.id.btnMore).setOnClickListener(v -> showMoreOptionsDialog());
+
+        findViewById(R.id.btnSwitchCameraMode).setOnClickListener(view -> {
+            meeting.changeWebcam();
         });
 
-        findViewById(R.id.btnMore).setOnClickListener(v -> showMoreOptionsDialog());
+        // Chat
+        findViewById(R.id.btnChat).setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void showLeaveOrEndDialog() {
+
         new MaterialAlertDialogBuilder(MainActivity.this)
                 .setTitle("Leave or End meeting")
                 .setMessage("Leave from meeting or end the meeting for everyone ?")
                 .setPositiveButton("Leave", (dialog, which) -> {
                     meeting.leave();
-                    Intent intent = new Intent(MainActivity.this, CreateOrJoinActivity.class);
-                    startActivity(intent);
                     finish();
                 })
                 .setNegativeButton("End", (dialog, which) -> {
                     meeting.end();
-                    Intent intent = new Intent(MainActivity.this, CreateOrJoinActivity.class);
-                    startActivity(intent);
                     finish();
                 })
-                .show();
-    }
-
-    private void showParticipantsDialog() {
-        // Prepare list
-        final int nParticipants = meeting.getParticipants().size();
-
-        final String[] items = nParticipants > 0
-                ? new String[nParticipants]
-                : new String[]{"No participants have joined yet."};
-
-        final Iterator<Participant> participants = meeting.getParticipants().values().iterator();
-
-        for (int i = 0; i < nParticipants; i++) {
-            final Participant participant = participants.next();
-            items[i] = participant.getId() + " - " + participant.getDisplayName();
-        }
-
-        // Display list in dialog
-        new MaterialAlertDialogBuilder(MainActivity.this)
-                .setTitle(getString(R.string.participants_list))
-                .setItems(items, null)
                 .show();
     }
 
@@ -432,6 +443,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if (meeting != null) meeting.leave();
+
+        if (svrShare != null) svrShare.release();
+
         super.onDestroy();
     }
 }
