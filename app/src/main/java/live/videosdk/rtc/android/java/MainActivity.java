@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -33,9 +34,11 @@ import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
+import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
+import live.videosdk.rtc.android.listeners.PubSubMessageListener;
 import live.videosdk.rtc.android.listeners.WebcamRequestListener;
 import live.videosdk.rtc.android.model.LivestreamOutput;
 
@@ -147,6 +150,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMeetingJoined() {
             Log.d("#meeting", "onMeetingJoined()");
+
+            // notify user of any new messages
+            meeting.pubSub.subscribe("CHAT", new PubSubMessageListener() {
+                @Override
+                public void onMessageReceived(PubSubMessage pubSubMessage) {
+                    if (!pubSubMessage.getSenderId().equals(meeting.getLocalParticipant().getId())) {
+                        View parentLayout = findViewById(android.R.id.content);
+                        Snackbar.make(parentLayout, pubSubMessage.getSenderName() + " says: " +
+                                pubSubMessage.getMessage(), Snackbar.LENGTH_SHORT)
+                                .setDuration(2000).show();
+                    }
+                }
+            });
         }
 
         @Override
