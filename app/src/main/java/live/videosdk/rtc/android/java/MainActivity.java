@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -97,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
         meeting.addEventListener(meetingEventListener);
 
+        //
+        ((MainApplication) this.getApplication()).setMeeting(meeting);
 
         //
         final RecyclerView rvParticipants = findViewById(R.id.rvParticipants);
@@ -343,6 +346,12 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btnSwitchCameraMode).setOnClickListener(view -> {
             meeting.changeWebcam();
+        });
+
+        // Chat
+        findViewById(R.id.btnChat).setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+            startActivity(intent);
         });
     }
 

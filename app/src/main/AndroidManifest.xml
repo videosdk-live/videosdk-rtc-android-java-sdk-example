@@ -19,6 +19,9 @@
         android:usesCleartextTraffic="true">
 
         <activity
+            android:name=".ChatActivity" />
+
+        <activity
             android:name=".CreateOrJoinActivity"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

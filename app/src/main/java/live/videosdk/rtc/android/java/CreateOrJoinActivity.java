@@ -50,7 +50,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
         });
 
         btnJoin.setOnClickListener(v -> {
-            String meetingId = etMeetingId.getText().toString();
+            String meetingId = etMeetingId.getText().toString().trim();
             if ("".equals(meetingId)) {
                 Toast.makeText(CreateOrJoinActivity.this, "Please enter meeting ID",
                         Toast.LENGTH_SHORT).show();

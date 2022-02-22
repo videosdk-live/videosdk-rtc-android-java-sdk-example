@@ -87,6 +87,14 @@
             android:src="@drawable/ic_baseline_flip_camera_android_24"
             app:fabSize="mini" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:contentDescription="@string/chat"
+            android:src="@drawable/ic_baseline_chat_24"
+            app:fabSize="mini" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMore"

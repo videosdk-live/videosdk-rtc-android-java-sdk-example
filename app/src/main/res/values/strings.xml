@@ -13,4 +13,5 @@
     <string name="create_meeting">Create meeting</string>
     <string name="enter_meeting_id">Enter meeting id</string>
     <string name="join_meeting">Join meeting</string>
+    <string name="chat">Chat</string>
 </resources>
