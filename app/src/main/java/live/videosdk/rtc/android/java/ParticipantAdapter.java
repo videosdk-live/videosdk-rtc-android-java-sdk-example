@@ -132,6 +132,13 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         holder.btnMenu.setOnClickListener(v -> showPopup(holder, finalParticipant));
     }
 
+    @Override
+    public void onViewDetachedFromWindow(@NonNull PeerViewHolder holder) {
+        holder.svrParticipant.release();
+        holder.svrParticipant.clearImage();
+        super.onViewDetachedFromWindow(holder);
+    }
+
     private void showPopup(PeerViewHolder holder, Participant participant) {
         PopupMenu popup = new PopupMenu(holder.itemView.getContext(), holder.btnMenu);
 

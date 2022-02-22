@@ -446,6 +446,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (svrShare != null) svrShare.release();
 
+        ((RecyclerView) findViewById(R.id.rvParticipants)).setAdapter(null);
+
         super.onDestroy();
     }
 }
