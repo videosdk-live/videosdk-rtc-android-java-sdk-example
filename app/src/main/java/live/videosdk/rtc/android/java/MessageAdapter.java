@@ -29,7 +29,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         this.meeting = meeting;
     }
 
-    public void additem(PubSubMessage pubSubMessage) {
+    public void addItem(PubSubMessage pubSubMessage) {
         messageList.add(pubSubMessage);
         notifyDataSetChanged();
     }
@@ -63,7 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView sentMessage;
         TextView receivedMessage;
@@ -72,11 +72,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(itemView);
             sentMessage = itemView.findViewById(R.id.sentMessage);
             receivedMessage = itemView.findViewById(R.id.receivedMessage);
-
         }
-
-
     }
-
-
 }

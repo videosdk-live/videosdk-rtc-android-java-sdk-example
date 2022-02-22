@@ -1,13 +1,13 @@
 package live.videosdk.rtc.android.java;
 
+import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class ChatActivity extends AppCompatActivity {
         pubSubMessageListener = new PubSubMessageListener() {
             @Override
             public void onMessageReceived(PubSubMessage message) {
-                messageAdapter.additem(message);
+                messageAdapter.addItem(message);
                 messageRecyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
         };
