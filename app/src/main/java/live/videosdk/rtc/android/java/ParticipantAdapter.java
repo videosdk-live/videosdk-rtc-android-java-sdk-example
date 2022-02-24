@@ -141,7 +141,6 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
     @Override
     public void onViewAttachedToWindow(@NonNull PeerViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
         Participant participant = participants.get(holder.getPosition());
         holder.svrParticipant.init(PeerConnectionUtils.getEglContext(), null);
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
@@ -157,6 +156,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                 holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_24);
             }
         }
+        super.onViewAttachedToWindow(holder);
     }
 
     private void showPopup(PeerViewHolder holder, Participant participant) {
