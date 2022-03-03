@@ -40,21 +40,21 @@ You must have the following installed:
    git clone https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
    ```
 
-2. Create a `local.properties` file in the root directory of your android project with the auth_url or auth_token that points to the authentication   server.
-
+2. Create a `local.properties` file in the root directory of your android project with the `auth_url` or `auth_token`
+ - If you want to provide `auth_url`, then run the authentication server.
+ Follow instructions from [videosdk-rtc-nodejs-sdk-example](https://github.com/videosdk-live/videosdk-rtc-nodejs-sdk-example) to run the authentication server.
+ - If you want to provide `auth_token`, then go to [Dashboard](https://app.videosdk.live/api-keys), create api key for your project if not and generate token by clicking **Generate Token** button.
+ 
    ```
-   auth_url=http://192.168.0.101:9000
+   auth_url= SERVER_URL
    
    #OR
    
-   auth_token
-   
+   auth_token= PROVIDE_TOKEN
    ```
-3. If You Provide auth_url in `local.properties` file then Run the authentication server
 
-   Follow instructions from [videosdk-rtc-nodejs-sdk-example](https://github.com/videosdk-live/videosdk-rtc-nodejs-sdk-example) to run the authentication server.
-   
-4. Run the android app with `Shift+F10` or the `Run` button from toolbar
+   **Note** : For production deployment, we would highly recommend to consider `auth_url` for best use cases.
+5. Run the android app with `Shift+F10` or the `Run` button from toolbar
 
 For more information, visit [official documentation](https://docs.videosdk.live/docs/guide/video-and-audio-calling-api-sdk/getting-started)
 
