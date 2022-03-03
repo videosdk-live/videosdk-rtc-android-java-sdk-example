@@ -37,6 +37,17 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity android:name=".MainActivity" />
+
+        <meta-data
+            android:name="notificationTitle"
+            android:value="@string/notificationTitle" />
+        <meta-data
+            android:name="notificationContent"
+            android:value="@string/notificationContent" />
+        <meta-data
+            android:name="notificationIcon"
+            android:resource="@mipmap/ic_launcher_round" />
+
     </application>
 
 </manifest>

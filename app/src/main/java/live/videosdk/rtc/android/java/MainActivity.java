@@ -1,17 +1,22 @@
 package live.videosdk.rtc.android.java;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
+import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
@@ -51,15 +57,21 @@ public class MainActivity extends AppCompatActivity {
     private boolean webcamEnabled = true;
     private boolean recording = false;
     private boolean livestreaming = false;
+    private boolean localScreenShare = false;
 
     private static final String YOUTUBE_RTMP_URL = null;
     private static final String YOUTUBE_RTMP_STREAM_KEY = null;
 
+    private FloatingActionButton btnScreenShare;
+    private static final int CAPTURE_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //
+        btnScreenShare = findViewById(R.id.btnScreenShare);
 
         svrShare = findViewById(R.id.svrShare);
         svrShare.init(PeerConnectionUtils.getEglContext(), null);
@@ -234,11 +246,39 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    @TargetApi(21)
+    private void askPermissionForScreenShare() {
+        MediaProjectionManager mediaProjectionManager =
+                (MediaProjectionManager) getApplication().getSystemService(
+                        Context.MEDIA_PROJECTION_SERVICE);
+        startActivityForResult(
+                mediaProjectionManager.createScreenCaptureIntent(), CAPTURE_PERMISSION_REQUEST_CODE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != CAPTURE_PERMISSION_REQUEST_CODE)
+            return;
+        if (resultCode != Activity.RESULT_OK) {
+            Toast.makeText(MainActivity.this, "You didn't give permission to capture the screen.", Toast.LENGTH_SHORT).show();
+            localScreenShare = false;
+            return;
+        }
+        meeting.enableScreenShare(data);
+        btnScreenShare.setImageResource(R.drawable.ic_outline_stop_screen_share_24);
+    }
+
     private void updatePresenter(String participantId) {
         if (participantId == null) {
             svrShare.clearImage();
             svrShare.setVisibility(View.GONE);
+            btnScreenShare.setEnabled(true);
             return;
+        } else {
+            btnScreenShare.setEnabled(meeting.getLocalParticipant().getId().equals(participantId));
         }
 
         // find participant
@@ -260,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         // display share video
         svrShare.setVisibility(View.VISIBLE);
         svrShare.setZOrderMediaOverlay(true);
+        svrShare.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
 
         VideoTrack videoTrack = (VideoTrack) shareStream.getTrack();
         videoTrack.addSink(svrShare);
@@ -271,13 +312,14 @@ public class MainActivity extends AppCompatActivity {
                 if (stream.getKind().equals("share")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     if (track != null) track.removeSink(svrShare);
+
                     svrShare.clearImage();
                     svrShare.setVisibility(View.GONE);
+                    localScreenShare = false;
                 }
             }
         });
     }
-
 
     private final PermissionHandler permissionHandler = new PermissionHandler() {
         @Override
@@ -369,7 +411,23 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, ChatActivity.class);
             startActivity(intent);
         });
+
+        //
+        btnScreenShare.setOnClickListener(view -> {
+            toggleScreenSharing();
+        });
     }
+
+    private void toggleScreenSharing() {
+        if (!localScreenShare) {
+            askPermissionForScreenShare();
+        } else {
+            meeting.disableScreenShare();
+            btnScreenShare.setImageResource(R.drawable.ic_outline_screen_share_24);
+        }
+        localScreenShare = !localScreenShare;
+    }
+
 
     private void showLeaveOrEndDialog() {
 

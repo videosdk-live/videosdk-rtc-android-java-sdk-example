@@ -14,4 +14,7 @@
     <string name="enter_meeting_id">Enter meeting id</string>
     <string name="join_meeting">Join meeting</string>
     <string name="chat">Chat</string>
+    <string name="screenShare">Screen Share</string>
+    <string name="notificationTitle">VideoSDK RTC is sharing your screen</string>
+    <string name="notificationContent">meeting is running</string>
 </resources>
