@@ -352,6 +352,17 @@ public class MainActivity extends AppCompatActivity {
                     micEnabled = true;
                     toggleMicIcon();
                 }
+                else if (stream.getKind().equalsIgnoreCase("share")) {
+                    // display share video
+                    svrShare.setVisibility(View.VISIBLE);
+                    svrShare.setZOrderMediaOverlay(true);
+                    svrShare.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+
+                    VideoTrack videoTrack = (VideoTrack) stream.getTrack();
+                    videoTrack.addSink(svrShare);
+                    //
+                    localScreenShare = true;
+                }
             }
 
             @Override
@@ -362,6 +373,13 @@ public class MainActivity extends AppCompatActivity {
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     micEnabled = false;
                     toggleMicIcon();
+                }else if (stream.getKind().equalsIgnoreCase("share")) {
+                    VideoTrack track = (VideoTrack) stream.getTrack();
+                    if (track != null) track.removeSink(svrShare);
+                    svrShare.clearImage();
+                    svrShare.setVisibility(View.GONE);
+                    //
+                    localScreenShare = false;
                 }
             }
         });
