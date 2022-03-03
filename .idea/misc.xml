@@ -13,6 +13,13 @@
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/layout/activity_create_or_join.xml" value="0.12664640324214793" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/layout/activity_join.xml" value="0.1334853090172239" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/layout/activity_main.xml" value="0.1334853090172239" />
+        <entry key="app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.371875" />
+        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.27309782608695654" />
+        <entry key="app/src/main/res/layout/activity_create_or_join.xml" value="0.27309782608695654" />
+        <entry key="app/src/main/res/layout/activity_join.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.19791666666666666" />
+        <entry key="app/src/main/res/layout/item_message_list.xml" value="0.27309782608695654" />
+        <entry key="app/src/main/res/layout/item_remote_peer.xml" value="0.2595108695652174" />
       </map>
     </option>
   </component>

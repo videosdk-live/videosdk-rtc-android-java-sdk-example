@@ -30,7 +30,7 @@
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/svrShare"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:visibility="gone"
@@ -94,6 +94,15 @@
             android:layout_marginVertical="8dp"
             android:contentDescription="@string/chat"
             android:src="@drawable/ic_baseline_chat_24"
+            app:fabSize="mini" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnScreenShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:contentDescription="@string/screenShare"
+            android:src="@drawable/ic_outline_screen_share_24"
             app:fabSize="mini" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

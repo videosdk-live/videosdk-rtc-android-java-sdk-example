@@ -132,6 +132,33 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         holder.btnMenu.setOnClickListener(v -> showPopup(holder, finalParticipant));
     }
 
+    @Override
+    public void onViewDetachedFromWindow(@NonNull PeerViewHolder holder) {
+        holder.svrParticipant.release();
+        holder.svrParticipant.clearImage();
+        super.onViewDetachedFromWindow(holder);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull PeerViewHolder holder) {
+        Participant participant = participants.get(holder.getPosition());
+        holder.svrParticipant.init(PeerConnectionUtils.getEglContext(), null);
+        for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
+            Stream stream = entry.getValue();
+            if (stream.getKind().equalsIgnoreCase("video")) {
+                holder.svrParticipant.setVisibility(View.VISIBLE);
+
+                VideoTrack videoTrack = (VideoTrack) stream.getTrack();
+                videoTrack.addSink(holder.svrParticipant);
+
+                break;
+            } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_24);
+            }
+        }
+        super.onViewAttachedToWindow(holder);
+    }
+
     private void showPopup(PeerViewHolder holder, Participant participant) {
         PopupMenu popup = new PopupMenu(holder.itemView.getContext(), holder.btnMenu);
 
@@ -213,7 +240,6 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             btnMenu = view.findViewById(R.id.btnMenu);
 
             svrParticipant = view.findViewById(R.id.svrParticipant);
-            svrParticipant.init(PeerConnectionUtils.getEglContext(), null);
 
             ivMicStatus = view.findViewById(R.id.ivMicStatus);
         }

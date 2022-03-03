@@ -12,8 +12,8 @@ This code sample demonstrates a one-to-one and group video call application buil
 
 - [x] Video API with real-time audio, video and data streams
 - [x] 5,000+ participants support
-- [ ] Chat support with rich media.
-- [ ] Screen sharing with HD and Full HD.
+- [x] Chat support with rich media.
+- [x] Screen sharing with HD and Full HD.
 - [ ] Play realtime video in meeting
 - [ ] Connect it with social media such as Facebook, Youtube etc (RTMP out support).
 - [x] Intelligent speaker switch
@@ -47,7 +47,7 @@ You must have the following installed:
    
    #OR
    
-   auth_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI1YWI0NWFiZi1kNTRiLTQ2MjgtYjRhMC1hNTQ5NzhhNjMxOTIiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIiwiYWxsb3dfbW9kIl0sImlhdCI6MTY0MTk2NDkxOSwiZXhwIjoxNjQxOTY1NTE5fQ.lnn6FS3d5-nRiqIYJJEt_dVUWY-PtdtV7t2dLABfzUI
+   auth_token
    
    ```
 3. If You Provide auth_url in `local.properties` file then Run the authentication server

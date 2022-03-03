@@ -1,15 +1,20 @@
 package live.videosdk.rtc.android.java;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import live.videosdk.rtc.android.Meeting;
@@ -46,14 +51,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         PubSubMessage item = messageList.get(position);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.messageLayout.getLayoutParams();
+
+        holder.message.setText(item.getMessage());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        Date date = new Date(item.getTimestamp());
+        holder.messageTime.setText(dateFormat.format(date));
+
         if (item.getSenderId().equals(meeting.getLocalParticipant().getId())) {
-            holder.sentMessage.setVisibility(View.VISIBLE);
-            holder.sentMessage.setText(item.getMessage());
-            holder.receivedMessage.setVisibility(View.INVISIBLE);
+            holder.messageLayout.setGravity(Gravity.RIGHT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+            holder.senderName.setText("You");
         } else {
-            holder.receivedMessage.setVisibility(View.VISIBLE);
-            holder.receivedMessage.setText(item.getMessage());
-            holder.sentMessage.setVisibility(View.INVISIBLE);
+            holder.messageLayout.setGravity(Gravity.LEFT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+            holder.senderName.setText(item.getSenderName());
         }
     }
 
@@ -65,13 +77,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView sentMessage;
-        TextView receivedMessage;
+        LinearLayout messageLayout;
+        TextView senderName;
+        TextView message;
+        TextView messageTime;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            sentMessage = itemView.findViewById(R.id.sentMessage);
-            receivedMessage = itemView.findViewById(R.id.receivedMessage);
+            messageLayout = itemView.findViewById(R.id.messageLayout);
+            senderName = itemView.findViewById(R.id.senderName);
+            message = itemView.findViewById(R.id.message);
+            messageTime = itemView.findViewById(R.id.messageTime);
         }
     }
 }
