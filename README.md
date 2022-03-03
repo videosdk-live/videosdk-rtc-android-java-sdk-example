@@ -12,8 +12,8 @@ This code sample demonstrates a one-to-one and group video call application buil
 
 - [x] Video API with real-time audio, video and data streams
 - [x] 5,000+ participants support
-- [ ] Chat support with rich media.
-- [ ] Screen sharing with HD and Full HD.
+- [x] Chat support with rich media.
+- [x] Screen sharing with HD and Full HD.
 - [ ] Play realtime video in meeting
 - [ ] Connect it with social media such as Facebook, Youtube etc (RTMP out support).
 - [x] Intelligent speaker switch
