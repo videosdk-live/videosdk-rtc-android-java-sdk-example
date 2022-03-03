@@ -47,7 +47,7 @@ You must have the following installed:
    
    #OR
    
-   auth_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiI1YWI0NWFiZi1kNTRiLTQ2MjgtYjRhMC1hNTQ5NzhhNjMxOTIiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIiwiYWxsb3dfbW9kIl0sImlhdCI6MTY0MTk2NDkxOSwiZXhwIjoxNjQxOTY1NTE5fQ.lnn6FS3d5-nRiqIYJJEt_dVUWY-PtdtV7t2dLABfzUI
+   auth_token
    
    ```
 3. If You Provide auth_url in `local.properties` file then Run the authentication server
