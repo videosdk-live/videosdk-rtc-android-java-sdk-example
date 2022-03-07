@@ -19,7 +19,7 @@ jobs:
       - name: Touch local properties
         run: touch local.properties
       - name: Add AUTH TOKEN
-        run: echo "auth_token=\"${{secrets.AUTH_TOKEN}}\"" >> local.properties
+        run: echo "auth_token=${{secrets.AUTH_TOKEN}}" >> local.properties
       - run: chmod +x ./gradlew
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
