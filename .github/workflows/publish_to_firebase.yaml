@@ -16,8 +16,10 @@ jobs:
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+      - name: Touch local properties
+        run: touch local.properties
+      - name: Add Api Key
+        run: echo "auth_url=\"\"" >> local.properties
       - run: chmod +x ./gradlew
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
