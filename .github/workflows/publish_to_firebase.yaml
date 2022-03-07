@@ -26,8 +26,8 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
-          name: app-release.apk
-          path: app/build/outputs/apk/debug/app-release.apk
+          name: app-release-unsigned.apk
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
 
 #  deploy-firebase:
 #    # 1

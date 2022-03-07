@@ -2,9 +2,6 @@ plugins {
     id 'com.android.application'
 }
 
-def localProperties = new Properties()
-localProperties.load(new FileInputStream(rootProject.file("local.properties")))
-
 android {
     compileSdkVersion 30
 
@@ -20,9 +17,10 @@ android {
 
     buildTypes {
         debug {
+            def localProperties = new Properties()
+            localProperties.load(new FileInputStream(rootProject.file("local.properties")))
             buildConfigField("String", "AUTH_TOKEN", "\"" + localProperties['auth_token'] + "\"")
             buildConfigField("String", "AUTH_URL", "\"" + localProperties['auth_url'] + "\"")
-
         }
 
         release {
