@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -175,6 +176,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            //terminate meeting in 10 minutes
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isDestroyed())
+                        meeting.leave();
+                    Log.d("Auto Terminate", "run: Meeting Terminated");
+                }
+            }, 600000);
         }
 
         @Override
