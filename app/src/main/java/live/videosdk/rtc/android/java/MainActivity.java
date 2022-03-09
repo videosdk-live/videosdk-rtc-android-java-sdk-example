@@ -181,7 +181,14 @@ public class MainActivity extends AppCompatActivity {
         public void onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()");
             meeting = null;
-            if (!isDestroyed()) finish();
+            if (!isDestroyed())
+            {
+                Intent intents = new Intent(MainActivity.this, CreateOrJoinActivity.class);
+                intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intents);
+                finish();
+            }
         }
 
         @Override
@@ -454,11 +461,9 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Leave from meeting or end the meeting for everyone ?")
                 .setPositiveButton("Leave", (dialog, which) -> {
                     meeting.leave();
-                    finish();
                 })
                 .setNegativeButton("End", (dialog, which) -> {
                     meeting.end();
-                    finish();
                 })
                 .show();
     }
