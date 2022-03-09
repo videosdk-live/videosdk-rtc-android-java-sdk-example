@@ -181,11 +181,18 @@ public class MainActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!isDestroyed())
-                        meeting.leave();
-                    Log.d("Auto Terminate", "run: Meeting Terminated");
+                    new MaterialAlertDialogBuilder(MainActivity.this)
+                            .setTitle("Meeting Left")
+                            .setMessage("Demo app limits meeting to 10 Minutes")
+                            .setCancelable(false)
+                            .setPositiveButton("Ok", (dialog, which)->{
+                                if(!isDestroyed())
+                                    meeting.leave();
+                                Log.d("Auto Terminate", "run: Meeting Terminated");
+                            })
+                            .create().show();
                 }
-            }, 600000);
+            }, 6000);
         }
 
         @Override
