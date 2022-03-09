@@ -181,18 +181,19 @@ public class MainActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    new MaterialAlertDialogBuilder(MainActivity.this)
-                            .setTitle("Meeting Left")
-                            .setMessage("Demo app limits meeting to 10 Minutes")
-                            .setCancelable(false)
-                            .setPositiveButton("Ok", (dialog, which)->{
-                                if(!isDestroyed())
-                                    meeting.leave();
-                                Log.d("Auto Terminate", "run: Meeting Terminated");
-                            })
-                            .create().show();
+                    if (!isDestroyed())
+                        new MaterialAlertDialogBuilder(MainActivity.this)
+                                .setTitle("Meeting Left")
+                                .setMessage("Demo app limits meeting to 10 Minutes")
+                                .setCancelable(false)
+                                .setPositiveButton("Ok", (dialog, which) -> {
+                                    if (!isDestroyed())
+                                        meeting.leave();
+                                    Log.d("Auto Terminate", "run: Meeting Terminated");
+                                })
+                                .create().show();
                 }
-            }, 6000);
+            }, 600000);
         }
 
         @Override
@@ -369,8 +370,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     micEnabled = true;
                     toggleMicIcon();
-                }
-                else if (stream.getKind().equalsIgnoreCase("share")) {
+                } else if (stream.getKind().equalsIgnoreCase("share")) {
                     // display share video
                     svrShare.setVisibility(View.VISIBLE);
                     svrShare.setZOrderMediaOverlay(true);
@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     micEnabled = false;
                     toggleMicIcon();
-                }else if (stream.getKind().equalsIgnoreCase("share")) {
+                } else if (stream.getKind().equalsIgnoreCase("share")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     if (track != null) track.removeSink(svrShare);
                     svrShare.clearImage();
