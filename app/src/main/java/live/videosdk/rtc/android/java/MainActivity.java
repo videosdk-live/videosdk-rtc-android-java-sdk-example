@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -175,6 +176,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            //terminate meeting in 10 minutes
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isDestroyed())
+                        new MaterialAlertDialogBuilder(MainActivity.this)
+                                .setTitle("Meeting Left")
+                                .setMessage("Demo app limits meeting to 10 Minutes")
+                                .setCancelable(false)
+                                .setPositiveButton("Ok", (dialog, which) -> {
+                                    if (!isDestroyed())
+                                        meeting.leave();
+                                    Log.d("Auto Terminate", "run: Meeting Terminated");
+                                })
+                                .create().show();
+                }
+            }, 600000);
         }
 
         @Override
@@ -358,8 +377,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     micEnabled = true;
                     toggleMicIcon();
-                }
-                else if (stream.getKind().equalsIgnoreCase("share")) {
+                } else if (stream.getKind().equalsIgnoreCase("share")) {
                     // display share video
                     svrShare.setVisibility(View.VISIBLE);
                     svrShare.setZOrderMediaOverlay(true);
@@ -380,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     micEnabled = false;
                     toggleMicIcon();
-                }else if (stream.getKind().equalsIgnoreCase("share")) {
+                } else if (stream.getKind().equalsIgnoreCase("share")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     if (track != null) track.removeSink(svrShare);
                     svrShare.clearImage();

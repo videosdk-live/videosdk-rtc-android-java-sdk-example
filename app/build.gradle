@@ -7,7 +7,6 @@ localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "live.videosdk.rtc.android.java"
@@ -30,8 +29,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField("String", "AUTH_TOKEN", "\"\"")
-            buildConfigField("String", "AUTH_URL", "\"" + "https://api.yourserver.com" + "\"")
+            buildConfigField("String", "AUTH_TOKEN", "\"" + localProperties['auth_token'] + "\"")
+            buildConfigField("String", "AUTH_URL", "\"" + "\"")
 
         }
     }
