@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VideoSDK RTC</string>
+    <string name="app_name">Android VideoSDK App</string>
     <string name="switch_camera">Switch Camera Mode</string>
     <string name="leave_meeting">Leave meeting</string>
     <string name="toggle_mic">Toggle mic</string>
