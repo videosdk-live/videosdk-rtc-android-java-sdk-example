@@ -1,67 +1,48 @@
-# Video SDK Android(Java) Code Sample
+# Video SDK for Android
+[![Discord](https://img.shields.io/discord/876774498798551130?label=Join%20on%20Discord)](https://discord.gg/kgAvyxtTxv)
+[![Register](https://img.shields.io/badge/Contact-Know%20More-blue)](https://app.videosdk.live/signup)
 
-## What is it?
+At Video SDK, we’re building tools to help companies create world-class collaborative products with capabilities of live audio/videos, compose cloud recordings/rtmp/hls and interaction APIs
 
-This code sample demonstrates a one-to-one and group video call application built with [Video SDK RTC Android SDK](https://docs.videosdk.live/docs/guide/video-and-audio-calling-api-sdk/android-sdk)
+## Demo App
+Check out demo [here](https://videosdk.live/prebuilt/)
 
-- Built for serverless video calling experience in Android.
-- Scale it upto 5,000 participants with low code.
-- 10,000 minutes free on monthly basis
+## Steps to Integrate
+### Prerequisites
+- Development environment requirements:
+  - [Java Development Kit](https://www.oracle.com/java/technologies/downloads/)
+  - Android Studio 3.0 or later
+- A physical or virtual mobile device running Android 5.0 or later
+- Valid [Video SDK Account](https://app.videosdk.live/)
 
-## Features
+## Run the Sample Project
+### Step 1: Clone the sample project
+Clone the repository to your local environment.
+```js
+git clone https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
+```
 
-- [x] Video API with real-time audio, video and data streams
-- [x] 5,000+ participants support
-- [x] Chat support with rich media.
-- [x] Screen sharing with HD and Full HD.
-- [ ] Play realtime video in meeting
-- [ ] Connect it with social media such as Facebook, Youtube etc (RTMP out support).
-- [x] Intelligent speaker switch
-- [x] Record your meetings on cloud
-- [x] Customise UI and build other rich features with our new data streams such as whiteboard, poll, Q & A etc.
+### Step 2: Modify local.properties
+Generate temporary token from [Video SDK Account](https://app.videosdk.live/signup).
+```js title="local.properties"
+auth_token= "TEMPORARY-TOKEN"
+```
 
-## Device support
+### Step 3: Run the sample app
+Run the android app with **Shift+F10** or the ** ▶ Run ** from toolbar. 
 
-Visit our official [documentation](https://docs.videosdk.live/docs/realtime-communication/see-also/device-browser-support) for more information
+## Examples
+- [Prebuilt SDK Examples](https://github.com/videosdk-live/videosdk-rtc-prebuilt-examples)
+- [JavaScript SDK Example](https://github.com/videosdk-live/videosdk-rtc-javascript-sdk-example)
+- [React JS SDK Example](https://github.com/videosdk-live/videosdk-rtc-react-sdk-example)
+- [React Native SDK Example](https://github.com/videosdk-live/videosdk-rtc-react-native-sdk-example)
+- [Flutter SDK Example](https://github.com/videosdk-live/videosdk-rtc-flutter-sdk-example)
+- [Android SDK Example](https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example)
+- [iOS SDK Example](https://github.com/videosdk-live/videosdk-rtc-ios-sdk-example)
 
-## Prerequisites
+## Documentation
+[Read the documentation](https://docs.videosdk.live/) to start using Video SDK.
 
-You must have the following installed:
-
-- Android Studio
-- Android SDK
-- Emulator or physical android device
-
-## Getting started
-
-1. Clone the repo
-
-   ```sh
-   git clone https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
-   ```
-
-2. Create a `local.properties` file in the root directory of your android project with the `auth_url` or `auth_token`
- - If you want to provide `auth_url`, then run the authentication server.
- Follow instructions from [videosdk-rtc-nodejs-sdk-example](https://github.com/videosdk-live/videosdk-rtc-nodejs-sdk-example) to run the authentication server.
- - If you want to provide `auth_token`, then go to [Dashboard](https://app.videosdk.live/api-keys), create api key for your project if not and generate token by clicking **Generate Token** button.
- 
-   ```
-   auth_url= SERVER_URL
-   
-   #OR
-   
-   auth_token= PROVIDE_TOKEN
-   ```
-
-   **Note** : For production deployment, we would highly recommend to consider `auth_url` for best use cases.
-5. Run the android app with `Shift+F10` or the `Run` button from toolbar
-
-For more information, visit [official documentation](https://docs.videosdk.live/docs/guide/video-and-audio-calling-api-sdk/getting-started)
-
-Related
-
-- [Video SDK RTC React Example](https://github.com/videosdk-live/videosdk-rtc-react-sdk-example)
-- [Video SDK RTC React Native Example](https://github.com/videosdk-live/videosdk-rtc-react-native-sdk-example)
-- [Video SDK RTC Flutter Example](https://github.com/videosdk-live/videosdk-rtc-flutter-sdk-example)
-- [Video SDK RTC Android Example](https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example)
-- [Video SDK RTC iOS Example](https://github.com/videosdk-live/videosdk-rtc-ios-sdk-example)
+## Community
+- [Discord](https://discord.gg/Gpmj6eCq5u) - To get involved with the Video SDK community, ask questions and share tips.
+- [Twitter](https://twitter.com/video_sdk) - To receive updates, announcements, blog posts, and general Video SDK tips.
