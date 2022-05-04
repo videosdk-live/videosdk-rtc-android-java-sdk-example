@@ -17,4 +17,5 @@
     <string name="screenShare">Screen Share</string>
     <string name="notificationTitle">VideoSDK RTC is sharing your screen</string>
     <string name="notificationContent">meeting is running</string>
+    <string name="audio_options">Audio Options</string>
 </resources>

@@ -3,10 +3,16 @@
     package="live.videosdk.rtc.android.java">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Needed to communicate with already-paired Bluetooth devices. (Legacy up to Android 11) -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+
+    <!-- Needed to communicate with already-paired Bluetooth devices. (Android 12 upwards)-->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <application
         android:name=".MainApplication"
@@ -36,7 +42,9 @@
             android:parentActivityName=".CreateOrJoinActivity"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            />
 
         <meta-data
             android:name="notificationTitle"
