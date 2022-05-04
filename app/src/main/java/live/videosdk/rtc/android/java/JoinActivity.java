@@ -138,7 +138,8 @@ public class JoinActivity extends AppCompatActivity {
                 Manifest.permission.INTERNET,
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.READ_PHONE_STATE
+
         };
         String rationale = "Please provide permissions";
         Permissions.Options options =

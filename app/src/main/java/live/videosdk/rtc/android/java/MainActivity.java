@@ -8,18 +8,24 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.projection.MediaProjectionManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,11 +41,15 @@ import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
+import live.videosdk.rtc.android.lib.AppRTCAudioManager;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
@@ -50,21 +60,26 @@ import live.videosdk.rtc.android.listeners.WebcamRequestListener;
 import live.videosdk.rtc.android.model.LivestreamOutput;
 
 public class MainActivity extends AppCompatActivity {
-    private Meeting meeting;
+    private static Meeting meeting;
     private SurfaceViewRenderer svrShare;
-    private FloatingActionButton btnMic, btnWebcam;
+    private FloatingActionButton btnMic, btnWebcam, btnScreenShare;
+    private FloatingActionButton btnLeave, btnChat, btnSwitchCameraMode, btnMore;
+    private ImageButton btnAudioSelection;
 
     private boolean micEnabled = true;
     private boolean webcamEnabled = true;
     private boolean recording = false;
     private boolean livestreaming = false;
     private boolean localScreenShare = false;
+    private boolean isNetworkAvailable = true;
+
 
     private static final String YOUTUBE_RTMP_URL = null;
     private static final String YOUTUBE_RTMP_STREAM_KEY = null;
 
-    private FloatingActionButton btnScreenShare;
     private static final int CAPTURE_PERMISSION_REQUEST_CODE = 1;
+
+    private Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +87,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //
+        btnLeave = findViewById(R.id.btnLeave);
+        btnChat = findViewById(R.id.btnChat);
+        btnMore = findViewById(R.id.btnMore);
+        btnSwitchCameraMode = findViewById(R.id.btnSwitchCameraMode);
         btnScreenShare = findViewById(R.id.btnScreenShare);
+
+        btnAudioSelection = (ImageButton) findViewById(R.id.btnAudioSelection);
+        btnAudioSelection.setEnabled(false);
 
         svrShare = findViewById(R.id.svrShare);
         svrShare.init(PeerConnectionUtils.getEglContext(), null);
@@ -96,12 +118,6 @@ public class MainActivity extends AppCompatActivity {
         //
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(meetingId);
-        toolbar.setOnMenuItemClickListener(menu -> {
-            if (menu.getItemId() == R.id.contentCopy) {
-                copyTextToClipboard(meetingId);
-            }
-            return true;
-        });
 
         // pass the token generated from api server
         VideoSDK.config(token);
@@ -112,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
                 micEnabled, webcamEnabled
         );
 
-        meeting.addEventListener(meetingEventListener);
-
         //
         ((MainApplication) this.getApplication()).setMeeting(meeting);
+
+        meeting.addEventListener(meetingEventListener);
 
         //
         final RecyclerView rvParticipants = findViewById(R.id.rvParticipants);
@@ -131,6 +147,64 @@ public class MainActivity extends AppCompatActivity {
         // Actions
         setActionListeners();
 
+        setAudioDeviceListeners();
+
+        ((ImageButton) findViewById(R.id.btnCopyContent)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyTextToClipboard(meetingId);
+            }
+        });
+
+        btnAudioSelection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAudioInputDialog();
+            }
+        });
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                isNetworkAvailable = isNetworkAvailable();
+                if (!isNetworkAvailable) {
+                    runOnUiThread(() -> {
+                        if (!isDestroyed()) {
+                            new MaterialAlertDialogBuilder(MainActivity.this)
+                                    .setMessage("No Internet Connection")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Ok", (dialog, which) -> {
+                                        if (!isDestroyed()) {
+                                            meeting.leave();
+                                        }
+                                    })
+                                    .create().show();
+                        }
+                    });
+                }
+            }
+        }, 0, 10000);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager manager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        boolean isAvailable = networkInfo != null && networkInfo.isConnected();
+
+        if (!isAvailable) {
+            Snackbar.make(findViewById(R.id.mainLayout), "No Internet Connection",
+                    Snackbar.LENGTH_LONG).show();
+        }
+
+        return isAvailable;
+    }
+
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private void toggleMicIcon() {
@@ -163,6 +237,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMeetingJoined() {
             Log.d("#meeting", "onMeetingJoined()");
+
+
+            //enable all the Buttons when meetingJoined
+            btnMic.setEnabled(true);
+            btnWebcam.setEnabled(true);
+            btnLeave.setEnabled(true);
+            btnSwitchCameraMode.setEnabled(true);
+            btnChat.setEnabled(true);
+            btnScreenShare.setEnabled(true);
+            btnMore.setEnabled(true);
+            btnAudioSelection.setEnabled(true);
+
 
             // notify user of any new messages
             meeting.pubSub.subscribe("CHAT", new PubSubMessageListener() {
@@ -200,8 +286,7 @@ public class MainActivity extends AppCompatActivity {
         public void onMeetingLeft() {
             Log.d("#meeting", "onMeetingLeft()");
             meeting = null;
-            if (!isDestroyed())
-            {
+            if (!isDestroyed()) {
                 Intent intents = new Intent(MainActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -269,6 +354,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onWebcamRequested(String participantId, WebcamRequestListener listener) {
             showWebcamRequestDialog(listener);
+        }
+
+        @Override
+        public void onExternalCallStarted() {
+            Toast.makeText(MainActivity.this, "onExternalCallStarted", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -359,12 +449,34 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.INTERNET,
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.READ_PHONE_STATE
         };
         String rationale = "Please provide permissions";
         Permissions.Options options =
                 new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
         Permissions.check(this, permissions, rationale, options, permissionHandler);
+    }
+
+    private void setAudioDeviceListeners() {
+        meeting.setAudioDeviceChangeListener(new AppRTCAudioManager.AudioManagerEvents() {
+            @Override
+            public void onAudioDeviceChanged(AppRTCAudioManager.AudioDevice selectedAudioDevice, Set<AppRTCAudioManager.AudioDevice> availableAudioDevices) {
+                switch (selectedAudioDevice) {
+                    case BLUETOOTH:
+                        ((ImageButton) findViewById(R.id.btnAudioSelection)).setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_bluetooth_audio_24));
+                        break;
+                    case WIRED_HEADSET:
+                        ((ImageButton) findViewById(R.id.btnAudioSelection)).setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_headset_24));
+                        break;
+                    case SPEAKER_PHONE:
+                        ((ImageButton) findViewById(R.id.btnAudioSelection)).setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_volume_up_24));
+                        break;
+                    case EARPIECE:
+                        ((ImageButton) findViewById(R.id.btnAudioSelection)).setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_phone_in_talk_24));
+                        break;
+                }
+            }
+        });
     }
 
     private void setLocalListeners() {
@@ -439,18 +551,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Leave meeting
-        findViewById(R.id.btnLeave).setOnClickListener(view -> {
+        btnLeave.setOnClickListener(view -> {
             showLeaveOrEndDialog();
         });
 
-        findViewById(R.id.btnMore).setOnClickListener(v -> showMoreOptionsDialog());
+        btnMore.setOnClickListener(v -> showMoreOptionsDialog());
 
-        findViewById(R.id.btnSwitchCameraMode).setOnClickListener(view -> {
+        btnSwitchCameraMode.setOnClickListener(view -> {
             meeting.changeWebcam();
         });
 
         // Chat
-        findViewById(R.id.btnChat).setOnClickListener(view -> {
+        btnChat.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, ChatActivity.class);
             startActivity(intent);
         });
@@ -482,6 +594,37 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("End", (dialog, which) -> {
                     meeting.end();
+                })
+                .show();
+    }
+
+    private void showAudioInputDialog() {
+        Set<AppRTCAudioManager.AudioDevice> mics = meeting.getMics();
+
+        // Prepare list
+        final String[] items = new String[mics.size()];
+        for (int i = 0; i < mics.size(); i++) {
+            items[i] = mics.toArray()[i].toString();
+        }
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle(getString(R.string.audio_options))
+                .setItems(items, (dialog, which) -> {
+                    AppRTCAudioManager.AudioDevice audioDevice = null;
+                    switch (items[which]) {
+                        case "BLUETOOTH":
+                            audioDevice = AppRTCAudioManager.AudioDevice.BLUETOOTH;
+                            break;
+                        case "WIRED_HEADSET":
+                            audioDevice = AppRTCAudioManager.AudioDevice.WIRED_HEADSET;
+                            break;
+                        case "SPEAKER_PHONE":
+                            audioDevice = AppRTCAudioManager.AudioDevice.SPEAKER_PHONE;
+                            break;
+                        case "EARPIECE":
+                            audioDevice = AppRTCAudioManager.AudioDevice.EARPIECE;
+                            break;
+                    }
+                    meeting.changeMic(audioDevice);
                 })
                 .show();
     }
@@ -562,6 +705,8 @@ public class MainActivity extends AppCompatActivity {
         if (svrShare != null) svrShare.release();
 
         ((RecyclerView) findViewById(R.id.rvParticipants)).setAdapter(null);
+
+        timer.cancel();
 
         super.onDestroy();
     }
