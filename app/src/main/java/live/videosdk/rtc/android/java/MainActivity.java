@@ -34,7 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
-
+import org.json.JSONObject;
 import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
@@ -125,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 MainActivity.this, meetingId, participantName,
-                micEnabled, webcamEnabled
+                micEnabled, webcamEnabled,null
         );
+
+        meeting.addEventListener(meetingEventListener);
 
         //
         ((MainApplication) this.getApplication()).setMeeting(meeting);
-
-        meeting.addEventListener(meetingEventListener);
 
         //
         final RecyclerView rvParticipants = findViewById(R.id.rvParticipants);
@@ -359,6 +359,22 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onExternalCallStarted() {
             Toast.makeText(MainActivity.this, "onExternalCallStarted", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(JSONObject error) {
+            try {
+                JSONObject errorCodes = VideoSDK.getErrorCodes();
+                int code = error.getInt("code");
+                if (code == errorCodes.getInt("START_LIVESTREAM_FAILED")) {
+                    Log.d("#error", "Error is: " + error.get("message"));
+                }else if(code == errorCodes.getInt("START_RECORDING_FAILED"))
+                {
+                    Log.d("#error", "Error is: " + error.get("message"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
 
