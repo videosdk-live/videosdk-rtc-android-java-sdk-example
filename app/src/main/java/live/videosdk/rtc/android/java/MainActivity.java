@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
             if (!isDestroyed()) {
                 Intent intents = new Intent(MainActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intents);
                 finish();
             }
