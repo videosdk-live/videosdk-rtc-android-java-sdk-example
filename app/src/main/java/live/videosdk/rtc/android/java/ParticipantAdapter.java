@@ -108,6 +108,9 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     videoTrack.addSink(holder.svrParticipant);
+
+                    //Update Consuming quality using setViewPort
+                    participant.setViewPort(holder.itemView.getWidth(), holder.itemView.getHeight());
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_24);
                 }
@@ -126,6 +129,9 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                 }
             }
         });
+
+        //Update Consuming quality using setViewPort
+        participant.setViewPort(holder.itemView.getWidth(), holder.itemView.getHeight());
 
         //
         final Participant finalParticipant = participant;

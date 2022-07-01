@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation 'live.videosdk:android-sdk:0.0.19'
+    implementation 'live.videosdk:android-sdk:0.0.21'
 
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
