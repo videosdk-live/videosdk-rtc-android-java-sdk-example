@@ -40,16 +40,20 @@ import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import live.videosdk.rtc.android.CustomStreamTrack;
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
+import live.videosdk.rtc.android.lib.JsonUtils;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
@@ -122,10 +126,23 @@ public class MainActivity extends AppCompatActivity {
         // pass the token generated from api server
         VideoSDK.config(token);
 
+        Map<String, CustomStreamTrack> customTracks = new HashMap<>();
+
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h240p_w320p", "front", this);
+        customTracks.put("video", videoCustomTrack);
+
+        JSONObject noiseConfig =new JSONObject();
+        JsonUtils.jsonPut(noiseConfig,"acousticEchoCancellation",true);
+        JsonUtils.jsonPut(noiseConfig,"noiseSuppression",true);
+        JsonUtils.jsonPut(noiseConfig,"autoGainControl",true);
+
+        CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", noiseConfig, this);
+        customTracks.put("audio",audioCustomTrack);
+
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 MainActivity.this, meetingId, participantName,
-                micEnabled, webcamEnabled,null
+                micEnabled, webcamEnabled,null,customTracks
         );
 
         meeting.addEventListener(meetingEventListener);
@@ -399,7 +416,12 @@ public class MainActivity extends AppCompatActivity {
             localScreenShare = false;
             return;
         }
-        meeting.enableScreenShare(data);
+
+        //Used custom track for screen share.
+        VideoSDK.createScreenShareVideoTrack("h720p_15fps", data, this, (track) -> {
+            meeting.enableScreenShare(track);
+        });
+
         btnScreenShare.setImageResource(R.drawable.ic_outline_stop_screen_share_24);
     }
 
@@ -553,7 +575,15 @@ public class MainActivity extends AppCompatActivity {
             if (micEnabled) {
                 meeting.muteMic();
             } else {
-                meeting.unmuteMic();
+
+                JSONObject noiseConfig =new JSONObject();
+                JsonUtils.jsonPut(noiseConfig,"acousticEchoCancellation",true);
+                JsonUtils.jsonPut(noiseConfig,"noiseSuppression",true);
+                JsonUtils.jsonPut(noiseConfig,"autoGainControl",true);
+
+                CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", noiseConfig, this);
+
+                meeting.unmuteMic(audioCustomTrack);
             }
         });
 
@@ -562,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
             if (webcamEnabled) {
                 meeting.disableWebcam();
             } else {
-                meeting.enableWebcam();
+                meeting.enableWebcam(VideoSDK.createCameraVideoTrack("h240p_w320p", "back", this));
             }
         });
 
