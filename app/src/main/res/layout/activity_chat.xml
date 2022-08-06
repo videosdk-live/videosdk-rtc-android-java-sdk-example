@@ -1,53 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
+    android:id="@+id/layout_chat"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="300dp"
     android:orientation="vertical"
-    tools:context=".ChatActivity">
+    android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:navigationIcon="@drawable/ic_baseline_close_24"
-        app:popupTheme="@style/Theme.VideoSDKRTC"
-        app:titleTextColor="@color/white" />
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/messageRcv"
+        <TextView
+            android:id="@+id/participant_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            android:text="Chat"
+            android:textColor="@color/white"
+            android:textFontWeight="700"
+            android:textSize="18dp"
+            tools:ignore="RelativeOverlap" />
+
+        <ImageView
+            android:id="@+id/ic_close"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_baseline_close_24" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="22dp">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/messageRcv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:layout_below ="@+id/messageRcv">
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/list_style"
+        android:paddingVertical="7dp">
 
-
-        <EditText
-            android:id="@+id/etMessage"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Enter Message"
             android:textColorHint="@color/white"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/white"/>
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:hintEnabled="false"
+            app:startIconDrawable="@drawable/ic_typewritter"
+            app:startIconTint="@color/white">
 
-        <Button
+            <EditText
+                android:id="@+id/etMessage"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:backgroundTint="@color/transparentColor"
+                android:hint="@string/write_message"
+                android:textColor="@color/white"
+                android:textColorHint="@color/text_color"
+                android:fontFamily="sans-serif-medium"
+                android:textFontWeight="600" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
             android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
+            android:layout_gravity="center"
+            android:layout_marginEnd="7dp"
+            android:background="@drawable/bt_selector"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_send_24" />
+
 
     </LinearLayout>
-
 </LinearLayout>

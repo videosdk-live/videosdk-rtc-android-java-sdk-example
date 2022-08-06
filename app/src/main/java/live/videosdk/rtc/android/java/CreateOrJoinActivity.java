@@ -1,197 +1,350 @@
 package live.videosdk.rtc.android.java;
 
+import android.Manifest;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.webrtc.Camera1Enumerator;
+import org.webrtc.PeerConnectionFactory;
+import org.webrtc.SurfaceTextureHelper;
+import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.VideoCapturer;
+import org.webrtc.VideoSource;
+import org.webrtc.VideoTrack;
+
+import java.util.ArrayList;
+
+import live.videosdk.rtc.android.java.fragment.CreateOrJoinFragment;
+import live.videosdk.rtc.android.java.fragment.JoinMeetingFragment;
+import live.videosdk.rtc.android.java.fragment.CreateMeetingFragment;
+import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 
 public class CreateOrJoinActivity extends AppCompatActivity {
 
-    private final String AUTH_TOKEN = BuildConfig.AUTH_TOKEN;
-    private final String AUTH_URL = BuildConfig.AUTH_URL;
+    private boolean micEnabled = false;
+    private boolean webcamEnabled = false;
 
-    private EditText etMeetingId;
+    private FloatingActionButton btnMic, btnWebcam;
+    private SurfaceViewRenderer svrJoin;
+
+    Toolbar toolbar;
+    ActionBar actionBar;
+
+    VideoTrack videoTrack;
+    VideoCapturer videoCapturer;
+    PeerConnectionFactory.InitializationOptions initializationOptions;
+    PeerConnectionFactory peerConnectionFactory;
+    VideoSource videoSource;
+
+    boolean permissionsGranted = false;
+    private final PermissionHandler permissionHandler = new PermissionHandler() {
+        @Override
+        public void onGranted() {
+            permissionsGranted = true;
+
+            micEnabled = true;
+            btnMic.setImageResource(R.drawable.ic_mic);
+            changeFloatingActionButtonLayout(btnMic, micEnabled);
+
+            webcamEnabled = true;
+            btnWebcam.setImageResource(R.drawable.ic_video_camera);
+            changeFloatingActionButtonLayout(btnWebcam, webcamEnabled);
+
+            updateCameraView();
+        }
+
+        @Override
+        public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+            super.onDenied(context, deniedPermissions);
+            Toast.makeText(CreateOrJoinActivity.this,
+                    "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public boolean onBlocked(Context context, ArrayList<String> blockedList) {
+            Toast.makeText(CreateOrJoinActivity.this,
+                    "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
+            return super.onBlocked(context, blockedList);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_or_join);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("VideoSDK RTC");
 
         setSupportActionBar(toolbar);
 
-        isNetworkAvailable();
+        actionBar = getSupportActionBar();
 
-        final Button btnCreate = findViewById(R.id.btnCreateMeeting);
-        final Button btnJoin = findViewById(R.id.btnJoinMeeting);
+        btnMic = findViewById(R.id.btnMic);
+        btnWebcam = findViewById(R.id.btnWebcam);
+        svrJoin = findViewById(R.id.svrJoiningView);
 
-        etMeetingId = findViewById(R.id.etMeetingId);
+        checkPermissions();
 
-        btnCreate.setOnClickListener(v -> {
-            getToken(null);
+        LinearLayout fragContainer = (LinearLayout) findViewById(R.id.fragContainer);
+
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+
+        getFragmentManager().beginTransaction().add(R.id.fragContainer, new CreateOrJoinFragment(), "CreateOrJoinFragment").commit();
+
+        fragContainer.addView(ll);
+
+        btnMic.setOnClickListener(v ->
+        {
+            toggleMic();
         });
 
-        btnJoin.setOnClickListener(v -> {
-            String meetingId = etMeetingId.getText().toString().trim();
-            if ("".equals(meetingId)) {
-                Toast.makeText(CreateOrJoinActivity.this, "Please enter meeting ID",
-                        Toast.LENGTH_SHORT).show();
-            } else if (!meetingId.matches("\\w{4}\\-\\w{4}\\-\\w{4}")) {
-                Toast.makeText(CreateOrJoinActivity.this, "Please enter valid meeting ID",
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                getToken(meetingId);
-            }
+        btnWebcam.setOnClickListener(v ->
+        {
+            toggleWebcam();
         });
 
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager manager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-
-        boolean isAvailable = networkInfo != null && networkInfo.isConnected();
-
-        if (!isAvailable) {
-            Snackbar.make(findViewById(R.id.layout), "No Internet Connection",
-                    Snackbar.LENGTH_LONG).show();
-        }
-
-        return isAvailable;
+    public boolean isMicEnabled() {
+        return micEnabled;
     }
 
-    private boolean isNullOrEmpty(String str) {
-        return "null".equals(str) || "".equals(str) || null == str;
+    public boolean isWebcamEnabled() {
+        return webcamEnabled;
     }
 
-    private void getToken(@Nullable String meetingId) {
-        if (!isNetworkAvailable()) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                @Override
+                public void onBackStackChanged() {
+                    if (getFragmentManager().getBackStackEntryCount() > 0) {
+                        actionBar.setDisplayHomeAsUpEnabled(true);
+
+                    } else {
+                        actionBar.setDisplayHomeAsUpEnabled(false);
+                    }
+                    toolbar.invalidate();
+                }
+            });
+
+            getFragmentManager().popBackStack();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void CreateMeetingFragment() {
+        setActionBar();
+
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.fragContainer, new CreateMeetingFragment(), "NameFragment");
+        ft.addToBackStack("CreateOrJoinFragment");
+        ft.commit();
+    }
+
+    public void joinMeetingFragment() {
+        setActionBar();
+
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.fragContainer, new JoinMeetingFragment(), "JoinMeetingFragment");
+        ft.addToBackStack("CreateOrJoinFragment");
+        ft.commit();
+    }
+
+    public void setActionBar() {
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        } else {
+            throw new NullPointerException("Something went wrong");
+        }
+    }
+
+    private void checkPermissions() {
+        String[] permissions = {
+                Manifest.permission.INTERNET,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_PHONE_STATE
+
+        };
+        String rationale = "Please provide permissions";
+        Permissions.Options options =
+                new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
+        Permissions.check(this, permissions, rationale, options, permissionHandler);
+    }
+
+    private void changeFloatingActionButtonLayout(FloatingActionButton btn, boolean enabled) {
+        if (enabled) {
+            btn.setColorFilter(Color.BLACK);
+            btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.md_grey_300)));
+        } else {
+            btn.setColorFilter(Color.WHITE);
+            btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.md_red_500)));
+        }
+    }
+
+    private void toggleMic() {
+        if (!permissionsGranted) {
+            checkPermissions();
             return;
         }
+        micEnabled = !micEnabled;
+        if (micEnabled) {
+            btnMic.setImageResource(R.drawable.ic_mic);
+        } else {
+            btnMic.setImageResource(R.drawable.ic_mic_off);
+        }
+        changeFloatingActionButtonLayout(btnMic, micEnabled);
+    }
 
-        if (!isNullOrEmpty(AUTH_TOKEN) && !isNullOrEmpty(AUTH_URL)) {
-            Toast.makeText(CreateOrJoinActivity.this,
-                    "Please Provide only one - either auth_token or auth_url",
-                    Toast.LENGTH_SHORT).show();
+    private void toggleWebcam() {
+        if (!permissionsGranted) {
+            checkPermissions();
             return;
         }
+        webcamEnabled = !webcamEnabled;
+        if (webcamEnabled) {
+            btnWebcam.setImageResource(R.drawable.ic_video_camera);
+        } else {
+            btnWebcam.setImageResource(R.drawable.ic_video_camera_off);
+        }
+        updateCameraView();
+        changeFloatingActionButtonLayout(btnWebcam, webcamEnabled);
+    }
 
-        if (!isNullOrEmpty(AUTH_TOKEN)) {
-            if (meetingId == null) {
-                createMeeting(AUTH_TOKEN);
-            } else {
-                joinMeeting(AUTH_TOKEN, meetingId);
+
+    private void updateCameraView() {
+        if (webcamEnabled) {
+            // create PeerConnectionFactory
+            initializationOptions =
+                    PeerConnectionFactory.InitializationOptions.builder(this).createInitializationOptions();
+            PeerConnectionFactory.initialize(initializationOptions);
+            peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
+
+
+            svrJoin.init(PeerConnectionUtils.getEglContext(), null);
+
+            SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", PeerConnectionUtils.getEglContext());
+
+            // create VideoCapturer
+            videoCapturer = createCameraCapturer();
+            videoSource = peerConnectionFactory.createVideoSource(videoCapturer.isScreencast());
+            videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+            videoCapturer.startCapture(480, 640, 30);
+
+            // create VideoTrack
+            videoTrack = peerConnectionFactory.createVideoTrack("100", videoSource);
+
+            // display in localView
+            videoTrack.addSink(svrJoin);
+        } else {
+            if (videoTrack != null) videoTrack.removeSink(svrJoin);
+            svrJoin.clearImage();
+            svrJoin.release();
+        }
+    }
+
+
+    private VideoCapturer createCameraCapturer() {
+        Camera1Enumerator enumerator = new Camera1Enumerator(false);
+        final String[] deviceNames = enumerator.getDeviceNames();
+
+        // First, try to find front facing camera
+        for (String deviceName : deviceNames) {
+            if (enumerator.isFrontFacing(deviceName)) {
+                VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
+
+                if (videoCapturer != null) {
+                    return videoCapturer;
+                }
             }
-
-            return;
         }
 
-        if (!isNullOrEmpty(AUTH_URL)) {
-            AndroidNetworking.get(AUTH_URL + "/get-token")
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                String token = response.getString("token");
-                                if (meetingId == null) {
-                                    createMeeting(token);
-                                } else {
-                                    joinMeeting(token, meetingId);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+        // Front facing camera not found, try something else
+        for (String deviceName : deviceNames) {
+            if (!enumerator.isFrontFacing(deviceName)) {
+                VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
 
-                        @Override
-                        public void onError(ANError anError) {
-                            anError.printStackTrace();
-                            Toast.makeText(CreateOrJoinActivity.this,
-                                    anError.getErrorDetail(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-            return;
+                if (videoCapturer != null) {
+                    return videoCapturer;
+                }
+            }
         }
 
-        Toast.makeText(CreateOrJoinActivity.this,
-                "Please Provide auth_token or auth_url", Toast.LENGTH_SHORT).show();
+        return null;
+    }
 
+    @Override
+    protected void onDestroy() {
+        if (videoTrack != null) videoTrack.removeSink(svrJoin);
 
+        svrJoin.clearImage();
+        svrJoin.release();
+
+        closeCapturer();
+
+        super.onDestroy();
     }
 
 
-    private void createMeeting(String token) {
-        AndroidNetworking.post("https://api.videosdk.live/v1/meetings")
-                .addHeaders("Authorization", token)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            final String meetingId = response.getString("meetingId");
+    private void closeCapturer() {
+        final String TAG = "PeerConnectionUtils";
 
-                            Intent intent = new Intent(CreateOrJoinActivity.this, JoinActivity.class);
-                            intent.putExtra("token", token);
-                            intent.putExtra("meetingId", meetingId);
+        if (videoCapturer != null) {
+            try {
+                videoCapturer.stopCapture();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            videoCapturer.dispose();
+            videoCapturer = null;
+        }
 
-                            startActivity(intent);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+        Log.d(TAG, "Stopped capture.");
 
-                    @Override
-                    public void onError(ANError anError) {
-                        anError.printStackTrace();
-                        Toast.makeText(CreateOrJoinActivity.this, anError.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (videoSource != null) {
+            videoSource.dispose();
+            videoSource = null;
+        }
+
+        if (peerConnectionFactory != null) {
+            peerConnectionFactory.stopAecDump();
+            peerConnectionFactory.dispose();
+            peerConnectionFactory = null;
+        }
+
+        Log.d(TAG, "Closed video source.");
+
+        PeerConnectionFactory.stopInternalTracingCapture();
+        PeerConnectionFactory.shutdownInternalTracer();
+        Log.d(TAG, "Closed peer connection.");
     }
 
-    private void joinMeeting(String token, String meetingId) {
-        AndroidNetworking.post("https://api.videosdk.live/v1/meetings/" + meetingId)
-                .addHeaders("Authorization", token)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Intent intent = new Intent(CreateOrJoinActivity.this, JoinActivity.class);
-                        intent.putExtra("token", token);
-                        intent.putExtra("meetingId", meetingId);
-
-                        startActivity(intent);
-
-                        etMeetingId.getText().clear();
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        anError.printStackTrace();
-                        Toast.makeText(CreateOrJoinActivity.this, anError.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 }

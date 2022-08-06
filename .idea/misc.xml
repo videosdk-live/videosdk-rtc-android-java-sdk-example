@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/drawable/ic_baseline_mic_off_24.xml" value="0.1537037037037037" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/drawable/ic_outline_mic_none_24.xml" value="0.14814814814814814" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/drawable/ic_outline_people_24.xml" value="0.14814814814814814" />
@@ -13,14 +14,78 @@
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/layout/activity_create_or_join.xml" value="0.12664640324214793" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/layout/activity_join.xml" value="0.1334853090172239" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/layout/activity_main.xml" value="0.1334853090172239" />
+        <entry key="app/src/main/res/drawable-v24/rounded_corner_grey.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/bg_layout.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/bg_selected.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/bg_style.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/bg_toggle.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/border_shadow.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/bt_selector.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/bt_style.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/bt_style_disable.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/circle_shape.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/disable_btn_style.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/enter_anim.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/et_style.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/exit_anim.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/floatingbtn_style_disable.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/floatingbtn_style_enable.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/hint_selector.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_drop_down.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_drop_down_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_baseline_blur_effect.xml" value="0.1775" />
         <entry key="app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/ic_baseline_mic_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_mic_off.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_mic_off_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_baseline_videocam_off_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_mask_group.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_mic.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_mic_off_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_outline_mic_none_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_people.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_person.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/ic_recording_on.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_screen_share.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_video_camera_off.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/layout_nonselected.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/layout_selected.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/layout_style.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/list_style.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/rounded_corner.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/rounded_dialog.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/shape.xml" value="0.1765" />
         <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.1675485008818342" />
-        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.27309782608695654" />
+        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.23326133909287258" />
         <entry key="app/src/main/res/layout/activity_create_or_join.xml" value="0.27309782608695654" />
-        <entry key="app/src/main/res/layout/activity_join.xml" value="0.19791666666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_join.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_one_to_one_call.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/audio_device_list_layout.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/audio_device_list_view.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/chat_layout.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_create_meeting.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_createorjoin.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_join_meeting.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_meeting.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_name.xml" value="0.1408514492753623" />
         <entry key="app/src/main/res/layout/item_message_list.xml" value="0.27309782608695654" />
+        <entry key="app/src/main/res/layout/item_participant_linear_view.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_participant_list_layout.xml" value="0.1408514492753623" />
         <entry key="app/src/main/res/layout/item_remote_peer.xml" value="0.2595108695652174" />
+        <entry key="app/src/main/res/layout/joinmeeting_progress_layout.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/layout_participants_list_view.xml" value="0.21" />
+        <entry key="app/src/main/res/layout/leave_options_layout_view.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/leave_options_list_layout.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/leave_options_list_view.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/more_options_dialog.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/more_options_list_layout.xml" value="0.13949275362318841" />
+        <entry key="app/src/main/res/layout/more_options_list_view.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/progress_layout.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/recording_indictor.xml" value="0.1408514492753623" />
       </map>
     </option>
   </component>

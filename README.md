@@ -12,6 +12,46 @@ Check out demo [here](https://videosdk.live/prebuilt/)
 
 📱 Download the Sample Android app here: https://appdistribution.firebase.google.com/pub/i/0f3ac650239a944b
 
+## Features
+
+- [x] Video conferencing with real-time video and audio
+- [x] Enable/disable camera
+- [x] Mute/unmute mic
+- [x] Switch between front and back camera
+- [x] Change Audio Device
+- [x] Screen share
+- [x] Chat
+- [x] [External call detection](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/external-call-detection)
+
+## App Behavior with Different Room Types
+
+**One-to-One** - The One-to-One Call room type allows 2 participants to join a room in the app.
+
+## Structure of Project
+
+#### Create or join Meeting
+
+- *NetworkUtils.java* - `NetworkUtils.java` class is used to call the api for create and join the meeting.
+- *CreateOrJoinFragment.java* - `CreateOrJoinFragment.java` fragement is used to ask participant whether he/she want to create a new meeting or join a meeting.
+- *CreateMeetingFragment.java* - `CreateMeetingFragment.java` fragement is used to ask name of the participant and to create new meeting.
+- *JoinMeetingFragment.java* - `JoinMeetingFragment.java` fragement is used to ask name of participant,meetingId and to join meeting.
+- *CreateOrJoinActivity.java* - `CreateOrJoinActivity.java` activity is used to ask permissions to the partcipant,and to toggle webcam and mic.
+
+#### PartcipantList
+
+- Layout files used to show ParticipantList are `layout_participants_list_view.xml` and `item_participant_list_layout.xml`
+- *ParticipantListAdapter.java* - `ParticipantListAdapter.java` class is used to bind participants data with a `RecyclerView`.
+
+#### Dialogs
+
+- **MoreOptions**: `MoreOptionsListAdapter.java` class,`ListItem.java` class and `more_options_list_layout.xml` layout file is used to show `MoreOptions` dialog.
+- **AudioDeviceList**: `MoreOptionsListAdapter.java` class,`ListItem.java` class and `maudio_device_list_layout.xml` layout file is used to show `AudioDeviceList` dialog.
+- **LeaveOptions**: `LeaveOptionListAdapter.java` class,`ListItem.java` class and `leave_options_list_layout.xml` layout file is used to show `LeaveOptions` dialog.
+
+#### One-to-One Call Room
+
+- `OneToOneCall_Activity.java` activity is main activity for One-to-One call.
+
 ## Steps to Integrate
 ### Prerequisites
 - Development environment requirements:
@@ -34,7 +74,7 @@ auth_token= "TEMPORARY-TOKEN"
 ```
 
 ### Step 3: Run the sample app
-Run the android app with **Shift+F10** or the ** ▶ Run ** from toolbar. 
+Run the android app with **Shift+F10** or the ** ▶ Run ** from toolbar.
 
 ## Examples
 - [Prebuilt SDK Examples](https://github.com/videosdk-live/videosdk-rtc-prebuilt-examples)

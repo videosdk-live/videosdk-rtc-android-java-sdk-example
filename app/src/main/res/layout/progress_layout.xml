@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/colorPrimaryVariant"
+    android:orientation="vertical"
+    android:id="@+id/layout_progress"
+    android:theme="@style/Theme.VideoSDKRTC">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="OOPS !!"
+        android:textColor="@color/white"
+        android:textFontWeight="700"
+        android:textSize="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="Maximum 2 participants can join this meeting."
+        android:textColor="@color/white"
+        android:textFontWeight="700"
+        android:textSize="14dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="Please try again later"
+        android:textColor="#9A9FA5"
+        android:textFontWeight="500"
+        android:textSize="12dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_gravity="center"
+         android:id="@+id/leaveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Ok"
+        android:textFontWeight="700"
+        android:textSize="16dp"
+        android:fontFamily="sans-serif-light"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp"
+        android:layout_marginTop="15dp"/>
+
+
+</LinearLayout>
