@@ -431,16 +431,6 @@ public class OneToOneCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onMicRequested(String participantId, MicRequestListener listener) {
-            showMicRequestDialog(listener);
-        }
-
-        @Override
-        public void onWebcamRequested(String participantId, WebcamRequestListener listener) {
-            showWebcamRequestDialog(listener);
-        }
-
-        @Override
         public void onExternalCallStarted() {
             Toast.makeText(OneToOneCallActivity.this, "onExternalCallStarted", Toast.LENGTH_SHORT).show();
         }
@@ -840,24 +830,6 @@ public class OneToOneCallActivity extends AppCompatActivity {
         } else {
             meeting.stopRecording();
         }
-    }
-
-    private void showMicRequestDialog(MicRequestListener listener) {
-        new MaterialAlertDialogBuilder(OneToOneCallActivity.this)
-                .setTitle("Mic requested")
-                .setMessage("Host is asking you to unmute your mic, do you want to allow ?")
-                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
-                .setNegativeButton("No", (dialog, which) -> listener.reject())
-                .show();
-    }
-
-    private void showWebcamRequestDialog(WebcamRequestListener listener) {
-        new MaterialAlertDialogBuilder(OneToOneCallActivity.this)
-                .setTitle("Webcam requested")
-                .setMessage("Host is asking you to enable your webcam, do you want to allow ?")
-                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
-                .setNegativeButton("No", (dialog, which) -> listener.reject())
-                .show();
     }
 
     @Override
