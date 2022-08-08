@@ -87,14 +87,14 @@ public class NetworkUtils {
 
     public void createMeeting(String token, ResponseListener meetingEventListener) {
 
-        AndroidNetworking.post("https://api.videosdk.live/v1/meetings")
+        AndroidNetworking.post("https://api.videosdk.live/v2/rooms")
                 .addHeaders("Authorization", token)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            final String meetingId = response.getString("meetingId");
+                            final String meetingId = response.getString("roomId");
                             meetingEventListener.onResponse(meetingId);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -110,15 +110,15 @@ public class NetworkUtils {
                 });
     }
 
-    public void joinMeeting(String token, String meetingId, ResponseListener meetingEventListener) {
+    public void joinMeeting(String token, String roomId, ResponseListener meetingEventListener) {
 
-        AndroidNetworking.post("https://api.videosdk.live/v1/meetings/" + meetingId)
+        AndroidNetworking.get("https://api.videosdk.live/v2/rooms/validate/" + roomId)
                 .addHeaders("Authorization", token)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        meetingEventListener.onResponse(meetingId);
+                        meetingEventListener.onResponse(roomId);
                     }
 
                     @Override
