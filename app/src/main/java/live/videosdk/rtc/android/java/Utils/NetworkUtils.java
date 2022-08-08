@@ -1,9 +1,8 @@
-package live.videosdk.rtc.android.java;
+package live.videosdk.rtc.android.java.Utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -12,6 +11,9 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import live.videosdk.rtc.android.java.BuildConfig;
+import live.videosdk.rtc.android.java.Listener.ResponseListener;
 
 public class NetworkUtils {
 
@@ -48,7 +50,6 @@ public class NetworkUtils {
         }
 
         if (!isNullOrEmpty(AUTH_TOKEN)) {
-            Log.d("TAG", "getToken: ");
             responseListener.onResponse(AUTH_TOKEN);
             return;
         }
@@ -93,7 +94,7 @@ public class NetworkUtils {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                                final String meetingId = response.getString("meetingId");
+                            final String meetingId = response.getString("meetingId");
                             meetingEventListener.onResponse(meetingId);
                         } catch (Exception e) {
                             e.printStackTrace();

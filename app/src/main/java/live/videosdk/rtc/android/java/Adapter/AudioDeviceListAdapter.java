@@ -2,7 +2,6 @@ package live.videosdk.rtc.android.java.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-import live.videosdk.rtc.android.java.ListItem;
+import live.videosdk.rtc.android.java.Modal.ListItem;
 import live.videosdk.rtc.android.java.R;
 
 public class AudioDeviceListAdapter extends ArrayAdapter<ListItem> {
@@ -45,7 +44,6 @@ public class AudioDeviceListAdapter extends ArrayAdapter<ListItem> {
 
     @Override
     public int getCount() {
-        Log.d("TAG", "getCount: Size " + audioDeviceList.size());
         return audioDeviceList.size();
     }
 }

@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-import live.videosdk.rtc.android.java.ListItem;
+import live.videosdk.rtc.android.java.Modal.ListItem;
 import live.videosdk.rtc.android.java.R;
 
 public class LeaveOptionListAdapter extends ArrayAdapter<ListItem> {

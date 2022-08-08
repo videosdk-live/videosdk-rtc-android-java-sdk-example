@@ -5,62 +5,57 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:layout_marginBottom="10dp"
     android:background="@drawable/list_style"
-    android:paddingLeft="15dp"
-    android:paddingTop="12dp"
-    android:paddingRight="15dp"
-    android:paddingBottom="12dp"
     android:gravity="center"
-    android:layout_marginBottom="10dp">
-
-
-    <ImageView
-        android:id="@+id/img_Participant"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_person_style" />
+    android:orientation="horizontal"
+    android:padding="12dp">
 
     <TextView
-        android:paddingVertical="8dp"
-        android:paddingLeft="15dp"
+        android:id="@+id/participantNameFirstLetter"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_shape"
+        android:gravity="center"
+        android:text="A"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="18dp"
+        android:textAllCaps="true"/>
+
+    <TextView
         android:id="@+id/participant_Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/img_Participant"
+        android:layout_weight="1"
+        android:paddingVertical="8dp"
+        android:paddingLeft="10dp"
         android:textColor="@color/white"
-        android:textSize="17dp"
         android:textFontWeight="700"
-        android:layout_weight="1"/>
+        android:textSize="17dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageView
             android:id="@+id/mic_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_mic_off"
-            app:backgroundTint="@color/md_red_400"
-            app:fabSize="mini"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginRight="15dp"
-            app:elevation="0dp"
-            app:borderWidth="2dp"
-            app:pressedTranslationZ="0dp"/>
+            android:src="@drawable/ic_mic_off_style" />
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageView
             android:id="@+id/cam_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_video_camera_off"
-            app:backgroundTint="@color/md_red_400"
-            app:fabSize="mini"
-            app:elevation="0dp"
-            app:borderWidth="2dp"
-            app:pressedTranslationZ="0dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_webcam_off_style" />
 
     </LinearLayout>
 

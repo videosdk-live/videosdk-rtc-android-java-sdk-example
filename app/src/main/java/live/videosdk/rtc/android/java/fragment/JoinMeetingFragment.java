@@ -16,11 +16,11 @@ import androidx.annotation.RequiresApi;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import live.videosdk.rtc.android.java.CreateOrJoinActivity;
-import live.videosdk.rtc.android.java.OneToOneCall_Activity;
-import live.videosdk.rtc.android.java.NetworkUtils;
+import live.videosdk.rtc.android.java.Activity.CreateOrJoinActivity;
+import live.videosdk.rtc.android.java.Activity.OneToOneCallActivity;
+import live.videosdk.rtc.android.java.Utils.NetworkUtils;
 import live.videosdk.rtc.android.java.R;
-import live.videosdk.rtc.android.java.ResponseListener;
+import live.videosdk.rtc.android.java.Listener.ResponseListener;
 
 
 public class JoinMeetingFragment extends Fragment {
@@ -62,13 +62,14 @@ public class JoinMeetingFragment extends Fragment {
                     networkUtils.getToken(token -> networkUtils.joinMeeting(token, etMeetingId.getText().toString().trim(), new ResponseListener() {
                         @Override
                         public void onResponse(String meetingId) {
-                            Intent intent = new Intent((CreateOrJoinActivity) getActivity(), OneToOneCall_Activity.class);
+                            Intent intent = new Intent((CreateOrJoinActivity) getActivity(), OneToOneCallActivity.class);
                             intent.putExtra("token", token);
                             intent.putExtra("meetingId", meetingId);
                             intent.putExtra("webcamEnabled", ((CreateOrJoinActivity) getActivity()).isWebcamEnabled());
                             intent.putExtra("micEnabled", ((CreateOrJoinActivity) getActivity()).isMicEnabled());
                             intent.putExtra("participantName", etName.getText().toString());
                             startActivity(intent);
+                            ((CreateOrJoinActivity) getActivity()).finish();
                         }
                     }));
                 } else {

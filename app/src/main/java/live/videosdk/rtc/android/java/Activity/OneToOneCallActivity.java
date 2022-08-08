@@ -1,4 +1,4 @@
-package live.videosdk.rtc.android.java;
+package live.videosdk.rtc.android.java.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -79,6 +80,10 @@ import live.videosdk.rtc.android.java.Adapter.LeaveOptionListAdapter;
 import live.videosdk.rtc.android.java.Adapter.MessageAdapter;
 import live.videosdk.rtc.android.java.Adapter.MoreOptionsListAdapter;
 import live.videosdk.rtc.android.java.Adapter.ParticipantListAdapter;
+import live.videosdk.rtc.android.java.Modal.ListItem;
+import live.videosdk.rtc.android.java.R;
+import live.videosdk.rtc.android.java.Roboto_font;
+import live.videosdk.rtc.android.java.Utils.HelperClass;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
 import live.videosdk.rtc.android.lib.JsonUtils;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
@@ -88,10 +93,9 @@ import live.videosdk.rtc.android.listeners.MicRequestListener;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 import live.videosdk.rtc.android.listeners.PubSubMessageListener;
 import live.videosdk.rtc.android.listeners.WebcamRequestListener;
-import live.videosdk.rtc.android.model.LivestreamOutput;
 import live.videosdk.rtc.android.model.PubSubPublishOptions;
 
-public class OneToOneCall_Activity extends AppCompatActivity {
+public class OneToOneCallActivity extends AppCompatActivity {
     private static Meeting meeting;
     private SurfaceViewRenderer svrLocal;
     private SurfaceViewRenderer svrParticipant;
@@ -101,13 +105,13 @@ public class OneToOneCall_Activity extends AppCompatActivity {
     private CardView localCard, participantCard;
     private LinearLayout micLayout;
     ArrayList<Participant> participants;
+    private TextView txtLocalParticipantName, txtParticipantName;
 
     private VideoTrack participantTrack = null;
 
     private boolean micEnabled = true;
     private boolean webcamEnabled = true;
     private boolean recording = false;
-    private boolean livestreaming = false;
     private boolean localScreenShare = false;
     private boolean isNetworkAvailable = true;
 
@@ -144,6 +148,9 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         localCard = findViewById(R.id.LocalCard);
         participantCard = findViewById(R.id.ParticipantCard);
 
+        txtLocalParticipantName = findViewById(R.id.txtLocalParticipantName);
+        txtParticipantName = findViewById(R.id.txtParticipantName);
+
         svrLocal = findViewById(R.id.svrLocal);
         svrLocal.init(PeerConnectionUtils.getEglContext(), null);
 
@@ -159,10 +166,12 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         micEnabled = getIntent().getBooleanExtra("micEnabled", true);
         webcamEnabled = getIntent().getBooleanExtra("webcamEnabled", true);
 
-        String participantName = getIntent().getStringExtra("paticipantName");
+        String participantName = getIntent().getStringExtra("participantName");
         if (participantName == null) {
             participantName = "John Doe";
         }
+        txtLocalParticipantName.setText(participantName.substring(0, 1));
+
 
         //
         toggleMicIcon();
@@ -191,7 +200,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
 
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
-                OneToOneCall_Activity.this, meetingId, participantName,
+                OneToOneCallActivity.this, meetingId, participantName,
                 micEnabled, webcamEnabled, null, customTracks
         );
 
@@ -257,14 +266,14 @@ public class OneToOneCall_Activity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void toggleMicIcon() {
         if (micEnabled) {
-            btnMic.setImageResource(R.drawable.ic_mic);
+            btnMic.setImageResource(R.drawable.ic_mic_on);
             btnAudioSelection.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
-            micLayout.setBackground(ContextCompat.getDrawable(OneToOneCall_Activity.this, R.drawable.layout_selected));
+            micLayout.setBackground(ContextCompat.getDrawable(OneToOneCallActivity.this, R.drawable.layout_selected));
         } else {
             btnMic.setImageResource(R.drawable.ic_mic_off_24);
             btnAudioSelection.setImageResource(R.drawable.ic_baseline_arrow_drop_down);
             micLayout.setBackgroundColor(Color.WHITE);
-            micLayout.setBackground(ContextCompat.getDrawable(OneToOneCall_Activity.this, R.drawable.layout_nonselected));
+            micLayout.setBackground(ContextCompat.getDrawable(OneToOneCallActivity.this, R.drawable.layout_nonselected));
         }
     }
 
@@ -293,10 +302,6 @@ public class OneToOneCall_Activity extends AppCompatActivity {
     private final MeetingEventListener meetingEventListener = new MeetingEventListener() {
         @Override
         public void onMeetingJoined() {
-            Log.d("#meeting", "onMeetingJoined()");
-
-            Log.d("TAG", "onMeetingJoined: " + meeting.getParticipants().size());
-
             //hide progress when meetingJoined
             HelperClass.hideProgress(getWindow().getDecorView().getRootView());
 
@@ -328,7 +333,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (!isDestroyed())
-                            new MaterialAlertDialogBuilder(OneToOneCall_Activity.this)
+                            new MaterialAlertDialogBuilder(OneToOneCallActivity.this)
                                     .setTitle("Meeting Left")
                                     .setMessage("Demo app limits meeting to 10 Minutes")
                                     .setCancelable(false)
@@ -344,13 +349,12 @@ public class OneToOneCall_Activity extends AppCompatActivity {
                 View progressLayout = LayoutInflater.from(getApplicationContext()).inflate(R.layout.progress_layout, findViewById(R.id.layout_progress));
 
 
-                if (!((Activity) OneToOneCall_Activity.this).isFinishing())
+                if (!((Activity) OneToOneCallActivity.this).isFinishing())
                     HelperClass.checkParticipantSize(getWindow().getDecorView().getRootView(), progressLayout);
 
                 progressLayout.findViewById(R.id.leaveBtn).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("TAG", "onClick: ");
                         meeting.leave();
                     }
                 });
@@ -363,7 +367,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
             Log.d("#meeting", "onMeetingLeft()");
             meeting = null;
             if (!isDestroyed()) {
-                Intent intents = new Intent(OneToOneCall_Activity.this, CreateOrJoinActivity.class);
+                Intent intents = new Intent(OneToOneCallActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intents);
@@ -375,8 +379,9 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         public void onParticipantJoined(Participant participant) {
             if (meeting.getParticipants().size() <= 1) {
                 showParticipantCard();
+                txtParticipantName.setText(participant.getDisplayName().substring(0, 1));
                 participant.addEventListener(participantEventListener);
-                Toast.makeText(OneToOneCall_Activity.this, participant.getDisplayName() + " joined",
+                Toast.makeText(OneToOneCallActivity.this, participant.getDisplayName() + " joined",
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -397,7 +402,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
                 svrParticipant.setVisibility(View.VISIBLE);
 
             }
-            Toast.makeText(OneToOneCall_Activity.this, participant.getDisplayName() + " left",
+            Toast.makeText(OneToOneCallActivity.this, participant.getDisplayName() + " left",
                     Toast.LENGTH_SHORT).show();
         }
 
@@ -411,7 +416,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
             recording = true;
 
             (findViewById(R.id.recordIcon)).setVisibility(View.VISIBLE);
-            Toast.makeText(OneToOneCall_Activity.this, "Recording started",
+            Toast.makeText(OneToOneCallActivity.this, "Recording started",
                     Toast.LENGTH_SHORT).show();
         }
 
@@ -421,21 +426,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
 
             (findViewById(R.id.recordIcon)).setVisibility(View.GONE);
 
-            Toast.makeText(OneToOneCall_Activity.this, "Recording stopped",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onLivestreamStarted() {
-            livestreaming = true;
-            Toast.makeText(OneToOneCall_Activity.this, "Livestream started",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onLivestreamStopped() {
-            livestreaming = false;
-            Toast.makeText(OneToOneCall_Activity.this, "Livestream stopped",
+            Toast.makeText(OneToOneCallActivity.this, "Recording stopped",
                     Toast.LENGTH_SHORT).show();
         }
 
@@ -451,7 +442,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
 
         @Override
         public void onExternalCallStarted() {
-            Toast.makeText(OneToOneCall_Activity.this, "onExternalCallStarted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OneToOneCallActivity.this, "onExternalCallStarted", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -475,6 +466,12 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         ViewGroup.MarginLayoutParams cardViewMarginParams = (ViewGroup.MarginLayoutParams) localCard.getLayoutParams();
         cardViewMarginParams.setMargins(30, 0, 50, 50);
         localCard.requestLayout();
+        txtLocalParticipantName.setLayoutParams(new FrameLayout.LayoutParams(120, 120, Gravity.CENTER));
+        txtLocalParticipantName.setTextSize(24);
+        txtLocalParticipantName.setGravity(Gravity.CENTER);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            txtLocalParticipantName.setForegroundGravity(Gravity.CENTER);
+        }
         participantCard.setVisibility(View.VISIBLE);
     }
 
@@ -483,6 +480,12 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         ViewGroup.MarginLayoutParams cardViewMarginParams = (ViewGroup.MarginLayoutParams) localCard.getLayoutParams();
         cardViewMarginParams.setMargins(30, 30, 30, 30);
         localCard.requestLayout();
+        txtLocalParticipantName.setLayoutParams(new FrameLayout.LayoutParams(220, 220, Gravity.CENTER));
+        txtLocalParticipantName.setTextSize(40);
+        txtLocalParticipantName.setGravity(Gravity.CENTER);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            txtLocalParticipantName.setForegroundGravity(Gravity.CENTER);
+        }
         participantCard.setVisibility(View.GONE);
     }
 
@@ -503,7 +506,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         if (requestCode != CAPTURE_PERMISSION_REQUEST_CODE)
             return;
         if (resultCode != Activity.RESULT_OK) {
-            Toast.makeText(OneToOneCall_Activity.this, "You didn't give permission to capture the screen.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OneToOneCallActivity.this, "You didn't give permission to capture the screen.", Toast.LENGTH_SHORT).show();
             localScreenShare = false;
             return;
         }
@@ -597,7 +600,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         ClipData clip = ClipData.newPlainText("Copied text", text);
         clipboard.setPrimaryClip(clip);
 
-        Toast.makeText(OneToOneCall_Activity.this, "Copied to clipboard!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(OneToOneCallActivity.this, "Copied to clipboard!", Toast.LENGTH_SHORT).show();
     }
 
     private void toggleMic() {
@@ -672,14 +675,14 @@ public class OneToOneCall_Activity extends AppCompatActivity {
 
     private void showLeaveOrEndDialog() {
         ArrayList<ListItem> OptionsArrayList = new ArrayList<>();
-        ListItem leaveMeeting = new ListItem("Leave", "Only you will leave the call", AppCompatResources.getDrawable(OneToOneCall_Activity.this, R.drawable.ic_leave));
-        ListItem endMeeting = new ListItem("End", "End call for all the participants", AppCompatResources.getDrawable(OneToOneCall_Activity.this, R.drawable.ic_end_meeting));
+        ListItem leaveMeeting = new ListItem("Leave", "Only you will leave the call", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_leave));
+        ListItem endMeeting = new ListItem("End", "End call for all the participants", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_end_meeting));
 
         OptionsArrayList.add(leaveMeeting);
         OptionsArrayList.add(endMeeting);
 
-        ArrayAdapter arrayAdapter = new LeaveOptionListAdapter(OneToOneCall_Activity.this, R.layout.leave_options_list_layout, OptionsArrayList);
-        MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(OneToOneCall_Activity.this, R.style.AlertDialogCustom)
+        ArrayAdapter arrayAdapter = new LeaveOptionListAdapter(OneToOneCallActivity.this, R.layout.leave_options_list_layout, OptionsArrayList);
+        MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(OneToOneCallActivity.this, R.style.AlertDialogCustom)
                 .setAdapter(arrayAdapter, (dialog, which) -> {
                     switch (which) {
                         case 0: {
@@ -698,7 +701,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         ListView listView = alertDialog.getListView();
         listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
         listView.setFooterDividersEnabled(false);
-        listView.addFooterView(new View(OneToOneCall_Activity.this));
+        listView.addFooterView(new View(OneToOneCallActivity.this));
         listView.setDividerHeight(2);
 
         WindowManager.LayoutParams wmlp = alertDialog.getWindow().getAttributes();
@@ -727,9 +730,9 @@ public class OneToOneCall_Activity extends AppCompatActivity {
             audioDeviceList.add(audioDeviceListItem);
         }
 
-        ArrayAdapter arrayAdapter = new AudioDeviceListAdapter(OneToOneCall_Activity.this, R.layout.audio_device_list_layout, audioDeviceList);
+        ArrayAdapter arrayAdapter = new AudioDeviceListAdapter(OneToOneCallActivity.this, R.layout.audio_device_list_layout, audioDeviceList);
 
-        MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(OneToOneCall_Activity.this, R.style.AlertDialogCustom)
+        MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(OneToOneCallActivity.this, R.style.AlertDialogCustom)
                 .setAdapter(arrayAdapter, (dialog, which) -> {
                     AppRTCAudioManager.AudioDevice audioDevice = null;
                     switch (audioDeviceList.get(which).getItemName()) {
@@ -754,7 +757,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         ListView listView = alertDialog.getListView();
         listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
         listView.setFooterDividersEnabled(false);
-        listView.addFooterView(new View(OneToOneCall_Activity.this));
+        listView.addFooterView(new View(OneToOneCallActivity.this));
         listView.setDividerHeight(2);
 
         WindowManager.LayoutParams wmlp = alertDialog.getWindow().getAttributes();
@@ -772,11 +775,11 @@ public class OneToOneCall_Activity extends AppCompatActivity {
     private void showMoreOptionsDialog() {
         int participantSize = meeting.getParticipants().size() + 1;
         ArrayList<ListItem> moreOptionsArrayList = new ArrayList<>();
-        ListItem start_screen_share = new ListItem("Share screen", AppCompatResources.getDrawable(OneToOneCall_Activity.this, R.drawable.ic_screen_share));
-        ListItem stop_screen_share = new ListItem("Stop screen share", AppCompatResources.getDrawable(OneToOneCall_Activity.this, R.drawable.ic_screen_share));
-        ListItem start_recording = new ListItem("Start recording", AppCompatResources.getDrawable(OneToOneCall_Activity.this, R.drawable.ic_recording));
-        ListItem stop_recording = new ListItem("Stop recording", AppCompatResources.getDrawable(OneToOneCall_Activity.this, R.drawable.ic_recording));
-        ListItem participant_list = new ListItem("Participants (" + participantSize + ")", AppCompatResources.getDrawable(OneToOneCall_Activity.this, R.drawable.ic_people));
+        ListItem start_screen_share = new ListItem("Share screen", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_screen_share));
+        ListItem stop_screen_share = new ListItem("Stop screen share", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_screen_share));
+        ListItem start_recording = new ListItem("Start recording", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_recording));
+        ListItem stop_recording = new ListItem("Stop recording", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_recording));
+        ListItem participant_list = new ListItem("Participants (" + participantSize + ")", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_people));
         if (localScreenShare) {
             moreOptionsArrayList.add(stop_screen_share);
         } else {
@@ -793,8 +796,8 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         moreOptionsArrayList.add(participant_list);
 
 
-        ArrayAdapter arrayAdapter = new MoreOptionsListAdapter(OneToOneCall_Activity.this, R.layout.more_options_list_layout, moreOptionsArrayList);
-        MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(OneToOneCall_Activity.this, R.style.AlertDialogCustom)
+        ArrayAdapter arrayAdapter = new MoreOptionsListAdapter(OneToOneCallActivity.this, R.layout.more_options_list_layout, moreOptionsArrayList);
+        MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(OneToOneCallActivity.this, R.style.AlertDialogCustom)
                 .setAdapter(arrayAdapter, (dialog, which) -> {
                     switch (which) {
                         case 0: {
@@ -817,7 +820,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         ListView listView = alertDialog.getListView();
         listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
         listView.setFooterDividersEnabled(false);
-        listView.addFooterView(new View(OneToOneCall_Activity.this));
+        listView.addFooterView(new View(OneToOneCallActivity.this));
         listView.setDividerHeight(2);
 
         WindowManager.LayoutParams wmlp = alertDialog.getWindow().getAttributes();
@@ -839,23 +842,8 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         }
     }
 
-    private void toggleLivestreaming() {
-        if (!livestreaming) {
-            if (YOUTUBE_RTMP_URL == null || YOUTUBE_RTMP_STREAM_KEY == null) {
-                throw new Error("RTMP url or stream key missing.");
-            }
-
-            List<LivestreamOutput> outputs = new ArrayList<>();
-            outputs.add(new LivestreamOutput(YOUTUBE_RTMP_URL, YOUTUBE_RTMP_STREAM_KEY));
-
-            meeting.startLivestream(outputs);
-        } else {
-            meeting.stopLivestream();
-        }
-    }
-
     private void showMicRequestDialog(MicRequestListener listener) {
-        new MaterialAlertDialogBuilder(OneToOneCall_Activity.this)
+        new MaterialAlertDialogBuilder(OneToOneCallActivity.this)
                 .setTitle("Mic requested")
                 .setMessage("Host is asking you to unmute your mic, do you want to allow ?")
                 .setPositiveButton("Yes", (dialog, which) -> listener.accept())
@@ -864,7 +852,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
     }
 
     private void showWebcamRequestDialog(WebcamRequestListener listener) {
-        new MaterialAlertDialogBuilder(OneToOneCall_Activity.this)
+        new MaterialAlertDialogBuilder(OneToOneCallActivity.this)
                 .setTitle("Webcam requested")
                 .setMessage("Host is asking you to enable your webcam, do you want to allow ?")
                 .setPositiveButton("Yes", (dialog, which) -> listener.accept())
@@ -924,19 +912,13 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         } else {
 
             if (participantTrack != null) {
-                Log.d("TAG", "onTrackChange: " + participantTrack.state().toString());
-
                 svrParticipant.setVisibility(View.VISIBLE);
-                Log.d("TAG", "participant onStreamEnabled: participantTrack " + participantTrack.state().toString());
-
                 participantTrack.addSink(svrParticipant);
             }
             if (localTrack != null) {
-                Log.d("TAG", "onTrackChange: " + localTrack.state().toString());
                 svrLocal.setVisibility(View.VISIBLE);
                 svrLocal.setZOrderMediaOverlay(true);
                 localTrack.addSink(svrLocal);
-                Log.d("TAG", "local onStreamEnabled: localTrack " + localTrack.state().toString());
                 ((View) localCard).bringToFront();
 
             }
@@ -948,21 +930,16 @@ public class OneToOneCall_Activity extends AppCompatActivity {
 
     private void removeTrack(VideoTrack track, Boolean isLocal) {
         if (screenshareTrack == null) {
-
-            Log.d("TAG", "removeTrack: " + isLocal);
             if (isLocal) {
-                Log.d("TAG", "removeTrack: islocal " + isLocal);
                 if (track != null) track.removeSink(svrLocal);
                 svrLocal.clearImage();
                 svrLocal.setVisibility(View.GONE);
             } else {
-                Log.d("TAG", "removeTrack: islocal === " + isLocal);
                 if (track != null) track.removeSink(svrParticipant);
                 svrParticipant.clearImage();
                 svrParticipant.setVisibility(View.GONE);
             }
         } else {
-            Log.d("TAG", "removeTrack: ");
             if (!isLocal) {
                 if (track != null) track.removeSink(svrLocal);
                 svrLocal.clearImage();
@@ -1009,7 +986,6 @@ public class OneToOneCall_Activity extends AppCompatActivity {
                 if (stream.getKind().equalsIgnoreCase("video")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     localTrack = track;
-                    Log.d("TAG", "local onStreamEnabled: " + track.state().toString());
                     onTrackChange();
                     webcamEnabled = true;
                     toggleWebcamIcon();
@@ -1064,7 +1040,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
         View v3 = LayoutInflater.from(getApplicationContext()).inflate(R.layout.layout_participants_list_view, findViewById(R.id.layout_participants));
         bottomSheetDialog.setContentView(v3);
         participantsListView = v3.findViewById(R.id.rvParticipantsLinearView);
-        ((TextView) v3.findViewById(R.id.participant_heading)).setTypeface(Roboto_font.getTypeFace(OneToOneCall_Activity.this));
+        ((TextView) v3.findViewById(R.id.participant_heading)).setTypeface(Roboto_font.getTypeFace(OneToOneCallActivity.this));
         close = v3.findViewById(R.id.ic_close);
         participantsListView.setMinimumHeight(getWindowHeight());
         bottomSheetDialog.show();
@@ -1084,7 +1060,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
     private int getWindowHeight() {
         // Calculate window height for fullscreen use
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        (OneToOneCall_Activity.this).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        (OneToOneCallActivity.this).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
     }
 
@@ -1120,7 +1096,6 @@ public class OneToOneCall_Activity extends AppCompatActivity {
             public void onStateChanged(@NonNull View bottomSheet,
                                        @BottomSheetBehavior.State int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    Log.d("TAG", "onStateChanged: ");
                     RelativeLayout.LayoutParams lp =
                             new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, getWindowHeight() / 2);
                     messageRcv.setLayoutParams(lp);
@@ -1200,7 +1175,7 @@ public class OneToOneCall_Activity extends AppCompatActivity {
                 meeting.pubSub.publish("CHAT", message, publishOptions);
                 etmessage.setText("");
             } else {
-                Toast.makeText(OneToOneCall_Activity.this, "Please Enter Message",
+                Toast.makeText(OneToOneCallActivity.this, "Please Enter Message",
                         Toast.LENGTH_SHORT).show();
             }
 

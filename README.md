@@ -50,7 +50,7 @@ Check out demo [here](https://videosdk.live/prebuilt/)
 
 #### One-to-One Call Room
 
-- `OneToOneCall_Activity.java` activity is main activity for One-to-One call.
+- `OneToOneCallActivity.java` activity is main activity for One-to-One call.
 
 ## Steps to Integrate
 ### Prerequisites

@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import live.videosdk.rtc.android.java.CreateOrJoinActivity;
+import live.videosdk.rtc.android.java.Activity.CreateOrJoinActivity;
 import live.videosdk.rtc.android.java.R;
 
 public class CreateOrJoinFragment extends Fragment {

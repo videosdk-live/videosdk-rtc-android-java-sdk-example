@@ -1,4 +1,4 @@
-package live.videosdk.rtc.android.java;
+package live.videosdk.rtc.android.java.Activity;
 
 import android.Manifest;
 import android.app.FragmentManager;
@@ -31,6 +31,7 @@ import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
 
+import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.fragment.CreateOrJoinFragment;
 import live.videosdk.rtc.android.java.fragment.JoinMeetingFragment;
 import live.videosdk.rtc.android.java.fragment.CreateMeetingFragment;
@@ -60,7 +61,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
             permissionsGranted = true;
 
             micEnabled = true;
-            btnMic.setImageResource(R.drawable.ic_mic);
+            btnMic.setImageResource(R.drawable.ic_mic_on);
             changeFloatingActionButtonLayout(btnMic, micEnabled);
 
             webcamEnabled = true;
@@ -217,7 +218,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
         }
         micEnabled = !micEnabled;
         if (micEnabled) {
-            btnMic.setImageResource(R.drawable.ic_mic);
+            btnMic.setImageResource(R.drawable.ic_mic_on);
         } else {
             btnMic.setImageResource(R.drawable.ic_mic_off);
         }

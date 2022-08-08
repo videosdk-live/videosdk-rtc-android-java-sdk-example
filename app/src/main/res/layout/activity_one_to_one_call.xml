@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".OneToOneCall_Activity">
+    tools:context=".Activity.OneToOneCallActivity">
 
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -24,11 +24,11 @@
 
             <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/recordIcon"
-                android:layout_width="80dp"
+                android:layout_width="50dp"
                 android:layout_height="60dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginRight="8dp"
                 android:src="@drawable/recording_icon"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txtMeetingId"
@@ -80,24 +80,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="12dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="3dp"
             android:layout_marginRight="12dp"
-            android:layout_marginBottom="4dp"
-            android:backgroundTint="@color/colorPrimaryVariant"
+            android:layout_marginBottom="3dp"
+            android:backgroundTint="#2B3034"
             android:visibility="gone"
             app:cardCornerRadius="8dp"
-            app:strokeColor="@color/colorPrimaryVariant">
+            app:strokeColor="#2B3034">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/txtParticipantName"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center"
-                android:background="#99000000"
-                android:contentDescription="@string/webcam_turned_off"
+                android:background="@drawable/circle_shape"
                 android:gravity="center"
-                android:padding="4dp"
-                android:src="@drawable/ic_video_camera_off"
-                app:tint="@color/white" />
+                android:text="A"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textFontWeight="500"
+                android:textSize="40dp"
+                android:textAllCaps="true"/>
 
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/svrParticipant"
@@ -107,28 +110,37 @@
 
         </androidx.cardview.widget.CardView>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/LocalCard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="3dp"
             android:backgroundTint="@color/colorPrimaryVariant"
             app:cardCornerRadius="8dp"
             app:strokeColor="@color/colorPrimaryVariant">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/txtLocalParticipantName"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center"
-                android:background="#99000000"
-                android:contentDescription="@string/webcam_turned_off"
+                android:background="@drawable/circle_shape"
                 android:gravity="center"
-                android:padding="4dp"
-                android:src="@drawable/ic_video_camera_off"
-                app:tint="@color/white" />
+                android:text="A"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textFontWeight="500"
+                android:textSize="40dp"
+                android:textAllCaps="true"/>
 
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/svrLocal"
@@ -144,6 +156,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
         android:gravity="center_horizontal"
         android:paddingVertical="8dp">
 
@@ -152,7 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/leave_meeting"
-            android:src="@drawable/ic_outline_call_end_24"
+            android:src="@drawable/ic_end_call"
             app:backgroundTint="@color/md_red_400"
             app:fabSize="normal"
             app:shapeAppearanceOverlay="@style/fab_square"
@@ -174,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@color/transparentColor"
-                android:src="@drawable/ic_mic" />
+                android:src="@drawable/ic_mic_on" />
 
             <ImageButton
                 android:id="@+id/btnAudioSelection"

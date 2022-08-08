@@ -2,18 +2,14 @@ package live.videosdk.rtc.android.java.Adapter;
 
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -27,7 +23,7 @@ import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 
 public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantListAdapter.ViewHolder> {
 
-    private ArrayList<Participant> participants=new ArrayList<>();
+    private ArrayList<Participant> participants = new ArrayList<>();
     private Context context;
 
     public ParticipantListAdapter(ArrayList<Participant> items, Meeting meeting, Context context) {
@@ -73,23 +69,22 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Participant participant = participants.get(position);
-        if(participants.get(position).isLocal()) {
-            holder.particpantName.setText("You");
-        }else{
-            holder.particpantName.setText(participants.get(position).getDisplayName());
+        if (participants.get(position).isLocal()) {
+            holder.participantName.setText("You");
+        } else {
+            holder.participantName.setText(participants.get(position).getDisplayName());
         }
+
+        holder.participantNameFirstLetter.setText(holder.participantName.getText().subSequence(0,1));
 
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
             Stream stream = entry.getValue();
             if (stream.getKind().equalsIgnoreCase("video")) {
-                Log.d("TAG", "onBindViewHolder: " + stream.getTrack().state().toString());
-                holder.camStatus.setImageResource(R.drawable.ic_video_camera);
-                holder.camStatus.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.divider_color)));
+                holder.camStatus.setImageResource(R.drawable.ic_webcam_on_style);
                 break;
-            } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                Log.d("TAG", "onBindViewHolder: " + stream.getTrack().state().toString());
-                holder.micStatus.setImageResource(R.drawable.ic_mic);
-                holder.micStatus.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.divider_color)));
+            }
+            if (stream.getKind().equalsIgnoreCase("audio")) {
+                holder.micStatus.setImageResource(R.drawable.ic_mic_on_style);
             }
         }
 
@@ -97,24 +92,20 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
             @Override
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
-                    holder.camStatus.setImageResource(R.drawable.ic_video_camera);
-                    holder.camStatus.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.divider_color)));
+                    holder.camStatus.setImageResource(R.drawable.ic_webcam_on_style);
                 }
                 if (stream.getKind().equalsIgnoreCase("audio")) {
-                    holder.micStatus.setImageResource(R.drawable.ic_mic);
-                    holder.micStatus.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.divider_color)));
+                    holder.micStatus.setImageResource(R.drawable.ic_mic_on_style);
                 }
             }
 
             @Override
             public void onStreamDisabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
-                    holder.camStatus.setImageResource(R.drawable.ic_video_camera_off);
-                    holder.camStatus.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.md_red_500)));
+                    holder.camStatus.setImageResource(R.drawable.ic_webcam_off_style);
                 }
                 if (stream.getKind().equalsIgnoreCase("audio")) {
-                    holder.micStatus.setImageResource(R.drawable.ic_mic_off);
-                    holder.micStatus.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.md_red_500)));
+                    holder.micStatus.setImageResource(R.drawable.ic_mic_off_style);
                 }
             }
         });
@@ -127,15 +118,18 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView particpantName;
-        FloatingActionButton micStatus, camStatus;
+        TextView participantName;
+        ImageView micStatus, camStatus;
+        TextView participantNameFirstLetter;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            particpantName = itemView.findViewById(R.id.participant_Name);
-            particpantName.setTypeface(Roboto_font.getTypeFace(particpantName.getContext()));
+            participantName = itemView.findViewById(R.id.participant_Name);
+            participantName.setTypeface(Roboto_font.getTypeFace(participantName.getContext()));
             micStatus = itemView.findViewById(R.id.mic_status);
             camStatus = itemView.findViewById(R.id.cam_status);
+            participantNameFirstLetter = itemView.findViewById(R.id.participantNameFirstLetter);
         }
     }
 

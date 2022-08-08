@@ -1,4 +1,4 @@
-package live.videosdk.rtc.android.java;
+package live.videosdk.rtc.android.java.Modal;
 
 import android.graphics.drawable.Drawable;
 

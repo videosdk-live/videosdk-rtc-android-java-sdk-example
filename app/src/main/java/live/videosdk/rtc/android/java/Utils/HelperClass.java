@@ -1,11 +1,6 @@
-package live.videosdk.rtc.android.java;
+package live.videosdk.rtc.android.java.Utils;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Color;
-import android.text.Layout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +11,15 @@ import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 
+import live.videosdk.rtc.android.java.R;
+import live.videosdk.rtc.android.java.Roboto_font;
+
 public class HelperClass {
 
     private static Dialog progressDialog;
 
     public static void setSnackNarStyle(View snackbarView) {
-        snackbarView.setBackgroundColor(Color.WHITE);
+//        snackbarView.setBackgroundColor(Color.WHITE);
 
         int snackbarTextId = com.google.android.material.R.id.snackbar_text;
         TextView textView = (TextView) snackbarView.findViewById(snackbarTextId);
@@ -32,8 +30,8 @@ public class HelperClass {
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setLayoutParams(params);
 
-        textView.setTextColor(Color.BLACK);
-        textView.setTextSize(15);
+//        textView.setTextColor(Color.BLACK);
+//        textView.setTextSize(15);
         textView.setTypeface(Roboto_font.getTypeFaceMedium(snackbarView.getContext()));
 
     }

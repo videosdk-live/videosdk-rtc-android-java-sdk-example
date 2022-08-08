@@ -12,27 +12,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="15dp"
-        android:paddingBottom="15dp">
+        android:paddingBottom="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="2dp">
 
         <TextView
             android:id="@+id/participant_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="25dp"
             android:text="Chat"
             android:textColor="@color/white"
             android:textFontWeight="700"
-            android:textSize="18dp"
+            android:textSize="20dp"
             tools:ignore="RelativeOverlap" />
 
         <ImageView
             android:id="@+id/ic_close"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentEnd="true"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="13dp"
             android:src="@drawable/ic_baseline_close_24" />
 
 
@@ -42,7 +43,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:minHeight="22dp">
+        android:minHeight="22dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messageRcv"
@@ -54,10 +57,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/list_style"
-        android:paddingVertical="7dp">
+        android:paddingVertical="7dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="wrap_content"
