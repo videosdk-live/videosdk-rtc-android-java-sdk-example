@@ -1,6 +1,7 @@
 package live.videosdk.rtc.android.java.Utils;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,9 @@ public class HelperClass {
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setLayoutParams(params);
 
-//        textView.setTextColor(Color.BLACK);
-//        textView.setTextSize(15);
-        textView.setTypeface(Roboto_font.getTypeFaceMedium(snackbarView.getContext()));
+        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(16);
+        textView.setTypeface(Roboto_font.getTypeFace(snackbarView.getContext()));
 
     }
 

@@ -32,21 +32,34 @@ Check out demo [here](https://videosdk.live/prebuilt/)
 #### Create or join Meeting
 
 - *NetworkUtils.java* - `NetworkUtils.java` class is used to call the api for create and join the meeting.
-- *CreateOrJoinFragment.java* - `CreateOrJoinFragment.java` fragement is used to ask participant whether he/she want to create a new meeting or join a meeting.
-- *CreateMeetingFragment.java* - `CreateMeetingFragment.java` fragement is used to ask name of the participant and to create new meeting.
-- *JoinMeetingFragment.java* - `JoinMeetingFragment.java` fragement is used to ask name of participant,meetingId and to join meeting.
-- *CreateOrJoinActivity.java* - `CreateOrJoinActivity.java` activity is used to ask permissions to the partcipant,and to toggle webcam and mic.
+- *CreateOrJoinFragment.java* - `CreateOrJoinFragment.java` fragment will include
+  - **Create Meeting Button** - This button will navigate to `CreateMeetingFragment`.
+  - **Join Meeting Button** - This button will navigate to `JoinMeetingFragment`.
+- *CreateMeetingFragment.java* - `CreateMeetingFragment.java` fragement will include
+  - **EditText for ParticipantName** - This edit text will contain name of the participant.
+  - **Join Meeting Button** - This button will call api for create a new meeting and navigate to `CreateOrJoinActivity`.
+- *JoinMeetingFragment.java* - `JoinMeetingFragment.java` fragement will include
+  - **EditText for ParticipantName** - This edit text will contain name of the participant.
+  - **EditText for MeetingId** - This edit text will contain the meeting Id that you want to join..
+  - **Join Meeting Button** - This button will call api for join meeting with meetingId that you provided and navigate to `CreateOrJoinActivity`.
+- *CreateOrJoinActivity.java* - `CreateOrJoinActivity.java` activity is used to ask permissions to the partcipant,and to initiate webcam and mic status.
 
 #### PartcipantList
 
-- Layout files used to show ParticipantList are `layout_participants_list_view.xml` and `item_participant_list_layout.xml`
-- *ParticipantListAdapter.java* - `ParticipantListAdapter.java` class is used to bind participants data with a `RecyclerView`.
+- `ParticipantListAdapter.java`,`layout_participants_list_view.xml` and `item_participant_list_layout.xml` files used to show ParticipantList.
+- Call openParticipantList() method to show PartcipantList.
 
 #### Dialogs
 
-- **MoreOptions**: `MoreOptionsListAdapter.java` class,`ListItem.java` class and `more_options_list_layout.xml` layout file is used to show `MoreOptions` dialog.
-- **AudioDeviceList**: `MoreOptionsListAdapter.java` class,`ListItem.java` class and `maudio_device_list_layout.xml` layout file is used to show `AudioDeviceList` dialog.
-- **LeaveOptions**: `LeaveOptionListAdapter.java` class,`ListItem.java` class and `leave_options_list_layout.xml` layout file is used to show `LeaveOptions` dialog.
+- **MoreOptions**:
+  - `MoreOptionsListAdapter.java` class,`ListItem.java` class and `more_options_list_layout.xml` files used to show `MoreOptions` dialog.
+  - Call `showMoreOptionsDialog()` method to show `MoreOptions` dialog.
+- **AudioDeviceList**:
+  - `AudioDeviceListAdapter.java` class,`ListItem.java` class and `audio_device_list_layout.xml` files used to show `AudioDeviceList` dialog.
+  - Call `showAudioInputDialog()` method to show `AudioDeviceList` dialog.
+- **LeaveOrEndDialog**:
+  - `LeaveOptionListAdapter.java` class,`ListItem.java` class and `leave_options_list_layout.xml` files used to show `LeaveOrEndDialog`.
+  - Call `showLeaveOrEndDialog()` method to show `LeaveOrEndDialog`.
 
 #### One-to-One Call Room
 

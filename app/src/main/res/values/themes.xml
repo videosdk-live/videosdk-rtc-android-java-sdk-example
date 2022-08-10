@@ -16,6 +16,7 @@
         <item name="windowNoTitle">true</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -72,6 +73,17 @@
     <style name="DialogNoAnimation">
         <item name="android:windowEnterAnimation">@anim/enter</item>
         <item name="android:windowExitAnimation">@anim/exit</item>
+    </style>
+
+    <style name="Widget.App.Snackbar" parent="Widget.MaterialComponents.Snackbar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Snackbar</item>
+        <item name="actionTextColorAlpha">1</item>
+    </style>
+
+
+    <style name="ThemeOverlay.App.Snackbar" parent="">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
     </style>
 
 </resources>

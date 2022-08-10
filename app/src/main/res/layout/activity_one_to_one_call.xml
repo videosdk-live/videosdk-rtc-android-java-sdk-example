@@ -11,7 +11,7 @@
 
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/material_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/transparentColor"
@@ -71,6 +71,7 @@
     </com.google.android.material.appbar.MaterialToolbar>
 
     <FrameLayout
+        android:id="@+id/participants_frameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -154,6 +155,7 @@
 
 
     <LinearLayout
+        android:id="@+id/layout_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="7dp"
