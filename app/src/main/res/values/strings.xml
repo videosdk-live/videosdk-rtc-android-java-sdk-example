@@ -2,20 +2,15 @@
     <string name="app_name">Android VideoSDK App</string>
     <string name="switch_camera">Switch Camera Mode</string>
     <string name="leave_meeting">Leave meeting</string>
-    <string name="toggle_mic">Toggle mic</string>
     <string name="toggle_camera">Toggle camera</string>
     <string name="webcam_turned_off">Webcam turned off</string>
-    <string name="mic_turned_off">Mic turned off</string>
     <string name="more_options">More options</string>
-    <string name="remove">Remove</string>
-    <string name="content_description_start_icon">TypeWritter Icon</string>
-    <string name="content_copy">Content Copy</string>
-    <string name="create_meeting">Create meeting</string>
-    <string name="enter_meeting_id">Enter meeting id</string>
-    <string name="join_meeting">Join meeting</string>
+    <string name="create_meeting">Create a meeting</string>
+    <string name="enter_meeting_code">Enter meeting code</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="join_meeting">Join a meeting</string>
     <string name="chat">Chat</string>
-    <string name="screenShare">Screen Share</string>
     <string name="notificationTitle">VideoSDK RTC is sharing your screen</string>
     <string name="notificationContent">meeting is running</string>
-    <string name="audio_options">Audio Options</string>
+    <string name="write_message">Write your message</string>
 </resources>

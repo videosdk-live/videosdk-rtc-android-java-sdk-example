@@ -12,6 +12,88 @@ Check out demo [here](https://videosdk.live/prebuilt/)
 
 📱 Download the Sample Android app here: https://appdistribution.firebase.google.com/pub/i/0f3ac650239a944b
 
+## Features
+
+- [x] Video conferencing with real-time video and audio
+- [x] Enable/disable camera
+- [x] Mute/unmute mic
+- [x] Switch between front and back camera
+- [x] Change Audio Device
+- [x] Screen share
+- [x] Chat
+- [x] [External call detection](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/external-call-detection)
+
+## App Behavior with Different Room Types
+
+**One-to-One** - The One-to-One Call room type allows 2 participants to join a room in the app.
+
+## Structure of Project
+
+#### Create or join Meeting
+
+- *NetworkUtils.java* - `NetworkUtils.java` class is used to call the api for create and join the meeting.
+- *CreateOrJoinActivity.java* 
+  - `CreateOrJoinActivity.java` activity is used to ask permissions to the partcipant,and to initiate webcam and mic status.
+  - `CreateOrJoinFragment`,`CreateMeetingFragment`,`JoinMeetingFragment` will be bound to this activity.
+- *CreateOrJoinFragment.java* - `CreateOrJoinFragment.java` fragment will include
+  - `Create Meeting Button` - This button will navigate to `CreateMeetingFragment`.
+  - `Join Meeting Button` - This button will navigate to `JoinMeetingFragment`.
+  - `CreateOrJoinFragment` would be like this :
+  <p align="center">
+  <img width="230" height="450" src="https://www.linkpicture.com/q/img_CreateOrJoinFragment.jpg"/>
+  </p>
+
+- *CreateMeetingFragment.java* - `CreateMeetingFragment.java` fragement will include
+  - `EditText for ParticipantName` - This edit text will contain name of the participant.
+  - `Create Meeting Button` - This button will call api for create a new meeting and navigate to `OneToOneCallActivity`.
+  - `CreateMeetingFragment` would be look like this :
+  <p align="center">
+  <img width="230" height="450" src="https://www.linkpicture.com/q/img_CreateMeetingFragment.jpg"/>
+  </p>
+- *JoinMeetingFragment.java* - `JoinMeetingFragment.java` fragement will include
+  - `EditText for ParticipantName` - This edit text will contain name of the participant.
+  - `EditText for MeetingId` - This edit text will contain the meeting Id that you want to join..
+  - `Join Meeting Button` - This button will call api for join meeting with meetingId that you provided and navigate to `OneToOneCallActivity`.
+  - `JoinMeetingFragment` would be look like this : 
+  <p align="center">
+  <img width="230" height="450" src="https://www.linkpicture.com/q/img_JoinMeetingFragment.jpg"/>
+  </p>
+#### PartcipantList
+
+- `ParticipantListAdapter.java`,`layout_participants_list_view.xml` and `item_participant_list_layout.xml` files used to show ParticipantList.
+- Call `openParticipantList()` method to show PartcipantList.
+- `PartcipantList` dialog would be look like this : 
+  <p align="center">
+  <img width="250" height="450" src="https://www.linkpicture.com/q/img_participantList.jpg"/>
+  </p>
+
+#### Dialogs
+
+- **MoreOptions**:
+  - `MoreOptionsListAdapter.java` class,`ListItem.java` class and `more_options_list_layout.xml` files used to show `MoreOptions` dialog.
+  - Call `showMoreOptionsDialog()` method to show `MoreOptions` dialog.
+  - `MoreOptions` dialog would be look like this : 
+  <p align="center">
+  <img width="350" height="250" src="https://www.linkpicture.com/q/img_MoreOptionList.jpg"/>
+  </p>
+- **AudioDeviceList**:
+  - `AudioDeviceListAdapter.java` class,`ListItem.java` class and `audio_device_list_layout.xml` files used to show `AudioDeviceList` dialog.
+  - Call `showAudioInputDialog()` method to show `AudioDeviceList` dialog.
+  - `AudioDeviceList` would be look like this :
+  <p align="center">
+  <img width="350" height="250" src="https://www.linkpicture.com/q/img_AudioDeviceList.jpg"/>
+  </p>
+- **LeaveOrEndDialog**:
+  - `LeaveOptionListAdapter.java` class,`ListItem.java` class and `leave_options_list_layout.xml` files used to show `LeaveOrEndDialog`.
+  - Call `showLeaveOrEndDialog()` method to show `LeaveOrEndDialog`.
+  - `LeaveOrEndDialog` would be look like this :
+  <p align="center">
+  <img width="350" height="250" src="https://www.linkpicture.com/q/img_LeaveorEndDialog.jpg"/>
+  </p>
+#### One-to-One Call Room
+
+- `OneToOneCallActivity.java` activity is main activity for One-to-One call.
+
 ## Steps to Integrate
 ### Prerequisites
 - Development environment requirements:
@@ -34,7 +116,7 @@ auth_token= "TEMPORARY-TOKEN"
 ```
 
 ### Step 3: Run the sample app
-Run the android app with **Shift+F10** or the ** ▶ Run ** from toolbar. 
+Run the android app with **Shift+F10** or the ** ▶ Run ** from toolbar.
 
 ## Examples
 - [Prebuilt SDK Examples](https://github.com/videosdk-live/videosdk-rtc-prebuilt-examples)

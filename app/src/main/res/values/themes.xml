@@ -14,6 +14,9 @@
         <item name="android:windowBackground">@color/colorbackground</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -21,5 +24,66 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
+    <style name="fab_square" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="AlertDialogCustom" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.App.CustomDialog.Rounded
+        </item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@color/md_grey_100A</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CustomDialog.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="@style/Widget.MaterialComponents.Button">
+        <!-- text color for the button -->
+        <item name="android:textColor">@color/white</item>
+        <!-- Background tint for the button -->
+        <item name="backgroundTint">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_dialog</item>
+    </style>
+
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="ProgressDialogStyle">
+        <item name="colorAccent">@color/colorPrimaryVariant</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="DialogNoAnimation">
+        <item name="android:windowEnterAnimation">@anim/enter</item>
+        <item name="android:windowExitAnimation">@anim/exit</item>
+    </style>
+
+    <style name="Widget.App.Snackbar" parent="Widget.MaterialComponents.Snackbar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Snackbar</item>
+        <item name="actionTextColorAlpha">1</item>
+    </style>
+
+
+    <style name="ThemeOverlay.App.Snackbar" parent="">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
+    </style>
 
 </resources>

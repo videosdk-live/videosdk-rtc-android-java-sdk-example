@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/colorPrimaryVariant">
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/iv_loader"
+        android:layout_width="400dp"
+        android:layout_height="100dp"
+        android:src="@drawable/join_meeting_loader" />
+
+    <TextView
+        android:layout_below="@+id/iv_loader"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Creating a room for you..."
+        android:textSize="20dp"
+        android:textFontWeight="600"
+        android:textColor="@color/white"
+        />
+
+</RelativeLayout>

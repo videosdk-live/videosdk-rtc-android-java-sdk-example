@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".Activity.OneToOneCallActivity">
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/material_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/transparentColor"
+        app:titleTextColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/recordIcon"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/recording_icon"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txtMeetingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/white"
+                android:textFontWeight="600"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/btnCopyContent"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="15dp"
+                android:backgroundTint="@color/transparentColor"
+                android:src="@drawable/ic_outline_content_copy_24" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+
+            <ImageButton
+                android:id="@+id/btnSwitchCameraMode"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:background="@color/transparentColor"
+                android:contentDescription="@string/switch_camera"
+                android:src="@drawable/ic_baseline_flip_camera_android_24" />
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <FrameLayout
+        android:id="@+id/participants_frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ParticipantCard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="3dp"
+            android:backgroundTint="#2B3034"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:strokeColor="#2B3034">
+
+            <TextView
+                android:id="@+id/txtParticipantName"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_shape"
+                android:gravity="center"
+                android:text="A"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textFontWeight="500"
+                android:textSize="40dp"
+                android:textAllCaps="true"/>
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/svrParticipant"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+        </androidx.cardview.widget.CardView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/LocalCard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="3dp"
+            android:backgroundTint="@color/colorPrimaryVariant"
+            app:cardCornerRadius="8dp"
+            app:strokeColor="@color/colorPrimaryVariant">
+
+            <TextView
+                android:id="@+id/txtLocalParticipantName"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_shape"
+                android:gravity="center"
+                android:text="A"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textFontWeight="500"
+                android:textSize="40dp"
+                android:textAllCaps="true"/>
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/svrLocal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layout_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:gravity="center_horizontal"
+        android:paddingVertical="8dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnLeave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/leave_meeting"
+            android:src="@drawable/ic_end_call"
+            app:backgroundTint="@color/md_red_400"
+            app:fabSize="normal"
+            app:shapeAppearanceOverlay="@style/fab_square"
+            app:tint="@color/white" />
+
+
+        <LinearLayout
+            android:id="@+id/micLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="12dp"
+            android:background="@drawable/layout_selected"
+            android:gravity="center_vertical"
+            app:borderWidth="3dp">
+
+            <ImageButton
+                android:id="@+id/btnMic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@color/transparentColor"
+                android:src="@drawable/ic_mic_on" />
+
+            <ImageButton
+                android:id="@+id/btnAudioSelection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:background="@color/transparentColor"
+                android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+
+        </LinearLayout>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnWebcam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/transparentColor"
+            android:contentDescription="@string/toggle_camera"
+            android:src="@drawable/ic_video_camera"
+            app:backgroundTint="@color/md_grey_1000"
+            app:borderWidth="1dp"
+            app:fabSize="normal"
+            app:shapeAppearanceOverlay="@style/fab_square" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/transparentColor"
+            android:contentDescription="@string/chat"
+            android:src="@drawable/ic_chat"
+            app:backgroundTint="@color/md_grey_1000"
+            app:borderWidth="1dp"
+            app:fabSize="normal"
+            app:shapeAppearanceOverlay="@style/fab_square" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparentColor"
+            android:contentDescription="@string/more_options"
+            android:src="@drawable/ic_more_options"
+            app:backgroundTint="@color/md_grey_1000"
+            app:borderWidth="1dp"
+            app:fabSize="normal"
+            app:shapeAppearanceOverlay="@style/fab_square" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

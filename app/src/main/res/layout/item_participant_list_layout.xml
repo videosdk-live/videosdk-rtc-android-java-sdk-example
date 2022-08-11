@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/list_style"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/participantNameFirstLetter"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_shape"
+        android:gravity="center"
+        android:text="A"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="18dp"
+        android:textAllCaps="true"/>
+
+    <TextView
+        android:id="@+id/participant_Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/img_Participant"
+        android:layout_weight="1"
+        android:paddingVertical="8dp"
+        android:paddingLeft="10dp"
+        android:textColor="@color/white"
+        android:textFontWeight="700"
+        android:textSize="17dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+        <ImageView
+            android:id="@+id/mic_status"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_mic_off_style" />
+
+
+        <ImageView
+            android:id="@+id/cam_status"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_webcam_off_style" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+
+
+

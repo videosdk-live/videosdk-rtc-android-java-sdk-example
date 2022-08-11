@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--res/drawable/image.xml-->
+<!--define layer-list-->
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!--set image to be shown on circular image view-->
+    <item android:drawable="@drawable/red_circle_shape"/>
+    <item android:drawable="@drawable/ic_mic_off" android:height="55dp" android:width="50dp" android:gravity="center" />
+
+</layer-list>

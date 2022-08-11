@@ -8,8 +8,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Needed to communicate with already-paired Bluetooth devices. (Legacy up to Android 11) -->
-    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
 
     <!-- Needed to communicate with already-paired Bluetooth devices. (Android 12 upwards)-->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -25,26 +29,22 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".ChatActivity" />
-
-        <activity
-            android:name=".CreateOrJoinActivity"
+            android:name=".Activity.CreateOrJoinActivity"
             android:windowSoftInputMode="adjustResize">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
-            android:name=".JoinActivity"
-            android:parentActivityName=".CreateOrJoinActivity"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity android:name=".MainActivity"
+            android:name=".Activity.OneToOneCallActivity"
             android:configChanges="orientation|screenSize"
-            />
+            android:hardwareAccelerated="true" />
+
 
         <meta-data
             android:name="notificationTitle"

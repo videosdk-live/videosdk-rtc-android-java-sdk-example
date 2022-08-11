@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/messageLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
-
+    android:paddingBottom="12dp">
 
     <LinearLayout
-        android:id="@+id/messageLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:background="@color/transparentColor"
+        android:background="@drawable/list_style"
         android:minWidth="110dp"
         android:orientation="vertical"
         android:paddingHorizontal="8dp"
         android:paddingVertical="4dp"
-        tools:ignore="UselessParent">
+        tools:ignore="UselessParent"
+        android:gravity="right">
 
         <TextView
             android:id="@+id/senderName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/md_blue_grey_200"
-            android:textSize="12sp" />
+            android:textSize="14sp"
+            android:textFontWeight="500"
+            android:fontFamily="sans-serif-medium"
+            android:layout_gravity="left"/>
 
         <TextView
+            android:layout_gravity="left"
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:maxWidth="300dp"
             android:layout_marginBottom="3dp"
+            android:maxWidth="300dp"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
+            android:textFontWeight="600"/>
 
         <TextView
             android:id="@+id/messageTime"
@@ -41,7 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:textColor="@color/md_blue_grey_200"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium"
+            android:textFontWeight="500"/>
 
     </LinearLayout>
 
