@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -52,6 +53,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -65,10 +67,8 @@ import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -244,11 +244,45 @@ public class OneToOneCallActivity extends AppCompatActivity {
                             long duration = System.currentTimeMillis() - startTime;
                             if (duration <= MAX_DURATION) {
                                 if (fullScreen) {
-                                    getSupportActionBar().show();
-                                    ((LinearLayout) findViewById(R.id.layout_action)).setVisibility(View.VISIBLE);
+                                    toolbar.setVisibility(View.VISIBLE);
+                                    TranslateAnimation toolbarAnimation = new TranslateAnimation(
+                                            0,
+                                            0,
+                                            0,
+                                            10);
+                                    toolbarAnimation.setDuration(500);
+                                    toolbarAnimation.setFillAfter(true);
+                                    toolbar.startAnimation(toolbarAnimation);
+
+                                    ((BottomAppBar) findViewById(R.id.bottomAppbar)).setVisibility(View.VISIBLE);
+                                    TranslateAnimation animate = new TranslateAnimation(
+                                            0,
+                                            0,
+                                            findViewById(R.id.bottomAppbar).getHeight(),
+                                            0);
+                                    animate.setDuration(300);
+                                    animate.setFillAfter(true);
+                                    findViewById(R.id.bottomAppbar).startAnimation(animate);
                                 } else {
-                                    getSupportActionBar().hide();
-                                    ((LinearLayout) findViewById(R.id.layout_action)).setVisibility(View.GONE);
+                                    toolbar.setVisibility(View.GONE);
+                                    TranslateAnimation toolbarAnimation = new TranslateAnimation(
+                                            0,
+                                            0,
+                                            0,
+                                            10);
+                                    toolbarAnimation.setDuration(500);
+                                    toolbarAnimation.setFillAfter(true);
+                                    toolbar.startAnimation(toolbarAnimation);
+
+                                    ((BottomAppBar) findViewById(R.id.bottomAppbar)).setVisibility(View.GONE);
+                                    TranslateAnimation animate = new TranslateAnimation(
+                                            0,
+                                            0,
+                                            0,
+                                            findViewById(R.id.bottomAppbar).getHeight());
+                                    animate.setDuration(400);
+                                    animate.setFillAfter(true);
+                                    findViewById(R.id.bottomAppbar).startAnimation(animate);
                                 }
                                 fullScreen = !fullScreen;
                                 clickCount = 0;
