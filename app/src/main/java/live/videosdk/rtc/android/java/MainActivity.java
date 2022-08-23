@@ -10,12 +10,15 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.projection.MediaProjectionManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -62,11 +65,12 @@ import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 import live.videosdk.rtc.android.listeners.PubSubMessageListener;
 import live.videosdk.rtc.android.listeners.WebcamRequestListener;
 import live.videosdk.rtc.android.model.LivestreamOutput;
+import live.videosdk.rtc.android.model.PubSubPublishOptions;
 
 public class MainActivity extends AppCompatActivity {
     private static Meeting meeting;
     private SurfaceViewRenderer svrShare;
-    private FloatingActionButton btnMic, btnWebcam, btnScreenShare;
+    private FloatingActionButton btnMic, btnWebcam, btnScreenShare, btnRaiseHand;
     private FloatingActionButton btnLeave, btnChat, btnSwitchCameraMode, btnMore;
     private ImageButton btnAudioSelection;
 
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         //
         btnLeave = findViewById(R.id.btnLeave);
         btnChat = findViewById(R.id.btnChat);
+        btnRaiseHand = findViewById(R.id.btnRaiseHand);
         btnMore = findViewById(R.id.btnMore);
         btnSwitchCameraMode = findViewById(R.id.btnSwitchCameraMode);
         btnScreenShare = findViewById(R.id.btnScreenShare);
@@ -262,10 +267,30 @@ public class MainActivity extends AppCompatActivity {
             btnLeave.setEnabled(true);
             btnSwitchCameraMode.setEnabled(true);
             btnChat.setEnabled(true);
+            btnRaiseHand.setEnabled(true);
             btnScreenShare.setEnabled(true);
             btnMore.setEnabled(true);
             btnAudioSelection.setEnabled(true);
 
+            // notify user for raise hand
+            meeting.pubSub.subscribe("RAISE_HAND", new PubSubMessageListener() {
+                @Override
+                public void onMessageReceived(PubSubMessage pubSubMessage) {
+                    View parentLayout = findViewById(android.R.id.content);
+                    SpannableStringBuilder buildetTextRight = new SpannableStringBuilder();
+                    if (pubSubMessage.getSenderId().equals(meeting.getLocalParticipant().getId())) {
+                        buildetTextRight.append("You raised hand  ");
+                    } else {
+                        buildetTextRight.append(pubSubMessage.getSenderName() + " raised hand  ");
+                    }
+                    Drawable drawable = getResources().getDrawable(R.drawable.ic_raise_hand);
+                    drawable.setBounds(0, 0, 50, 50);
+                    buildetTextRight.setSpan(new ImageSpan(drawable),
+                            buildetTextRight.length() - 1, buildetTextRight.length(), 0);
+                    Snackbar.make(parentLayout, buildetTextRight, Snackbar.LENGTH_SHORT)
+                            .setDuration(2000).show();
+                }
+            });
 
             // notify user of any new messages
             meeting.pubSub.subscribe("CHAT", new PubSubMessageListener() {
@@ -616,6 +641,11 @@ public class MainActivity extends AppCompatActivity {
         //
         btnScreenShare.setOnClickListener(view -> {
             toggleScreenSharing();
+        });
+
+        // raise Hand
+        btnRaiseHand.setOnClickListener(view -> {
+            meeting.pubSub.publish("RAISE_HAND", "Raise Hand by Me", new PubSubPublishOptions());
         });
     }
 
