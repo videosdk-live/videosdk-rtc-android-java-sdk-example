@@ -1,5 +1,6 @@
 package live.videosdk.rtc.android.java;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -109,9 +110,10 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     videoTrack.addSink(holder.svrParticipant);
 
-                    //Update Consuming quality using setViewPort
-                    participant.setViewPort(holder.itemView.getWidth(), holder.itemView.getHeight());
-                } else if (stream.getKind().equalsIgnoreCase("audio")) {
+                    //set quality to high
+                    participant.setQuality("high");
+
+                    } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_24);
                 }
             }
@@ -124,14 +126,12 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
                     holder.svrParticipant.clearImage();
                     holder.svrParticipant.setVisibility(View.GONE);
+
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
                     holder.ivMicStatus.setImageResource(R.drawable.ic_baseline_mic_off_24);
                 }
             }
         });
-
-        //Update Consuming quality using setViewPort
-        participant.setViewPort(holder.itemView.getWidth(), holder.itemView.getHeight());
 
         //
         final Participant finalParticipant = participant;
