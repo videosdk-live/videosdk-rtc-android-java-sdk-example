@@ -186,11 +186,11 @@ public class OneToOneCallActivity extends AppCompatActivity {
         micEnabled = getIntent().getBooleanExtra("micEnabled", true);
         webcamEnabled = getIntent().getBooleanExtra("webcamEnabled", true);
 
-        String participantName = getIntent().getStringExtra("participantName");
-        if (participantName == null) {
-            participantName = "John Doe";
+        String localParticipantName = getIntent().getStringExtra("participantName");
+        if (localParticipantName == null) {
+            localParticipantName = "John Doe";
         }
-        txtLocalParticipantName.setText(participantName.substring(0, 1));
+        txtLocalParticipantName.setText(localParticipantName.substring(0, 1));
 
         //
 
@@ -202,7 +202,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
-                OneToOneCallActivity.this, meetingId, participantName,
+                OneToOneCallActivity.this, meetingId, localParticipantName,
                 false, false, null, null
         );
 
@@ -647,7 +647,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
         if (shareStream == null) return;
 
         screenshareTrack = (VideoTrack) shareStream.getTrack();
-        txtLocalParticipantName.setText(participantName.substring(0, 1));
+        if (participantName != null)
+            txtLocalParticipantName.setText(participantName.substring(0, 1));
         onTrackChange();
 
         // listen for share stop event
@@ -987,6 +988,10 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
             if (meeting.getParticipants().size() == 0) {
                 showParticipantCard();
+                if(localTrack !=null){
+                    localTrack.addSink(svrLocal);
+                    svrLocal.setVisibility(View.VISIBLE);
+                }
 
             } else {
                 if (localTrack != null) {
@@ -999,7 +1004,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     participantTrack.removeSink(svrParticipant);
                     svrParticipant.clearImage();
                     participantTrack.addSink(svrLocal);
-                    txtLocalParticipantName.setText(participantName.substring(0, 1));
+                    if (participantName != null)
+                        txtLocalParticipantName.setText(participantName.substring(0, 1));
                     svrLocal.setVisibility(View.VISIBLE);
                 }
             }
@@ -1045,10 +1051,16 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 svrLocal.setVisibility(View.GONE);
                 onTrackChange();
             } else {
-                if (track != null) track.removeSink(svrParticipant);
-                svrParticipant.clearImage();
-                svrParticipant.setVisibility(View.GONE);
-                onTrackChange();
+                if (meeting.getParticipants().size() == 0) {
+                    if (track != null) track.removeSink(svrLocal);
+                    svrLocal.clearImage();
+                    svrLocal.setVisibility(View.GONE);
+                }else {
+                    if (track != null) track.removeSink(svrParticipant);
+                    svrParticipant.clearImage();
+                    svrParticipant.setVisibility(View.GONE);
+                    onTrackChange();
+                }
             }
         }
     }
@@ -1112,7 +1124,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     // display share video
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     screenshareTrack = videoTrack;
-                    txtLocalParticipantName.setText(participantName.substring(0, 1));
+                    if (participantName !=null)
+                        txtLocalParticipantName.setText(participantName.substring(0, 1));
                     onTrackChange();
                     //
                     localScreenShare = true;
