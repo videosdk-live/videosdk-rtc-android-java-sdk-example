@@ -23,6 +23,10 @@ Check out demo [here](https://videosdk.live/prebuilt/)
 - [x] Chat
 - [x] [External call detection](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/external-call-detection)
 
+> **Note**
+> - ***master*** branch: Better UI with One-to-One call experience,allows 2 participants to join a room.
+> - ***v1-code-sample*** branch: Simple UI with One-to-Many call experience. 
+
 ## App Behavior with Different Room Types
 
 **One-to-One** - The One-to-One Call room type allows 2 participants to join a room in the app.
