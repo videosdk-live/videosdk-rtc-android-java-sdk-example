@@ -36,25 +36,21 @@ public class NetworkUtils {
         return isAvailable;
     }
 
-    private boolean isNullOrEmpty(String str) {
-        return "null".equals(str) || "".equals(str) || null == str;
-    }
-
     public void getToken(ResponseListener responseListener) {
 
-        if (!isNullOrEmpty(AUTH_TOKEN) && !isNullOrEmpty(AUTH_URL)) {
+        if (!HelperClass.isNullOrEmpty(AUTH_TOKEN) && !HelperClass.isNullOrEmpty(AUTH_URL)) {
             Toast.makeText(context,
                     "Please Provide only one - either auth_token or auth_url",
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!isNullOrEmpty(AUTH_TOKEN)) {
+        if (!HelperClass.isNullOrEmpty(AUTH_TOKEN)) {
             responseListener.onResponse(AUTH_TOKEN);
             return;
         }
 
-        if (!isNullOrEmpty(AUTH_URL)) {
+        if (!HelperClass.isNullOrEmpty(AUTH_URL)) {
             AndroidNetworking.get(AUTH_URL + "/get-token")
                     .build()
                     .getAsJSONObject(new JSONObjectRequestListener() {

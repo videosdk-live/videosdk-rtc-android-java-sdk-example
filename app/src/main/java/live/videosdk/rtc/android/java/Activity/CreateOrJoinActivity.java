@@ -148,7 +148,6 @@ public class CreateOrJoinActivity extends AppCompatActivity {
                 public void onBackStackChanged() {
                     if (getFragmentManager().getBackStackEntryCount() > 0) {
                         actionBar.setDisplayHomeAsUpEnabled(true);
-
                     } else {
                         actionBar.setDisplayHomeAsUpEnabled(false);
                     }
@@ -251,6 +250,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
 
             svrJoin.init(PeerConnectionUtils.getEglContext(), null);
+            svrJoin.setMirror(true);
 
             SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", PeerConnectionUtils.getEglContext());
 

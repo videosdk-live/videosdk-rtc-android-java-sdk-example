@@ -19,7 +19,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -95,6 +97,7 @@ import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 import live.videosdk.rtc.android.listeners.PubSubMessageListener;
 import live.videosdk.rtc.android.model.PubSubPublishOptions;
+import pl.droidsonroids.gif.GifImageView;
 
 public class OneToOneCallActivity extends AppCompatActivity {
     private static Meeting meeting;
@@ -106,7 +109,9 @@ public class OneToOneCallActivity extends AppCompatActivity {
     private CardView localCard, participantCard;
     private LinearLayout micLayout;
     ArrayList<Participant> participants;
+    private GifImageView img_localActiveSpeaker, img_participantActiveSpeaker;
     private TextView txtLocalParticipantName, txtParticipantName;
+    private String participantName;
 
     private VideoTrack participantTrack = null;
 
@@ -164,6 +169,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         svrLocal = findViewById(R.id.svrLocal);
         svrLocal.init(PeerConnectionUtils.getEglContext(), null);
+        svrLocal.setMirror(true);
 
         svrParticipant = findViewById(R.id.svrParticipant);
         svrParticipant.init(PeerConnectionUtils.getEglContext(), null);
@@ -171,6 +177,9 @@ public class OneToOneCallActivity extends AppCompatActivity {
         btnMic = findViewById(R.id.btnMic);
         btnWebcam = findViewById(R.id.btnWebcam);
         btnAudioSelection = findViewById(R.id.btnAudioSelection);
+
+        img_localActiveSpeaker = findViewById(R.id.img_localActiveSpeaker);
+        img_participantActiveSpeaker = findViewById(R.id.img_participantActiveSpeaker);
 
         final String token = getIntent().getStringExtra("token");
         final String meetingId = getIntent().getStringExtra("meetingId");
@@ -226,7 +235,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         recordingStatusSnackbar = Snackbar.make(findViewById(R.id.mainLayout), "Recording will be started in few moments",
                 Snackbar.LENGTH_INDEFINITE);
-        HelperClass.setSnackNarStyle(recordingStatusSnackbar.getView());
+        HelperClass.setSnackNarStyle(recordingStatusSnackbar.getView(),0);
         recordingStatusSnackbar.setGestureInsetBottomIgnored(true);
 
         ((FrameLayout) findViewById(R.id.participants_frameLayout)).setOnTouchListener(new View.OnTouchListener() {
@@ -298,32 +307,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
             }
         });
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                isNetworkAvailable();
-            }
-        }, 0, 10000);
-
     }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager manager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-
-        boolean isAvailable = networkInfo != null && networkInfo.isConnected();
-
-        if (!isAvailable) {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), "No Internet Connection",
-                    Snackbar.LENGTH_LONG);
-            HelperClass.setSnackNarStyle(snackbar.getView());
-            snackbar.show();
-        }
-
-        return isAvailable;
-    }
-
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
@@ -399,7 +383,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                                                     pubSubMessage.getMessage(), Snackbar.LENGTH_SHORT)
                                             .setDuration(2000);
                             View snackbarView = snackbar.getView();
-                            HelperClass.setSnackNarStyle(snackbarView);
+                            HelperClass.setSnackNarStyle(snackbarView,0);
                             snackbar.show();
                         }
                     }
@@ -456,9 +440,9 @@ public class OneToOneCallActivity extends AppCompatActivity {
         @Override
         public void onParticipantJoined(Participant participant) {
             if (meeting.getParticipants().size() < 2) {
-                participant.setQuality("high");
                 showParticipantCard();
                 txtParticipantName.setText(participant.getDisplayName().substring(0, 1));
+                participantName=participant.getDisplayName();
                 Toast.makeText(OneToOneCallActivity.this, participant.getDisplayName() + " joined",
                         Toast.LENGTH_SHORT).show();
             }
@@ -527,8 +511,47 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 } else if (code == errorCodes.getInt("START_RECORDING_FAILED")) {
                     Log.d("#error", "Error is: " + error.get("message"));
                 }
+                else if (code == errorCodes.getInt("PREV_RECORDING_PROCESSING")) {
+                    Log.d("#error", "Error is: " + error.get("message"));
+                    recordingStatusSnackbar.dismiss();
+                    Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), "Please try again after sometime",
+                            Snackbar.LENGTH_LONG);
+                    HelperClass.setSnackNarStyle(snackbar.getView(),0);
+                    snackbar.show();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void onSpeakerChanged(String participantId) {
+            if (!HelperClass.isNullOrEmpty(participantId)) {
+                if (participantId.equals(meeting.getLocalParticipant().getId())) {
+                    img_localActiveSpeaker.setVisibility(View.VISIBLE);
+                    img_participantActiveSpeaker.setVisibility(View.GONE);
+                } else {
+                    img_participantActiveSpeaker.setVisibility(View.VISIBLE);
+                    img_localActiveSpeaker.setVisibility(View.GONE);
+                }
+            } else {
+                img_participantActiveSpeaker.setVisibility(View.GONE);
+                img_localActiveSpeaker.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onMeetingStateChanged(String state) {
+            if(state == "FAILED")
+            {
+                View parentLayout = findViewById(android.R.id.content);
+                SpannableStringBuilder builderTextLeft = new SpannableStringBuilder();
+                builderTextLeft.append("   Call disconnected. Reconnecting...");
+                builderTextLeft.setSpan(new ImageSpan(OneToOneCallActivity.this, R.drawable.ic_call_disconnected), 0, 1, 0);
+                Snackbar snackbar = Snackbar.make(parentLayout, builderTextLeft, Snackbar.LENGTH_LONG);
+                HelperClass.setSnackNarStyle(snackbar.getView(),getResources().getColor(R.color.md_red_400));
+                snackbar.show();
             }
         }
     };
@@ -541,6 +564,10 @@ public class OneToOneCallActivity extends AppCompatActivity {
         txtLocalParticipantName.setLayoutParams(new FrameLayout.LayoutParams(120, 120, Gravity.CENTER));
         txtLocalParticipantName.setTextSize(24);
         txtLocalParticipantName.setGravity(Gravity.CENTER);
+        FrameLayout.LayoutParams layoutParams=new FrameLayout.LayoutParams(50,50,Gravity.RIGHT);
+        layoutParams.setMargins(0,12,12,0);
+        img_localActiveSpeaker.setLayoutParams(layoutParams);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             txtLocalParticipantName.setForegroundGravity(Gravity.CENTER);
         }
@@ -551,11 +578,14 @@ public class OneToOneCallActivity extends AppCompatActivity {
     private void hideParticipantCard() {
         localCard.setLayoutParams(new CardView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ViewGroup.MarginLayoutParams cardViewMarginParams = (ViewGroup.MarginLayoutParams) localCard.getLayoutParams();
-        cardViewMarginParams.setMargins(30, 30, 30, 30);
+        cardViewMarginParams.setMargins(30, 5, 30, 30);
         localCard.requestLayout();
         txtLocalParticipantName.setLayoutParams(new FrameLayout.LayoutParams(220, 220, Gravity.CENTER));
         txtLocalParticipantName.setTextSize(40);
         txtLocalParticipantName.setGravity(Gravity.CENTER);
+        FrameLayout.LayoutParams layoutParams=new FrameLayout.LayoutParams(75,75,Gravity.RIGHT);
+        layoutParams.setMargins(0,30,30,0);
+        img_localActiveSpeaker.setLayoutParams(layoutParams);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             txtLocalParticipantName.setForegroundGravity(Gravity.CENTER);
         }
@@ -617,6 +647,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         if (shareStream == null) return;
 
         screenshareTrack = (VideoTrack) shareStream.getTrack();
+        txtLocalParticipantName.setText(participantName.substring(0, 1));
         onTrackChange();
 
         // listen for share stop event
@@ -630,6 +661,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     svrParticipant.clearImage();
                     svrParticipant.setVisibility(View.GONE);
                     removeTrack(participantTrack, true);
+                    txtLocalParticipantName.setText(meeting.getLocalParticipant().getDisplayName().substring(0, 1));
                     onTrackChange();
                     screenshareEnabled = false;
                     localScreenShare = false;
@@ -967,6 +999,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     participantTrack.removeSink(svrParticipant);
                     svrParticipant.clearImage();
                     participantTrack.addSink(svrLocal);
+                    txtLocalParticipantName.setText(participantName.substring(0, 1));
                     svrLocal.setVisibility(View.VISIBLE);
                 }
             }
@@ -978,11 +1011,13 @@ public class OneToOneCallActivity extends AppCompatActivity {
             if (participantTrack != null) {
                 svrParticipant.setVisibility(View.VISIBLE);
                 participantTrack.addSink(svrParticipant);
+                ((View) img_participantActiveSpeaker).bringToFront();
             }
             if (localTrack != null) {
                 svrLocal.setVisibility(View.VISIBLE);
                 svrLocal.setZOrderMediaOverlay(true);
                 localTrack.addSink(svrLocal);
+                ((View) img_localActiveSpeaker).bringToFront();
                 ((View) localCard).bringToFront();
 
             }
@@ -1026,10 +1061,13 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     participantTrack = track;
                     onTrackChange();
+                    setQuality("high");
                 }
             }
             if (stream.getKind().equalsIgnoreCase("audio")) {
-                stream.pause();
+                if (meeting.getParticipants().size() >= 2) {
+                    stream.pause();
+                }
             }
         }
 
@@ -1048,6 +1086,15 @@ public class OneToOneCallActivity extends AppCompatActivity {
         }
     };
 
+    private void setQuality(String quality) {
+        final Iterator<Participant> participants = meeting.getParticipants().values().iterator();
+
+        for (int i = 0; i < meeting.getParticipants().size(); i++) {
+            Participant participant = participants.next();
+            participant.setQuality(quality);
+        }
+    }
+
     private void setLocalListeners() {
         meeting.getLocalParticipant().addEventListener(new ParticipantEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -1065,6 +1112,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     // display share video
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     screenshareTrack = videoTrack;
+                    txtLocalParticipantName.setText(participantName.substring(0, 1));
                     onTrackChange();
                     //
                     localScreenShare = true;
@@ -1092,6 +1140,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     if (meeting.getParticipants().size() == 0) hideParticipantCard();
 
                     removeTrack(participantTrack, true);
+                    txtLocalParticipantName.setText(meeting.getLocalParticipant().getDisplayName().substring(0, 1));
                     onTrackChange();
                     //
                     localScreenShare = false;

@@ -10,8 +10,6 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.LayoutRes;
-
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Roboto_font;
 
@@ -19,7 +17,7 @@ public class HelperClass {
 
     private static Dialog progressDialog;
 
-    public static void setSnackNarStyle(View snackbarView) {
+    public static void setSnackNarStyle(View snackbarView, int textColor) {
 //        snackbarView.setBackgroundColor(Color.WHITE);
 
         int snackbarTextId = com.google.android.material.R.id.snackbar_text;
@@ -27,12 +25,15 @@ public class HelperClass {
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) textView.getLayoutParams();
         params.height = 150;
-        params.setMargins(5, 10, 5, 5);
-        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        textView.setGravity(Gravity.CENTER);
         textView.setLayoutParams(params);
 
-        textView.setTextColor(Color.BLACK);
-        textView.setTextSize(16);
+        if (textColor == 0) {
+            textView.setTextColor(Color.BLACK);
+        } else {
+            textView.setTextColor(textColor);
+        }
+        textView.setTextSize(15);
         textView.setTypeface(Roboto_font.getTypeFace(snackbarView.getContext()));
 
     }
@@ -82,6 +83,10 @@ public class HelperClass {
         leaveprogressDialog.setCanceledOnTouchOutside(false);
         leaveprogressDialog.setCancelable(false);
         leaveprogressDialog.show();
+    }
+
+    public static boolean isNullOrEmpty(String str) {
+        return "null".equals(str) || "".equals(str) || null == str;
     }
 
 

@@ -75,7 +75,7 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
             holder.participantName.setText(participants.get(position).getDisplayName());
         }
 
-        holder.participantNameFirstLetter.setText(holder.participantName.getText().subSequence(0,1));
+        holder.participantNameFirstLetter.setText(participants.get(position).getDisplayName().subSequence(0,1));
 
         for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
             Stream stream = entry.getValue();

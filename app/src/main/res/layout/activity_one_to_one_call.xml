@@ -5,9 +5,9 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:animateLayoutChanges="true"
     tools:context=".Activity.OneToOneCallActivity">
 
 
@@ -104,6 +104,15 @@
                 android:textFontWeight="500"
                 android:textSize="40dp" />
 
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/img_participantActiveSpeaker"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:layout_margin="12dp"
+                android:src="@drawable/active_speaker"
+                android:visibility="gone"/>
+
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/svrParticipant"
                 android:layout_width="match_parent"
@@ -144,28 +153,39 @@
                 android:textFontWeight="500"
                 android:textSize="40dp" />
 
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/img_localActiveSpeaker"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:layout_margin="12dp"
+                android:src="@drawable/active_speaker"
+                android:visibility="gone"/>
+
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/svrLocal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
+
         </androidx.cardview.widget.CardView>
 
     </FrameLayout>
 
-    <com.google.android.material.bottomappbar.BottomAppBar  android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingVertical="8dp"
-        android:animateLayoutChanges="true"
+    <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppbar"
-        android:backgroundTint="@color/transparentColor">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:backgroundTint="@color/transparentColor"
+        android:gravity="center_horizontal"
+        android:paddingVertical="8dp">
 
         <LinearLayout
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/btnLeave"
