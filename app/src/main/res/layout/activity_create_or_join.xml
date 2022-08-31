@@ -14,7 +14,9 @@
         android:background="?attr/colorPrimary"
         app:titleTextColor="@color/white"
         app:theme="@style/ToolbarColoredBackArrow"
-        app:popupTheme="@style/Theme.VideoSDKRTC"/>
+        app:popupTheme="@style/Theme.VideoSDKRTC"
+        app:contentInsetStartWithNavigation="0dp"
+        app:titleMarginStart="0dp"/>
 
     <ScrollView
         android:layout_width="match_parent"

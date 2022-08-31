@@ -27,7 +27,7 @@
         android:id="@+id/btnJoinMeeting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/md_grey_700"
+        android:backgroundTint="#202427"
         android:letterSpacing="0"
         android:padding="16dp"
         android:text="@string/join_meeting"

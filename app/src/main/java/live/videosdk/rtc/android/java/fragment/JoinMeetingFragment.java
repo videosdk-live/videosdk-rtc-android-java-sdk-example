@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import live.videosdk.rtc.android.java.Activity.CreateOrJoinActivity;
 import live.videosdk.rtc.android.java.Activity.OneToOneCallActivity;
+import live.videosdk.rtc.android.java.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Utils.NetworkUtils;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Listener.ResponseListener;
@@ -67,7 +68,7 @@ public class JoinMeetingFragment extends Fragment {
                             intent.putExtra("meetingId", meetingId);
                             intent.putExtra("webcamEnabled", ((CreateOrJoinActivity) getActivity()).isWebcamEnabled());
                             intent.putExtra("micEnabled", ((CreateOrJoinActivity) getActivity()).isMicEnabled());
-                            intent.putExtra("participantName", etName.getText().toString());
+                            intent.putExtra("participantName", etName.getText().toString().trim());
                             startActivity(intent);
                             ((CreateOrJoinActivity) getActivity()).finish();
                         }
@@ -75,6 +76,7 @@ public class JoinMeetingFragment extends Fragment {
                 } else {
                     Snackbar snackbar=
                     Snackbar.make(view.findViewById(R.id.joinMeetingLayout), "No Internet Connection", Snackbar.LENGTH_LONG);
+                    HelperClass.setSnackNarStyle(snackbar.getView(),0);
                     snackbar.show();
                 }
             }
