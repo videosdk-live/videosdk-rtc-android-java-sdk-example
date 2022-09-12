@@ -24,7 +24,7 @@ Check out demo [here](https://videosdk.live/prebuilt/)
 ### Step 1: Clone the sample project
 Clone the repository to your local environment.
 ```js
-git clone https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
+git clone -b v1-code-sample https://github.com/videosdk-live/videosdk-rtc-android-java-sdk-example.git
 ```
 
 ### Step 2: Modify local.properties
