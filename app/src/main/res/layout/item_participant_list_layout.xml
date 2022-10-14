@@ -55,7 +55,16 @@
             android:id="@+id/cam_status"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginRight="15dp"
             android:src="@drawable/ic_webcam_off_style" />
+
+        <ImageButton
+            android:id="@+id/btnParticipantMoreOptions"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:padding="10dp"
+            android:background="@drawable/circle_shape"
+            android:src="@drawable/ic_more_options" />
 
     </LinearLayout>
 

@@ -52,6 +52,7 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:cornerRadius="12dp"
+        android:letterSpacing="0"
         android:layout_marginTop="15dp"/>
 
 

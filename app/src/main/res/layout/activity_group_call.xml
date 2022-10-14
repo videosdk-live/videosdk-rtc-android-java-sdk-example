@@ -8,8 +8,7 @@
     android:animateLayoutChanges="true"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".OneToOneCall.OneToOneCallActivity">
-
+    tools:context=".GroupCall.Activity.GroupCallActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/material_toolbar"
@@ -32,9 +31,9 @@
                 android:visibility="gone" />
 
             <RelativeLayout
-                android:layout_marginTop="7dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp">
 
                 <TextView
                     android:id="@+id/txtMeetingId"
@@ -47,28 +46,27 @@
                     android:textSize="17sp" />
 
                 <ImageButton
-                    android:layout_toRightOf="@+id/txtMeetingId"
                     android:id="@+id/btnCopyContent"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:layout_marginRight="15dp"
+                    android:layout_toRightOf="@+id/txtMeetingId"
                     android:backgroundTint="@color/transparentColor"
                     android:src="@drawable/ic_outline_content_copy_24" />
 
                 <TextView
                     android:id="@+id/txtMeetingTime"
-                    android:layout_below="@+id/txtMeetingId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtMeetingId"
                     android:layout_gravity="center"
                     android:fontFamily="sans-serif-medium"
-                    android:textColor="@color/text_color"
                     android:text="00:00:00"
+                    android:textColor="@color/text_color"
                     android:textFontWeight="600"
                     android:textSize="14sp" />
 
             </RelativeLayout>
-
 
         </LinearLayout>
 
@@ -92,145 +90,119 @@
     </com.google.android.material.appbar.MaterialToolbar>
 
     <FrameLayout
-        android:id="@+id/participants_frameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/ParticipantCard"
+        <LinearLayout
+            android:id="@+id/participants_Layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginBottom="3dp"
-            android:backgroundTint="#2B3034"
-            android:visibility="gone"
-            app:cardCornerRadius="8dp"
-            app:strokeColor="#2B3034">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtParticipantName"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:background="@drawable/circle_shape"
-                android:gravity="center"
-                android:text="A"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textFontWeight="500"
-                android:textSize="40dp" />
-
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/img_participantActiveSpeaker"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:layout_margin="12dp"
-                android:src="@drawable/active_speaker"
-                android:visibility="gone"/>
-
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/svrParticipant"
+            <LinearLayout
+                android:id="@+id/localScreenShareView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
+                android:layout_height="420dp"
+                android:background="@color/colorPrimaryVariant"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="You're sharing your screen with everyone"
+                    android:textColor="@color/white"
+                    android:textFontWeight="500"
+                    android:textSize="16dp">
+
+
+                </TextView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnStopScreenShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0"
+                    android:padding="10dp"
+                    android:text="Stop Presenting"
+                    android:textAllCaps="false"
+                    android:textFontWeight="500"
+                    android:textSize="16dp"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                android:layout_height="wrap_content">
+
+                <org.webrtc.SurfaceViewRenderer
+                    android:id="@+id/svrShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="420dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/tvName"
+                    android:id="@+id/tvScreenShareParticipantName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:textFontWeight="600"
-                    android:textColor="@color/white"
+                    android:layout_gravity="start|bottom"
                     android:layout_margin="8dp"
+                    android:background="@drawable/name_style"
+                    android:fontFamily="sans-serif-medium"
                     android:padding="6dp"
-                    android:background="@drawable/name_style"/>
+                    android:textColor="@color/white"
+                    android:textFontWeight="600"
+                    android:textSize="16dp"
+                    android:visibility="gone" />
 
             </FrameLayout>
 
-
-        </androidx.cardview.widget.CardView>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </FrameLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/LocalCard"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginBottom="3dp"
-            android:backgroundTint="@color/colorPrimaryVariant"
-            app:cardCornerRadius="8dp"
-            app:strokeColor="@color/colorPrimaryVariant"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/txtLocalParticipantName"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:background="@drawable/circle_shape"
-                android:gravity="center"
-                android:text="A"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textFontWeight="500"
-                android:textSize="40dp" />
-
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/img_localActiveSpeaker"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:layout_margin="12dp"
-                android:src="@drawable/active_speaker"
-                android:visibility="gone"/>
-
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/svrLocal"
+            <LinearLayout
+                android:id="@+id/participants_linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                <LinearLayout
+                    android:id="@+id/viewPager_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvLocalParticipantName"
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/view_pager_video_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:animateLayoutChanges="false" />
+
+                </LinearLayout>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout_dots"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:textFontWeight="600"
-                    android:textColor="@color/white"
-                    android:layout_margin="8dp"
-                    android:padding="6dp"
-                    android:background="@drawable/name_style"/>
+                    android:layout_height="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="4dp"
+                    android:background="@color/transparentColor"
+                    app:tabBackground="@drawable/dot_selector"
+                    app:tabGravity="center"
+                    app:tabIndicatorHeight="0dp" />
 
-            </FrameLayout>
+            </LinearLayout>
 
+        </LinearLayout>
 
-
-        </androidx.cardview.widget.CardView>
 
     </FrameLayout>
 

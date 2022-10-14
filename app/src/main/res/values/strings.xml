@@ -3,6 +3,7 @@
     <string name="switch_camera">Switch Camera Mode</string>
     <string name="leave_meeting">Leave meeting</string>
     <string name="toggle_camera">Toggle camera</string>
+    <string name="mic_turned_off">Mic turned off</string>
     <string name="webcam_turned_off">Webcam turned off</string>
     <string name="more_options">More options</string>
     <string name="create_meeting">Create a meeting</string>
@@ -13,4 +14,12 @@
     <string name="notificationTitle">VideoSDK RTC is sharing your screen</string>
     <string name="notificationContent">meeting is running</string>
     <string name="write_message">Write your message</string>
+    <string name="remove">Remove</string>
+    <string name="toggle_mic">Toggle mic</string>
+    <string-array name="meeting_options">
+        <item>One to One Meeting</item>
+        <item>Group Meeting</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

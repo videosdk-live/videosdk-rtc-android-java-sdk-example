@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_rowWeight="1"
+    android:layout_columnWeight="1"
+    android:id="@+id/participants_frameLayout"
+    android:layout_margin="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ParticipantCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/md_grey_100A"
+        app:cardCornerRadius="8dp"
+        app:strokeColor="@color/md_grey_100A">
+
+    <TextView
+        android:id="@+id/txtParticipantName"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_shape"
+        android:gravity="center"
+        android:text="A"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="40dp" />
+
+
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/svrParticipantView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+
+    <ImageView
+        android:id="@+id/ivMicStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:contentDescription="@string/mic_turned_off"
+        android:src="@drawable/ic_mic_off"
+        app:tint="@color/white"
+        android:layout_margin="8dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:textFontWeight="600"
+            android:textColor="@color/white"
+            android:layout_margin="8dp"
+            android:padding="6dp"
+            android:background="@drawable/name_style"
+            />
+
+    </FrameLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</FrameLayout>
