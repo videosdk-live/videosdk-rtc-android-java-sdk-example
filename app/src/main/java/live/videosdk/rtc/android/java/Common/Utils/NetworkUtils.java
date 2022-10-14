@@ -13,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,7 +24,7 @@ import live.videosdk.rtc.android.java.Common.Listener.ResponseListener;
 public class NetworkUtils {
 
     static Context context;
-    private static int meetingSeconds;
+    private static int activeMeetingSeconds;
 
     public NetworkUtils(Context context) {
         this.context = context;
@@ -146,17 +145,17 @@ public class NetworkUtils {
                         try {
                             JSONArray jsonArray = (JSONArray) response.get("data");
                             String startMeetingTime = jsonArray.getJSONObject(0).get("start").toString();
-                            Date date = null;
+                            Date startMeetingDate = null;
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                date = Date.from(Instant.parse(startMeetingTime));
+                                startMeetingDate = Date.from(Instant.parse(startMeetingTime));
                             }
 
                             Date currentTime = Calendar.getInstance().getTime();
-                            long difference = currentTime.getTime() - date.getTime();
+                            long difference = currentTime.getTime() - startMeetingDate.getTime();
 
-                             meetingSeconds = Math.toIntExact(TimeUnit.MILLISECONDS.toSeconds(difference));
+                            activeMeetingSeconds = Math.toIntExact(TimeUnit.MILLISECONDS.toSeconds(difference));
 
-                             responseListener.onMeetingTimeChanged(meetingSeconds);
+                             responseListener.onMeetingTimeChanged(activeMeetingSeconds);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

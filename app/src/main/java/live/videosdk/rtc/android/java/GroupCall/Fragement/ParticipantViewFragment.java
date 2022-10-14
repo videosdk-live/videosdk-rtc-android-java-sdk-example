@@ -47,7 +47,7 @@ public class ParticipantViewFragment extends Fragment {
     EglBase.Context eglContext;
 
     private List<Participant> participants;
-    private List<List<Participant>> finalParticipantList;
+    private List<List<Participant>> participantListArr;
 
     TabLayoutMediator tabLayoutMediator;
     ViewPager2 viewPager2;
@@ -97,7 +97,7 @@ public class ParticipantViewFragment extends Fragment {
         participantChangeListener=new ParticipantChangeListener() {
             @Override
             public void onChangeParticipant(List<List<Participant>> participantList) {
-                finalParticipantList=participantList;
+                participantListArr =participantList;
                 if (position < participantList.size()) {
                         participants = participantList.get(position);
                         updateGridLayout();
@@ -136,9 +136,9 @@ public class ParticipantViewFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if(position < finalParticipantList.size()) {
+        if(position < participantListArr.size()) {
 
-            List<Participant> currentParticipants = finalParticipantList.get(position);
+            List<Participant> currentParticipants = participantListArr.get(position);
             for (int i = 0; i < currentParticipants.size(); i++) {
                 Participant participant = currentParticipants.get(i);
                 if (!participant.isLocal()) {
@@ -156,14 +156,14 @@ public class ParticipantViewFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if(position < finalParticipantList.size()) {
+        if(position < participantListArr.size()) {
             List<Participant> otherParticipants = new ArrayList<>();
 
-            for (int i = 0; i < finalParticipantList.size(); i++) {
+            for (int i = 0; i < participantListArr.size(); i++) {
                 if (position == i) {
                     continue;
                 }
-                otherParticipants = finalParticipantList.get(i);
+                otherParticipants = participantListArr.get(i);
             }
 
             for (int i = 0; i < otherParticipants.size(); i++) {

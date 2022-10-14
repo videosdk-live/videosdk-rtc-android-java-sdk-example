@@ -239,7 +239,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
         recordingStatusSnackbar = Snackbar.make(findViewById(R.id.mainLayout), "Recording will be started in few moments",
                 Snackbar.LENGTH_INDEFINITE);
-        HelperClass.setSnackNarStyle(recordingStatusSnackbar.getView(),0);
+        HelperClass.setSnackBarStyle(recordingStatusSnackbar.getView(),0);
         recordingStatusSnackbar.setGestureInsetBottomIgnored(true);
 
         viewAdapter=new ParticipantViewAdapter(GroupCallActivity.this,meeting);
@@ -424,7 +424,7 @@ public class GroupCallActivity extends AppCompatActivity {
                         builderTextLeft.setSpan(new ImageSpan(drawable), 0, 1, 0);
                         Snackbar snackbar = Snackbar.make(parentLayout, builderTextLeft,
                                 Snackbar.LENGTH_SHORT);
-                        HelperClass.setSnackNarStyle(snackbar.getView(), 0);
+                        HelperClass.setSnackBarStyle(snackbar.getView(), 0);
                         snackbar.setGestureInsetBottomIgnored(true);
                         snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                         snackbar.show();
@@ -445,7 +445,7 @@ public class GroupCallActivity extends AppCompatActivity {
                                                     pubSubMessage.getMessage(), Snackbar.LENGTH_SHORT)
                                             .setDuration(2000);
                             View snackbarView = snackbar.getView();
-                            HelperClass.setSnackNarStyle(snackbarView, 0);
+                            HelperClass.setSnackBarStyle(snackbarView, 0);
                             snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                             snackbar.show();
                         }
@@ -526,7 +526,7 @@ public class GroupCallActivity extends AppCompatActivity {
                     recordingStatusSnackbar.dismiss();
                     Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), "Please try again after sometime",
                             Snackbar.LENGTH_LONG);
-                    HelperClass.setSnackNarStyle(snackbar.getView(),0);
+                    HelperClass.setSnackBarStyle(snackbar.getView(),0);
                     snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                     snackbar.show();
                 }
@@ -550,7 +550,7 @@ public class GroupCallActivity extends AppCompatActivity {
                 builderTextLeft.append("   Call disconnected. Reconnecting...");
                 builderTextLeft.setSpan(new ImageSpan(GroupCallActivity.this, R.drawable.ic_call_disconnected), 0, 1, 0);
                 Snackbar snackbar = Snackbar.make(parentLayout, builderTextLeft, Snackbar.LENGTH_LONG);
-                HelperClass.setSnackNarStyle(snackbar.getView(),getResources().getColor(R.color.md_red_400));
+                HelperClass.setSnackBarStyle(snackbar.getView(),getResources().getColor(R.color.md_red_400));
                 snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                 snackbar.show();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -589,7 +589,7 @@ public class GroupCallActivity extends AppCompatActivity {
                     findViewById(R.id.localScreenShareView).setVisibility(View.VISIBLE);
                     screenShareParticipantNameSnackbar = Snackbar.make(findViewById(R.id.mainLayout),"You started presenting",
                             Snackbar.LENGTH_SHORT);
-                    HelperClass.setSnackNarStyle(screenShareParticipantNameSnackbar.getView(),0);
+                    HelperClass.setSnackBarStyle(screenShareParticipantNameSnackbar.getView(),0);
                     screenShareParticipantNameSnackbar.setGestureInsetBottomIgnored(true);
                     screenShareParticipantNameSnackbar.getView().setOnClickListener(view -> screenShareParticipantNameSnackbar.dismiss());
                     screenShareParticipantNameSnackbar.show();
@@ -639,11 +639,6 @@ public class GroupCallActivity extends AppCompatActivity {
             localScreenShare = false;
             return;
         }
-
-        //Used custom track for screen share.
-//        VideoSDK.createScreenShareVideoTrack("h720p_15fps", data, this, (track) -> {
-//            meeting.enableScreenShare(track);
-//        });
 
         meeting.enableScreenShare(data);
     }
@@ -800,7 +795,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
         screenShareParticipantNameSnackbar = Snackbar.make(findViewById(R.id.mainLayout), participant.getDisplayName() + " started presenting",
                 Snackbar.LENGTH_SHORT);
-        HelperClass.setSnackNarStyle(screenShareParticipantNameSnackbar.getView(),0);
+        HelperClass.setSnackBarStyle(screenShareParticipantNameSnackbar.getView(),0);
         screenShareParticipantNameSnackbar.setGestureInsetBottomIgnored(true);
         screenShareParticipantNameSnackbar.getView().setOnClickListener(view -> screenShareParticipantNameSnackbar.dismiss());
         screenShareParticipantNameSnackbar.show();

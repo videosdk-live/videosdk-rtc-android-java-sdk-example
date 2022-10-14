@@ -84,25 +84,25 @@ public class ParticipantState {
     }
 
     public List<List<Participant>> getParticipantList(){
-        List<List<Participant>> finalParticipantList =new ArrayList<>();
+        List<List<Participant>> participantListArr =new ArrayList<>();
 
         final Iterator<Participant> participants = meeting.getParticipants().values().iterator();
 
-        if(finalParticipantList.size() == 0)
+        if(participantListArr.size() == 0)
         {
-            List<Participant> participants1=new ArrayList<>();
-            participants1.add(meeting.getLocalParticipant());
-            finalParticipantList.add(participants1);
+            List<Participant> firstPageParticipantArr=new ArrayList<>();
+            firstPageParticipantArr.add(meeting.getLocalParticipant());
+            participantListArr.add(firstPageParticipantArr);
         }
 
         for (int i = 0; i < meeting.getParticipants().size(); i++) {
 
-            List<Participant> participantList= finalParticipantList.get(finalParticipantList.size()-1);
+            List<Participant> participantList= participantListArr.get(participantListArr.size()-1);
 
             if(participantList.size() == perPageParticipantSize){
-                List<Participant> participants1=new ArrayList<>();
-                participants1.add(participants.next());
-                finalParticipantList.add(participants1);
+                List<Participant> newParticipantArr=new ArrayList<>();
+                newParticipantArr.add(participants.next());
+                participantListArr.add(newParticipantArr);
             }else{
                 final Participant participant = participants.next();
                 participantList.add(participant);
@@ -110,7 +110,7 @@ public class ParticipantState {
 
         }
 
-        return finalParticipantList;
+        return participantListArr;
 
     }
 

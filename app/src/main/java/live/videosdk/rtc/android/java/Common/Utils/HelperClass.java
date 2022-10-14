@@ -17,8 +17,7 @@ public class HelperClass {
 
     private static Dialog progressDialog;
 
-    public static void setSnackNarStyle(View snackbarView, int textColor) {
-//        snackbarView.setBackgroundColor(Color.WHITE);
+    public static void setSnackBarStyle(View snackbarView, int textColor) {
 
         int snackbarTextId = com.google.android.material.R.id.snackbar_text;
         TextView textView = (TextView) snackbarView.findViewById(snackbarTextId);

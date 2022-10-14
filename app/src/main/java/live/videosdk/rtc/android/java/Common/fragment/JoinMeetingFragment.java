@@ -131,7 +131,7 @@ public class JoinMeetingFragment extends Fragment {
                 } else {
                     Snackbar snackbar =
                             Snackbar.make(view.findViewById(R.id.joinMeetingLayout), "No Internet Connection", Snackbar.LENGTH_LONG);
-                    HelperClass.setSnackNarStyle(snackbar.getView(), 0);
+                    HelperClass.setSnackBarStyle(snackbar.getView(), 0);
                     snackbar.show();
                 }
             }

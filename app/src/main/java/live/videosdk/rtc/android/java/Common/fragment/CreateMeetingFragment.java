@@ -97,7 +97,6 @@ public class CreateMeetingFragment extends Fragment {
                                         intent.putExtra("webcamEnabled", ((CreateOrJoinActivity) getActivity()).isWebcamEnabled());
                                         intent.putExtra("micEnabled", ((CreateOrJoinActivity) getActivity()).isMicEnabled());
                                         intent.putExtra("participantName", etName.getText().toString().trim());
-                                        intent.putExtra("createMeeting", true);
                                         startActivity(intent);
                                         ((CreateOrJoinActivity) getActivity()).finish();
                                     } else {
@@ -122,7 +121,7 @@ public class CreateMeetingFragment extends Fragment {
 
                 } else {
                     Snackbar snackbar = Snackbar.make(view.findViewById(R.id.createMeetingLayout), "No Internet Connection", Snackbar.LENGTH_LONG);
-                    HelperClass.setSnackNarStyle(snackbar.getView(), 0);
+                    HelperClass.setSnackBarStyle(snackbar.getView(), 0);
                     snackbar.show();
                 }
             }
