@@ -350,82 +350,82 @@ If you want to learn more about, read the complete documentation of [Android Vid
 ## Project Structure
 We have 3 packages :
 
-  1. `OneToOneCall` - OneToOneCall package includes all classes/files related to OneToOne meeting.
-  2. `GroupCall` - GroupCall package includes all classes/files related to Group meeting.
-  3. `Common` - Common package inclues all the classes/files that are used in both meeting type.
+1. [`OneToOneCall`](app/src/main/java/live/videosdk/rtc/android/java/OneToOneCall) - OneToOneCall package includes all classes/files related to OneToOne meeting.
+2. [`GroupCall`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall) - GroupCall package includes all classes/files related to Group meeting.
+3. [`Common`](app/src/main/java/live/videosdk/rtc/android/java/Common) - Common package inclues all the classes/files that are used in both meeting type.
 
 <br/>
 
-### Common package
+### [Common package](app/src/main/java/live/videosdk/rtc/android/java/Common)
 
 **1. Create or Join Meeting**
-- `NetworkUtils.java` - This class is used to call the api to generate token,create and validate the meeting.
-- `CreateOrJoinActivity.java`
+- [`NetworkUtils.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Utils/NetworkUtils.java) - This class is used to call the api to generate token,create and validate the meeting.
+- [`CreateOrJoinActivity.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Activity/CreateOrJoinActivity.java) and [`activity_create_or_join.xml`](app/src/main/res/layout/activity_create_or_join.xml)
   - This activity is used to ask permissions to the partcipant,and to initiate webcam and mic status.
   - `CreateOrJoinFragment`,`CreateMeetingFragment`,`JoinMeetingFragment` will be bound to this activity.
 
-- `CreateOrJoinFragment.java` - This fragment will include
+- [`CreateOrJoinFragment.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/fragment/CreateOrJoinFragment.java) and [`fragment_createorjoin.xml`](app/src/main/res/layout/fragment_createorjoin.xml) - This fragment will include
 
   - `Create Meeting Button` - This button will navigate to `CreateMeetingFragment`.
   - `Join Meeting Button` - This button will navigate to `JoinMeetingFragment`.
   <p align="center">
-  <img width="230" height="450" src="https://www.linkpicture.com/q/img_CreateOrJoinFragment.jpg"/>
+  <img width="300" src="assets/create_join_fragment.gif"/>
   </p>
 
-- `CreateMeetingFragment.java` -  This fragement will include
+- [`CreateMeetingFragment.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/fragment/CreateMeetingFragment.java) and [`fragment_create_meeting.xml`](app/src/main/res/layout/fragment_create_meeting.xml) -  This fragement will include
   - `Dropdown to select meeting type` - This dropdown will give choice for meeting type.
   - `EditText for ParticipantName` - This edit text will contain name of the participant.
   - `Create Meeting Button` - This button will call api for create a new meeting and navigate to `OneToOneCallActivity` or `GroupCallActivity` according to user choice.
   <p align="center">
-  <img width="230" height="450" src="https://www.linkpicture.com/q/Create-meeting.gif"/>
+  <img width="300" src="assets/create_meeting_fragement.gif"/>
   </p>
-- `JoinMeetingFragment.java`- This fragement will include
+- [`JoinMeetingFragment.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/fragment/JoinMeetingFragment.java) and [`fragment_join_meeting.xml`](app/src/main/res/layout/fragment_join_meeting.xml) - This fragement will include
   - `Dropdown to select meeting type` - This dropdown will give choice for meeting type.
   - `EditText for ParticipantName` - This edit text will contain name of the participant.
   - `EditText for MeetingId` - This edit text will contain the meeting Id that you want to join.
   - `Join Meeting Button` - This button will call api for join meeting with meetingId that you provided and navigate to `OneToOneCallActivity` or `GroupCallActivity` according to user choice.
   <p align="center">
-  <img width="230" height="450" src="https://www.linkpicture.com/q/img_JoinMeetingFragment.jpg"/>
+  <img width="300" src="assets/join_meeting_fragement.gif"/>
   </p>
 
 
 **2. ParticipantList**
 
-- `ParticipantListAdapter.java`,`layout_participants_list_view.xml` and `item_participant_list_layout.xml` files used to show ParticipantList.
+- [`ParticipantListAdapter.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Adapter/ParticipantListAdapter.java),[`layout_participants_list_view.xml`](app/src/main/res/layout/layout_participants_list_view.xml) and [`item_participant_list_layout.xml`](app/src/main/res/layout/item_participant_list_layout.xml) files used to show ParticipantList.
   <p align="center">
-  <img width="250" height="450" src="https://www.linkpicture.com/q/img_participantList.jpg"/>
+  <img width="300" src="assets/participant_list.gif"/>
   </p>
 
 **3. Dialogs**
 
 - **MoreOptions**:
-  - `MoreOptionsListAdapter.java` class,`ListItem.java` class and `more_options_list_layout.xml` files used to show `MoreOptions` dialog.
+  - [`MoreOptionsListAdapter.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Adapter/MoreOptionsListAdapter.java) class,[`ListItem.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Modal/ListItem.java) class and [`more_options_list_layout.xml`](app/src/main/res/layout/more_options_list_layout.xml) files used to show `MoreOptions` dialog.
   <p align="center">
-  <img width="350" height="250" src="https://www.linkpicture.com/q/img_MoreOptionList.jpg"/>
+  <img width="300" src="assets/more _options.gif"/>
   </p>
 - **AudioDeviceList**:
-  - `AudioDeviceListAdapter.java` class,`ListItem.java` class and `audio_device_list_layout.xml` files used to show `AudioDeviceList` dialog.
+  - [`AudioDeviceListAdapter.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Adapter/AudioDeviceListAdapter.java) class,[`ListItem.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Modal/ListItem.java) class and [`audio_device_list_layout.xml`](app/src/main/res/layout/audio_device_list_layout.xml) files used to show `AudioDeviceList` dialog.
   <p align="center">
-  <img width="350" height="250" src="https://www.linkpicture.com/q/img_AudioDeviceList.jpg"/>
+  <img width="300" src="assets/mic_output_device.gif"/>
   </p>
 - **LeaveOrEndDialog**:
-  - `LeaveOptionListAdapter.java` class,`ListItem.java` class and `leave_options_list_layout.xml` files used to show `LeaveOrEndDialog`.
+  - [`LeaveOptionListAdapter.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Adapter/LeaveOptionListAdapter.java) class,[`ListItem.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Modal/ListItem.java) class and [`leave_options_list_layout.xml`](app/src/main/res/layout/leave_options_list_layout.xml) files used to show `LeaveOrEndDialog`.
   <p align="center">
-  <img width="350" height="250" src="https://www.linkpicture.com/q/img_LeaveorEndDialog.jpg"/>
+  <img width="300" src="assets/leave_meeting.gif"/>
   </p>
 
 <br/>
 
-### OneToOneCall package
+### [OneToOneCall package](app/src/main/java/live/videosdk/rtc/android/java/OneToOneCall)
 
-- `OneToOneCallActivity.java` activity is main activity for One-to-One meeting.
+- [`OneToOneCallActivity.java`](app/src/main/java/live/videosdk/rtc/android/java/OneToOneCall/OneToOneCallActivity.java) activity is main activity for One-to-One meeting.
 
 <br/>
 
-### GroupCall package
+### [GroupCall package](app/src/main/java/live/videosdk/rtc/android/java/GroupCall)
 
-- `GroupCallActivity.java` activity is main activity for Group meeting.
-- `ParticipantViewFragment.java` and `ParticipantViewAdapter.java` is used to show participants in Grid.
+- [`GroupCallActivity.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Activity/GroupCallActivity.java) activity is main activity for Group meeting.
+- [`ParticipantViewFragment.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Fragement/ParticipantViewFragment.java), [`ParticipantViewAdapter.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Adapter/ParticipantViewAdapter.java),[`ParticipantChangeListener.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Listener/ParticipantChangeListener.java) and [`ParticipantState.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Utils/ParticipantState.java) is used to show participants in Grid.
 
 <br/>
 
