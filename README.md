@@ -13,13 +13,9 @@ At Video SDK, we’re building tools to help companies create world-class collab
 
 ## Demo App
 
----
-
 📱 Download the sample Android app here: https://appdistribution.firebase.google.com/pub/i/0f3ac650239a944b
 
 ## Features
-
----
 
 - [x] Real-time video and audio conferencing
 - [x] Enable/disable camera
@@ -35,9 +31,6 @@ At Video SDK, we’re building tools to help companies create world-class collab
 <br/>
 
 ## Setup Guide
-
----
-
 - Sign up on [VideoSDK](https://app.videosdk.live) and visit [API Keys](https://app.videosdk.live/api-keys) section to get your API key and Secret key.
 
 - Get familiarized with [API key and Secret key](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/signup-and-create-api).
@@ -47,9 +40,6 @@ At Video SDK, we’re building tools to help companies create world-class collab
 <br/>
 
 ## Prerequisites
-
----
-
 - Development environment requirements:
   - [Java Development Kit](https://www.oracle.com/java/technologies/downloads/)
   - Android Studio 3.0 or later
@@ -59,9 +49,6 @@ At Video SDK, we’re building tools to help companies create world-class collab
 <br/>
 
 ## Run the Sample Project
-
----
-
 ### 1. Clone the sample project
 
 Clone the repository to your local environment.
@@ -85,9 +72,6 @@ Run the android app with **Shift+F10** or the **▶ Run** from toolbar.
 <br/>
 
 ## Key Concepts
-
----
-
 - `Meeting` - A Meeting represents Real time audio and video communication.
 - `Sessions` - A particular duration you spend in a given meeting is a referred as session, you can have multiple session of a particular meetingId.
 - `Participant` - Participant represents someone who is attending the meeting's session, `local partcipant` represents self (You), for this self, other participants are `remote participants`.
@@ -96,8 +80,6 @@ Run the android app with **Shift+F10** or the **▶ Run** from toolbar.
 <br/>
 
 ## Android Permission
-
----
 
 Add all the following permissions to AndroidManifest.xml file.
 
@@ -123,9 +105,6 @@ Add all the following permissions to AndroidManifest.xml file.
 <br/>
 
 ## Token Generation
-
----
-
 Token is used to create and validate a meeting using API and also initialise a meeting.
 
 🛠️ `Development Environment`:
@@ -143,18 +122,12 @@ Token is used to create and validate a meeting using API and also initialise a m
 <br/>
 
 ## API: Create and Validate meeting
-
----
-
 - `create meeting` - Please refer this [documentation](https://docs.videosdk.live/api-reference/realtime-communication/create-room) to create meeting.
 - `validate meeting`- Please refer this [documentation](https://docs.videosdk.live/api-reference/realtime-communication/validate-room) to validate the meetingId.
 
 <br/>
 
 ## [Initialize a Meeting](https://docs.videosdk.live/android/api/sdk-reference/initMeeting)
-
----
-
 1. For meeting initialization, you have to first initialize the `VideoSDK`. You can initialize the `VideoSDK` using `initialize()` method.
 
 ```js
@@ -182,9 +155,6 @@ Token is used to create and validate a meeting using API and also initialise a m
 <br/>
 
 ## [Mute/Unmute Local Audio](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/mic-controls)
-
----
-
 ```js
 // unmute mic
 meeting.unmuteMic();
@@ -196,9 +166,6 @@ meeting.muteMic();
 <br/>
 
 ## [Change Audio Device](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/mic-controls#2-change-audio-device)
-
----
-
 - The `meeting.getMics()` function allows a participant to list all of the attached microphones (e.g., Bluetooth and Earphone).
 
 ```js
@@ -218,9 +185,6 @@ Please consult our documentation [Change Audio Device](https://docs.videosdk.liv
 <br/>
 
 ## [Enable/Disable Local Webcam](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/camera-controls)
-
----
-
 ```js
 // enable webcam
 meeting.enableWebcam();
@@ -232,9 +196,6 @@ meeting.disableWebcam();
 <br/>
 
 ## [Switch Local Webcam](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/camera-controls)
-
----
-
 ```js
 // switch webcam
 meeting.changeWebcam();
@@ -243,9 +204,6 @@ meeting.changeWebcam();
 <br/>
 
 ## [Chat](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/pubsub)
-
----
-
 The chat feature allows participants to send and receive messages about specific topics to which they have subscribed.
 
 ```js
@@ -276,9 +234,6 @@ PubSubMessageListener pubSubMessageListener = new PubSubMessageListener() {
 <br/>
 
 ## [Leave or End Meeting](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/leave-end-meeting)
-
----
-
 ```js
 // Only one participant will leave/exit the meeting; the rest of the participants will remain.
 meeting.leave();
@@ -290,9 +245,6 @@ meeting.end();
 <br/>
 
 ## [Setup MeetingEventListener](https://docs.videosdk.live/android/api/sdk-reference/meeting-class/meeting-event-listener-class)
-
----
-
 By implementing `MeetingEventListener`, VideoSDK sends callbacks to the client app whenever there is a change or update in the meeting after a user joins.
 
 ```js
@@ -356,9 +308,6 @@ By implementing `MeetingEventListener`, VideoSDK sends callbacks to the client a
 <br/>
 
 ## [Setup ParticipantEventListener](https://docs.videosdk.live/android/api/sdk-reference/participant-class/participant-event-listener-class)
-
----
-
 By implementing `ParticipantEventListener`, VideoSDK sends callbacks to the client app whenever a participant's video, audio, or screen share stream is enabled or disabled.
 
 ```js
@@ -381,9 +330,6 @@ If you want to learn more about, read the complete documentation of [Android Vid
 <br/>
 
 ## Project Description
-
----
-
 <br/>
 
 > **Note :**
@@ -402,8 +348,6 @@ If you want to learn more about, read the complete documentation of [Android Vid
 <br/>
 
 ## Project Structure
----
-
 We have 3 packages :
 
   1. `OneToOneCall` - OneToOneCall package includes all classes/files related to OneToOne meeting.
@@ -413,7 +357,7 @@ We have 3 packages :
 <br/>
 
 ### Common package
----
+
 **1. Create or Join Meeting**
 - `NetworkUtils.java` - This class is used to call the api to generate token,create and validate the meeting.
 - `CreateOrJoinActivity.java`
@@ -473,14 +417,12 @@ We have 3 packages :
 <br/>
 
 ### OneToOneCall package
----
 
 - `OneToOneCallActivity.java` activity is main activity for One-to-One meeting.
 
 <br/>
 
 ### GroupCall package
----
 
 - `GroupCallActivity.java` activity is main activity for Group meeting.
 - `ParticipantViewFragment.java` and `ParticipantViewAdapter.java` is used to show participants in Grid.
@@ -488,7 +430,6 @@ We have 3 packages :
 <br/>
 
 ## Examples
----
 - [Prebuilt SDK Examples](https://github.com/videosdk-live/videosdk-rtc-prebuilt-examples)
 - [JavaScript SDK Example](https://github.com/videosdk-live/videosdk-rtc-javascript-sdk-example)
 - [React JS SDK Example](https://github.com/videosdk-live/videosdk-rtc-react-sdk-example)
@@ -500,12 +441,10 @@ We have 3 packages :
 <br/>
 
 ## Documentation
----
 [Read the documentation](https://docs.videosdk.live/) to start using Video SDK.
 
 <br/>
 
 ## Community
----
 - [Discord](https://discord.gg/Gpmj6eCq5u) - To get involved with the Video SDK community, ask questions and share tips.
 - [Twitter](https://twitter.com/video_sdk) - To receive updates, announcements, blog posts, and general Video SDK tips.
