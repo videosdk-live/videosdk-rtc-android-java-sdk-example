@@ -76,7 +76,7 @@
 
             <EditText
                 android:id="@+id/etMessage"
-                android:layout_width="250dp"
+                android:layout_width="305dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:backgroundTint="@color/transparentColor"
@@ -84,7 +84,9 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/text_color"
                 android:fontFamily="sans-serif-medium"
-                android:textFontWeight="600" />
+                android:textFontWeight="600"
+                android:maxHeight="35dp"
+                android:scrollbars="vertical" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

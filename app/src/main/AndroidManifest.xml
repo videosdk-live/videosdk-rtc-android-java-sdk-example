@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <application
-        android:name=".MainApplication"
+        android:name=".Common.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,22 +27,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoSDKRTC"
         android:usesCleartextTraffic="true">
-
         <activity
-            android:name=".Activity.CreateOrJoinActivity"
-            android:windowSoftInputMode="adjustResize">
-
+            android:name=".GroupCall.Activity.GroupCallActivity"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".Common.Activity.CreateOrJoinActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
         <activity
-            android:name=".Activity.OneToOneCallActivity"
-            android:configChanges="orientation|screenSize"
+            android:name=".OneToOneCall.OneToOneCallActivity"
+            android:screenOrientation="portrait"
             android:hardwareAccelerated="true" />
 
 
@@ -55,7 +58,6 @@
         <meta-data
             android:name="notificationIcon"
             android:resource="@mipmap/ic_launcher_round" />
-
     </application>
 
 </manifest>

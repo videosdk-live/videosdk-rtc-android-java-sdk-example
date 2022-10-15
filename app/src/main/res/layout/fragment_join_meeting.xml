@@ -8,6 +8,46 @@
     android:orientation="vertical"
     android:layout_margin="36dp">
 
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="15dp"
+        app:boxCornerRadiusBottomStart="15dp"
+        app:boxCornerRadiusTopEnd="15dp"
+        app:boxCornerRadiusTopStart="15dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeColor="#202427"
+        app:endIconTint="@color/white"
+        app:boxBackgroundColor="#202427">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose Meeting Type"
+            android:elevation="0dp"
+            android:shadowColor="#202427"
+            android:textColor="@color/text_color"
+            android:background="@drawable/et_style"
+            android:inputType="none"
+            android:textAlignment="center"
+            android:fadingEdge="none"
+            android:dropDownSelector="@drawable/et_style"
+            android:padding="15dp"
+            android:fontFamily="sans-serif-medium"
+            android:textFontWeight="620"
+            android:letterSpacing="0"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:paddingStart="50dp"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <EditText
         android:id="@+id/etMeetingId"
         android:layout_width="match_parent"
@@ -19,7 +59,10 @@
         android:textColor="@color/white"
         android:padding="16dp"
         android:fontFamily="sans-serif-medium"
-        android:textFontWeight="500"/>
+        android:textFontWeight="500"
+        android:layout_marginVertical="12dp"
+        android:maxLines="1"
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/etName"
@@ -27,13 +70,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/et_style"
         android:gravity="center"
-        android:layout_marginVertical="12dp"
         android:hint="@string/enter_your_name"
         android:textColor="@color/white"
         android:textColorHint="@color/text_color"
         android:padding="16dp"
         android:fontFamily="sans-serif-medium"
-        android:textFontWeight="500"/>
+        android:textFontWeight="500"
+        android:maxLines="1"
+        android:singleLine="true"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnJoin"
@@ -46,6 +91,7 @@
         app:cornerRadius="15dp"
         android:padding="16dp"
         android:fontFamily="sans-serif-medium"
-        android:textFontWeight="700"/>
+        android:textFontWeight="700"
+        android:layout_marginVertical="12dp"/>
 
 </LinearLayout>

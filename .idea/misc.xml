@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/drawable/ic_baseline_mic_off_24.xml" value="0.1537037037037037" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/drawable/ic_outline_mic_none_24.xml" value="0.14814814814814814" />
         <entry key="..\:/VideoSDK/UpdateExample/videosdk-rtc-android-java-sdk-example/app/src/main/res/drawable/ic_outline_people_24.xml" value="0.14814814814814814" />
@@ -25,6 +26,10 @@
         <entry key="app/src/main/res/drawable/bt_style_disable.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/circle_shape.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/disable_btn_style.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/dot_default_4.xml" value="0.181" />
+        <entry key="app/src/main/res/drawable/dot_selected_4.xml" value="0.181" />
+        <entry key="app/src/main/res/drawable/dot_selector.xml" value="0.181" />
+        <entry key="app/src/main/res/drawable/enable_btn_style.xml" value="0.1185" />
         <entry key="app/src/main/res/drawable/enter_anim.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/et_style.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/exit_anim.xml" value="0.1765" />
@@ -41,6 +46,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.1775" />
         <entry key="app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.1775" />
         <entry key="app/src/main/res/drawable/ic_baseline_videocam_off_24.xml" value="0.1775" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1185" />
         <entry key="app/src/main/res/drawable/ic_mask_group.xml" value="0.1775" />
         <entry key="app/src/main/res/drawable/ic_mic.xml" value="0.1775" />
         <entry key="app/src/main/res/drawable/ic_mic_off.xml" value="0.1775" />
@@ -63,6 +69,7 @@
         <entry key="app/src/main/res/drawable/layout_selected.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/layout_style.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/list_style.xml" value="0.1765" />
+        <entry key="app/src/main/res/drawable/name_style.xml" value="0.1185" />
         <entry key="app/src/main/res/drawable/red_circle_shape.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/rounded_corner.xml" value="0.1765" />
         <entry key="app/src/main/res/drawable/rounded_dialog.xml" value="0.1" />
@@ -72,22 +79,28 @@
         <entry key="app/src/main/res/layout/activity_create_or_join.xml" value="0.27309782608695654" />
         <entry key="app/src/main/res/layout/activity_join.xml" value="0.15" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_one_to_many_call.xml" value="0.2681992337164751" />
         <entry key="app/src/main/res/layout/activity_one_to_one_call.xml" value="0.25" />
         <entry key="app/src/main/res/layout/audio_device_list_layout.xml" value="0.1408514492753623" />
         <entry key="app/src/main/res/layout/audio_device_list_view.xml" value="0.1408514492753623" />
         <entry key="app/src/main/res/layout/chat_layout.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/dropdown_item.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.1408514492753623" />
-        <entry key="app/src/main/res/layout/fragment_create_meeting.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_create_meeting.xml" value="0.4247191011235955" />
         <entry key="app/src/main/res/layout/fragment_createorjoin.xml" value="0.1408514492753623" />
-        <entry key="app/src/main/res/layout/fragment_join_meeting.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_join_meeting.xml" value="0.4247191011235955" />
         <entry key="app/src/main/res/layout/fragment_meeting.xml" value="0.1408514492753623" />
         <entry key="app/src/main/res/layout/fragment_name.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/fragment_partcipant.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_participant.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_view.xml" value="0.18" />
         <entry key="app/src/main/res/layout/ic_participant_name.xml" value="0.1775" />
         <entry key="app/src/main/res/layout/item_message_list.xml" value="0.27309782608695654" />
+        <entry key="app/src/main/res/layout/item_participant.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/item_participant_linear_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_participant_list_layout.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_remote_peer.xml" value="0.2595108695652174" />
-        <entry key="app/src/main/res/layout/joinmeeting_progress_layout.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/joinmeeting_progress_layout.xml" value="0.33" />
         <entry key="app/src/main/res/layout/layout_participants_list_view.xml" value="0.21" />
         <entry key="app/src/main/res/layout/leave_options_layout_view.xml" value="0.1408514492753623" />
         <entry key="app/src/main/res/layout/leave_options_list_layout.xml" value="0.25" />
@@ -98,6 +111,7 @@
         <entry key="app/src/main/res/layout/participant_name.xml" value="0.16875" />
         <entry key="app/src/main/res/layout/progress_layout.xml" value="0.25" />
         <entry key="app/src/main/res/layout/recording_indictor.xml" value="0.1408514492753623" />
+        <entry key="app/src/main/res/layout/stop_screenshare_view.xml" value="0.18" />
       </map>
     </option>
   </component>
