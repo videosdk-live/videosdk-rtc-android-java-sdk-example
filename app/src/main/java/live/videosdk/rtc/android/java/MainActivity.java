@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         Map<String, CustomStreamTrack> customTracks = new HashMap<>();
 
-        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h240p_w320p", "front", this);
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h240p_w320p", "front", CustomStreamTrack.VideoMode.DETAIL, this);
         customTracks.put("video", videoCustomTrack);
 
         JSONObject noiseConfig =new JSONObject();
@@ -617,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
             if (webcamEnabled) {
                 meeting.disableWebcam();
             } else {
-                meeting.enableWebcam(VideoSDK.createCameraVideoTrack("h240p_w320p", "back", this));
+                meeting.enableWebcam(VideoSDK.createCameraVideoTrack("h240p_w320p", "back", CustomStreamTrack.VideoMode.DETAIL, this));
             }
         });
 
