@@ -192,7 +192,6 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
     private void showPopup(ViewHolder holder, Participant participant) {
         PopupMenu popup = new PopupMenu(context, holder.btnParticipantMoreOptions);
 
-        MenuInflater inflater = popup.getMenuInflater();
         popup.getMenu().add("Remove Participant");
 
         if (getVideoStreamStatus(participant)) {
@@ -232,6 +231,7 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             popup.setGravity(Gravity.END);
         }
+
         popup.show();
 
     }

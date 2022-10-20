@@ -201,10 +201,9 @@ public class ParticipantViewFragment extends Fragment {
                 Log.e("Error", "showInGUI: "+ e.getMessage() );
             }
 
-            if(participant.getId() == meeting.getLocalParticipant().getId())
-            {
+            if (participant.getId().equals(meeting.getLocalParticipant().getId())) {
                 tvName.setText("You");
-            }else {
+            } else {
                 tvName.setText(participant.getDisplayName());
             }
             txtParticipantName.setText(participant.getDisplayName().substring(0, 1));

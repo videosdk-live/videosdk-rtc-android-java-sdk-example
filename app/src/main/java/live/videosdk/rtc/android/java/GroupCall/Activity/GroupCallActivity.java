@@ -17,7 +17,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -40,11 +39,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -113,6 +114,7 @@ public class GroupCallActivity extends AppCompatActivity {
     private LinearLayout micLayout;
     ArrayList<Participant> participants;
     private SurfaceViewRenderer svrShare;
+    private FrameLayout shareLayout;
 
     private boolean micEnabled = true;
     private boolean webcamEnabled = true;
@@ -174,7 +176,8 @@ public class GroupCallActivity extends AppCompatActivity {
         btnStopScreenShare = findViewById(R.id.btnStopScreenShare);
 
 
-        viewPager2=findViewById(R.id.view_pager_video_grid);
+        viewPager2 = findViewById(R.id.view_pager_video_grid);
+        shareLayout = findViewById(R.id.shareLayout);
         svrShare = findViewById(R.id.svrShare);
         svrShare.init(PeerConnectionUtils.getEglContext(), null);
 
@@ -239,12 +242,12 @@ public class GroupCallActivity extends AppCompatActivity {
 
         recordingStatusSnackbar = Snackbar.make(findViewById(R.id.mainLayout), "Recording will be started in few moments",
                 Snackbar.LENGTH_INDEFINITE);
-        HelperClass.setSnackBarStyle(recordingStatusSnackbar.getView(),0);
+        HelperClass.setSnackBarStyle(recordingStatusSnackbar.getView(), 0);
         recordingStatusSnackbar.setGestureInsetBottomIgnored(true);
 
-        viewAdapter=new ParticipantViewAdapter(GroupCallActivity.this,meeting);
+        viewAdapter = new ParticipantViewAdapter(GroupCallActivity.this, meeting);
 
-        onTouchListener=new View.OnTouchListener() {
+        onTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -260,9 +263,20 @@ public class GroupCallActivity extends AppCompatActivity {
                             if (duration <= MAX_DURATION) {
                                 if (fullScreen) {
                                     toolbar.setVisibility(View.VISIBLE);
-                                    for(int i=0;i< toolbar.getChildCount();i++) {
+                                    for (int i = 0; i < toolbar.getChildCount(); i++) {
                                         toolbar.getChildAt(i).setVisibility(View.VISIBLE);
                                     }
+
+                                    Toolbar.LayoutParams params = new Toolbar.LayoutParams(
+                                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                                            ViewGroup.LayoutParams.WRAP_CONTENT
+                                    );
+                                    params.setMargins(22, 10, 0, 0);
+                                    findViewById(R.id.meetingLayout).setLayoutParams(params);
+
+                                    shareLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(420, GroupCallActivity.this)));
+                                    ((LinearLayout) findViewById(R.id.localScreenShareView)).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(420, GroupCallActivity.this)));
+
                                     TranslateAnimation toolbarAnimation = new TranslateAnimation(
                                             0,
                                             0,
@@ -272,9 +286,9 @@ public class GroupCallActivity extends AppCompatActivity {
                                     toolbarAnimation.setFillAfter(true);
                                     toolbar.startAnimation(toolbarAnimation);
 
-                                    BottomAppBar bottomAppBar= findViewById(R.id.bottomAppbar);
+                                    BottomAppBar bottomAppBar = findViewById(R.id.bottomAppbar);
                                     bottomAppBar.setVisibility(View.VISIBLE);
-                                    for(int i=0;i< bottomAppBar.getChildCount();i++) {
+                                    for (int i = 0; i < bottomAppBar.getChildCount(); i++) {
                                         bottomAppBar.getChildAt(i).setVisibility(View.VISIBLE);
                                     }
 
@@ -288,9 +302,13 @@ public class GroupCallActivity extends AppCompatActivity {
                                     findViewById(R.id.bottomAppbar).startAnimation(animate);
                                 } else {
                                     toolbar.setVisibility(View.GONE);
-                                    for(int i=0;i< toolbar.getChildCount();i++) {
+                                    for (int i = 0; i < toolbar.getChildCount(); i++) {
                                         toolbar.getChildAt(i).setVisibility(View.GONE);
                                     }
+
+                                    shareLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(500, GroupCallActivity.this)));
+
+                                    ((LinearLayout) findViewById(R.id.localScreenShareView)).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(500, GroupCallActivity.this)));
 
                                     TranslateAnimation toolbarAnimation = new TranslateAnimation(
                                             0,
@@ -301,9 +319,9 @@ public class GroupCallActivity extends AppCompatActivity {
                                     toolbarAnimation.setFillAfter(true);
                                     toolbar.startAnimation(toolbarAnimation);
 
-                                    BottomAppBar bottomAppBar= findViewById(R.id.bottomAppbar);
+                                    BottomAppBar bottomAppBar = findViewById(R.id.bottomAppbar);
                                     bottomAppBar.setVisibility(View.GONE);
-                                    for(int i=0;i< bottomAppBar.getChildCount();i++) {
+                                    for (int i = 0; i < bottomAppBar.getChildCount(); i++) {
                                         bottomAppBar.getChildAt(i).setVisibility(View.GONE);
                                     }
 
@@ -337,8 +355,13 @@ public class GroupCallActivity extends AppCompatActivity {
         return onTouchListener;
     }
 
+    public static int dpToPx(int dp, Context context) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void toggleMicIcon(boolean micEnabled) {
+    private void toggleMicIcon() {
         if (micEnabled) {
             btnMic.setImageResource(R.drawable.ic_mic_on);
             btnAudioSelection.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
@@ -352,7 +375,7 @@ public class GroupCallActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ResourceType")
-    private void toggleWebcamIcon(Boolean webcamEnabled) {
+    private void toggleWebcamIcon() {
         if (webcamEnabled) {
             btnWebcam.setImageResource(R.drawable.ic_video_camera);
             btnWebcam.setColorFilter(Color.WHITE);
@@ -382,14 +405,8 @@ public class GroupCallActivity extends AppCompatActivity {
                 //hide progress when meetingJoined
                 HelperClass.hideProgress(getWindow().getDecorView().getRootView());
 
-                toggleMicIcon(micEnabled);
-                toggleWebcamIcon(webcamEnabled);
-
-                micEnabled = !micEnabled;
-                webcamEnabled = !webcamEnabled;
-
-                toggleMic();
-                toggleWebCam();
+                toggleMicIcon();
+                toggleWebcamIcon();
 
                 setLocalListeners();
 
@@ -400,7 +417,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
                     @Override
                     public void onMeetingTimeChanged(int meetingTime) {
-                        meetingSeconds=meetingTime;
+                        meetingSeconds = meetingTime;
                         showMeetingTime();
                     }
                 });
@@ -409,7 +426,7 @@ public class GroupCallActivity extends AppCompatActivity {
                 viewPager2.setAdapter(viewAdapter);
 
 
-                 raiseHandListener = new PubSubMessageListener() {
+                raiseHandListener = new PubSubMessageListener() {
                     @Override
                     public void onMessageReceived(PubSubMessage pubSubMessage) {
                         View parentLayout = findViewById(android.R.id.content);
@@ -420,7 +437,7 @@ public class GroupCallActivity extends AppCompatActivity {
                             builderTextLeft.append("   " + pubSubMessage.getSenderName() + " raised hand  ");
                         }
                         Drawable drawable = getResources().getDrawable(R.drawable.ic_raise_hand);
-                        drawable.setBounds(0, 0, 50, 55);
+                        drawable.setBounds(0, 0, 50, 65);
                         builderTextLeft.setSpan(new ImageSpan(drawable), 0, 1, 0);
                         Snackbar snackbar = Snackbar.make(parentLayout, builderTextLeft,
                                 Snackbar.LENGTH_SHORT);
@@ -432,10 +449,10 @@ public class GroupCallActivity extends AppCompatActivity {
                 };
 
                 // notify user for raise hand
-                meeting.pubSub.subscribe("RAISE_HAND",raiseHandListener);
+                meeting.pubSub.subscribe("RAISE_HAND", raiseHandListener);
 
 
-                chatListener =new PubSubMessageListener() {
+                chatListener = new PubSubMessageListener() {
                     @Override
                     public void onMessageReceived(PubSubMessage pubSubMessage) {
                         if (!pubSubMessage.getSenderId().equals(meeting.getLocalParticipant().getId())) {
@@ -452,24 +469,45 @@ public class GroupCallActivity extends AppCompatActivity {
                     }
                 };
                 // notify user of any new messages
-                meeting.pubSub.subscribe("CHAT",chatListener);
+                meeting.pubSub.subscribe("CHAT", chatListener);
 
                 //terminate meeting in 10 minutes
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (!isDestroyed())
-                            new MaterialAlertDialogBuilder(GroupCallActivity.this)
-                                    .setTitle("Meeting Left")
-                                    .setMessage("Demo app limits meeting to 10 Minutes")
-                                    .setCancelable(false)
-                                    .setPositiveButton("Ok", (dialog, which) -> {
-                                        if (!isDestroyed()) {
-                                            ParticipantState.destroy();
-                                            meeting.leave();
-                                        }
-                                    })
-                                    .create().show();
+                        if (!isDestroyed()) {
+                            AlertDialog alertDialog = new MaterialAlertDialogBuilder(GroupCallActivity.this, R.style.AlertDialogCustom).create();
+                            alertDialog.setCanceledOnTouchOutside(false);
+
+                            LayoutInflater inflater = GroupCallActivity.this.getLayoutInflater();
+                            View dialogView = inflater.inflate(R.layout.alert_dialog_layout, null);
+                            alertDialog.setView(dialogView);
+
+                            TextView title = (TextView) dialogView.findViewById(R.id.title);
+                            title.setText("Meeting Left");
+                            TextView message = (TextView) dialogView.findViewById(R.id.message);
+                            message.setText("Demo app limits meeting to 10 Minutes");
+
+                            Button positiveButton = dialogView.findViewById(R.id.positiveBtn);
+                            positiveButton.setText("Ok");
+                            positiveButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (!isDestroyed()) {
+                                        ParticipantState.destroy();
+                                        unSubscribeTopics();
+                                        meeting.leave();
+                                    }
+                                    alertDialog.dismiss();
+                                }
+                            });
+
+                            Button negativeButton = dialogView.findViewById(R.id.negativeBtn);
+                            negativeButton.setVisibility(View.GONE);
+
+                            alertDialog.show();
+                        }
+
                     }
                 }, 600000);
             }
@@ -497,7 +535,7 @@ public class GroupCallActivity extends AppCompatActivity {
             recording = true;
 
             recordingStatusSnackbar.dismiss();
-            (findViewById(R.id.recordIcon)).setVisibility(View.VISIBLE);
+            (findViewById(R.id.recordingLottie)).setVisibility(View.VISIBLE);
             Toast.makeText(GroupCallActivity.this, "Recording started",
                     Toast.LENGTH_SHORT).show();
         }
@@ -506,7 +544,7 @@ public class GroupCallActivity extends AppCompatActivity {
         public void onRecordingStopped() {
             recording = false;
 
-            (findViewById(R.id.recordIcon)).setVisibility(View.GONE);
+            (findViewById(R.id.recordingLottie)).setVisibility(View.GONE);
 
             Toast.makeText(GroupCallActivity.this, "Recording stopped",
                     Toast.LENGTH_SHORT).show();
@@ -526,7 +564,7 @@ public class GroupCallActivity extends AppCompatActivity {
                     recordingStatusSnackbar.dismiss();
                     Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), "Please try again after sometime",
                             Snackbar.LENGTH_LONG);
-                    HelperClass.setSnackBarStyle(snackbar.getView(),0);
+                    HelperClass.setSnackBarStyle(snackbar.getView(), 0);
                     snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                     snackbar.show();
                 }
@@ -543,18 +581,17 @@ public class GroupCallActivity extends AppCompatActivity {
 
         @Override
         public void onMeetingStateChanged(String state) {
-            if(state == "FAILED")
-            {
+            if (state == "FAILED") {
                 View parentLayout = findViewById(android.R.id.content);
                 SpannableStringBuilder builderTextLeft = new SpannableStringBuilder();
                 builderTextLeft.append("   Call disconnected. Reconnecting...");
                 builderTextLeft.setSpan(new ImageSpan(GroupCallActivity.this, R.drawable.ic_call_disconnected), 0, 1, 0);
                 Snackbar snackbar = Snackbar.make(parentLayout, builderTextLeft, Snackbar.LENGTH_LONG);
-                HelperClass.setSnackBarStyle(snackbar.getView(),getResources().getColor(R.color.md_red_400));
+                HelperClass.setSnackBarStyle(snackbar.getView(), getResources().getColor(R.color.md_red_400));
                 snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                 snackbar.show();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if(handler.hasCallbacks(runnable))
+                    if (handler.hasCallbacks(runnable))
                         handler.removeCallbacks(runnable);
                 }
             }
@@ -580,16 +617,16 @@ public class GroupCallActivity extends AppCompatActivity {
             public void onStreamEnabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
                     webcamEnabled = true;
-                    toggleWebcamIcon(true);
+                    toggleWebcamIcon();
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                    micEnabled=true;
-                    toggleMicIcon(true);
+                    micEnabled = true;
+                    toggleMicIcon();
                 } else if (stream.getKind().equalsIgnoreCase("share")) {
 
                     findViewById(R.id.localScreenShareView).setVisibility(View.VISIBLE);
-                    screenShareParticipantNameSnackbar = Snackbar.make(findViewById(R.id.mainLayout),"You started presenting",
+                    screenShareParticipantNameSnackbar = Snackbar.make(findViewById(R.id.mainLayout), "You started presenting",
                             Snackbar.LENGTH_SHORT);
-                    HelperClass.setSnackBarStyle(screenShareParticipantNameSnackbar.getView(),0);
+                    HelperClass.setSnackBarStyle(screenShareParticipantNameSnackbar.getView(), 0);
                     screenShareParticipantNameSnackbar.setGestureInsetBottomIgnored(true);
                     screenShareParticipantNameSnackbar.getView().setOnClickListener(view -> screenShareParticipantNameSnackbar.dismiss());
                     screenShareParticipantNameSnackbar.show();
@@ -604,10 +641,10 @@ public class GroupCallActivity extends AppCompatActivity {
             public void onStreamDisabled(Stream stream) {
                 if (stream.getKind().equalsIgnoreCase("video")) {
                     webcamEnabled = false;
-                    toggleWebcamIcon(false);
+                    toggleWebcamIcon();
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                    micEnabled=false;
-                    toggleMicIcon(false);
+                    micEnabled = false;
+                    toggleMicIcon();
                 } else if (stream.getKind().equalsIgnoreCase("share")) {
 
                     findViewById(R.id.localScreenShareView).setVisibility(View.GONE);
@@ -694,17 +731,15 @@ public class GroupCallActivity extends AppCompatActivity {
 
             meeting.unmuteMic(audioCustomTrack);
         }
-        micEnabled = !micEnabled;
     }
 
     private void toggleWebCam() {
         if (webcamEnabled) {
             meeting.disableWebcam();
         } else {
-            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h240p_w320p", "front", this);
+            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, this);
             meeting.enableWebcam(videoCustomTrack);
         }
-        webcamEnabled = !webcamEnabled;
     }
 
     private void setActionListeners() {
@@ -761,6 +796,7 @@ public class GroupCallActivity extends AppCompatActivity {
         if (participantId == null) {
             svrShare.clearImage();
             svrShare.setVisibility(View.GONE);
+            shareLayout.setVisibility(View.GONE);
             screenshareEnabled = false;
             return;
         } else {
@@ -782,10 +818,11 @@ public class GroupCallActivity extends AppCompatActivity {
         }
 
         if (shareStream == null) return;
-        ( (TextView) findViewById(R.id.tvScreenShareParticipantName)).setText(participant.getDisplayName()+ " is presenting");
+        ((TextView) findViewById(R.id.tvScreenShareParticipantName)).setText(participant.getDisplayName() + " is presenting");
         findViewById(R.id.tvScreenShareParticipantName).setVisibility(View.VISIBLE);
 
         // display share video
+        shareLayout.setVisibility(View.VISIBLE);
         svrShare.setVisibility(View.VISIBLE);
         svrShare.setZOrderMediaOverlay(true);
         svrShare.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
@@ -795,7 +832,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
         screenShareParticipantNameSnackbar = Snackbar.make(findViewById(R.id.mainLayout), participant.getDisplayName() + " started presenting",
                 Snackbar.LENGTH_SHORT);
-        HelperClass.setSnackBarStyle(screenShareParticipantNameSnackbar.getView(),0);
+        HelperClass.setSnackBarStyle(screenShareParticipantNameSnackbar.getView(), 0);
         screenShareParticipantNameSnackbar.setGestureInsetBottomIgnored(true);
         screenShareParticipantNameSnackbar.getView().setOnClickListener(view -> screenShareParticipantNameSnackbar.dismiss());
         screenShareParticipantNameSnackbar.show();
@@ -810,6 +847,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
                     svrShare.clearImage();
                     svrShare.setVisibility(View.GONE);
+                    shareLayout.setVisibility(View.GONE);
                     findViewById(R.id.tvScreenShareParticipantName).setVisibility(View.GONE);
                     localScreenShare = false;
                 }
@@ -832,12 +870,14 @@ public class GroupCallActivity extends AppCompatActivity {
                         case 0: {
                             viewPager2.setAdapter(null);
                             ParticipantState.destroy();
+                            unSubscribeTopics();
                             meeting.leave();
                             break;
                         }
                         case 1: {
                             viewPager2.setAdapter(null);
                             ParticipantState.destroy();
+                            unSubscribeTopics();
                             meeting.end();
                             break;
                         }
@@ -847,7 +887,7 @@ public class GroupCallActivity extends AppCompatActivity {
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
 
         ListView listView = alertDialog.getListView();
-        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
+        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200))); // set color
         listView.setFooterDividersEnabled(false);
         listView.addFooterView(new View(GroupCallActivity.this));
         listView.setDividerHeight(2);
@@ -903,7 +943,7 @@ public class GroupCallActivity extends AppCompatActivity {
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
 
         ListView listView = alertDialog.getListView();
-        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
+        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200))); // set color
         listView.setFooterDividersEnabled(false);
         listView.addFooterView(new View(GroupCallActivity.this));
         listView.setDividerHeight(2);
@@ -974,7 +1014,7 @@ public class GroupCallActivity extends AppCompatActivity {
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
 
         ListView listView = alertDialog.getListView();
-        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
+        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200))); // set color
         listView.setFooterDividersEnabled(false);
         listView.addFooterView(new View(GroupCallActivity.this));
         listView.setDividerHeight(2);
@@ -1012,23 +1052,27 @@ public class GroupCallActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
 
-        if (meeting != null)
-        {
+        if (meeting != null) {
             meeting.removeAllListeners();
             meeting.getLocalParticipant().removeAllListeners();
-            meeting.pubSub.unsubscribe("CHAT",chatListener);
-            meeting.pubSub.unsubscribe("RAISE_HAND",raiseHandListener);
-
             meeting.leave();
-            meeting=null;
+            meeting = null;
         }
-        if(svrShare!=null) {
+        if (svrShare != null) {
             svrShare.clearImage();
             svrShare.setVisibility(View.GONE);
+            shareLayout.setVisibility(View.GONE);
             svrShare.release();
         }
 
         super.onDestroy();
+    }
+
+    public void unSubscribeTopics() {
+        if (meeting != null) {
+            meeting.pubSub.unsubscribe("CHAT", chatListener);
+            meeting.pubSub.unsubscribe("RAISE_HAND", raiseHandListener);
+        }
     }
 
     public void openParticipantList() {
@@ -1228,7 +1272,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
     public void showMeetingTime() {
 
-        runnable =  new Runnable() {
+        runnable = new Runnable() {
             @Override
             public void run() {
                 int hours = meetingSeconds / 3600;
@@ -1247,27 +1291,84 @@ public class GroupCallActivity extends AppCompatActivity {
                 handler.postDelayed(this, 1000);
             }
         };
-        
+
         handler.post(runnable);
 
     }
 
     private void showMicRequestDialog(MicRequestListener listener) {
-        new MaterialAlertDialogBuilder(GroupCallActivity.this,R.style.AlertDialogCustom)
-                .setMessage("Host is asking you to unmute your mic, do you want to allow ?")
-                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
-                .setNegativeButton("No", (dialog, which) -> listener.reject())
-                .show();
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(GroupCallActivity.this, R.style.AlertDialogCustom).create();
+        alertDialog.setCanceledOnTouchOutside(false);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_layout, null);
+        alertDialog.setView(dialogView);
+
+        TextView title = (TextView) dialogView.findViewById(R.id.title);
+        title.setVisibility(View.GONE);
+        TextView message = (TextView) dialogView.findViewById(R.id.message);
+        message.setText("Host is asking you to unmute your mic, do you want to allow ?");
+
+        Button positiveButton = dialogView.findViewById(R.id.positiveBtn);
+        positiveButton.setText("Yes");
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.accept();
+                alertDialog.dismiss();
+            }
+        });
+
+        Button negativeButton = dialogView.findViewById(R.id.negativeBtn);
+        negativeButton.setText("No");
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.reject();
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
     }
+
 
     private void showWebcamRequestDialog(WebcamRequestListener listener) {
-        new MaterialAlertDialogBuilder(GroupCallActivity.this,R.style.AlertDialogCustom)
-                .setMessage("Host is asking you to enable your webcam, do you want to allow ?")
-                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
-                .setNegativeButton("No", (dialog, which) -> listener.reject())
-                .show();
-    }
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(GroupCallActivity.this, R.style.AlertDialogCustom).create();
+        alertDialog.setCanceledOnTouchOutside(false);
 
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_layout, null);
+        alertDialog.setView(dialogView);
+
+        TextView title = (TextView) dialogView.findViewById(R.id.title);
+        title.setVisibility(View.GONE);
+        TextView message = (TextView) dialogView.findViewById(R.id.message);
+        message.setText("Host is asking you to enable your webcam, do you want to allow ?");
+
+        Button positiveButton = dialogView.findViewById(R.id.positiveBtn);
+        positiveButton.setText("Yes");
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.accept();
+                alertDialog.dismiss();
+            }
+        });
+
+        Button negativeButton = dialogView.findViewById(R.id.negativeBtn);
+        negativeButton.setText("No");
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.reject();
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+
+    }
 
 
 }

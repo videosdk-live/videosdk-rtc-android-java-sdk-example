@@ -41,9 +41,11 @@
 
 
     <ImageView
+        android:background="@drawable/audio_circle_shape"
         android:id="@+id/ivMicStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:padding="7dp"
+        android:layout_width="25sp"
+        android:layout_height="25sp"
         android:layout_gravity="right"
         android:contentDescription="@string/mic_turned_off"
         android:src="@drawable/ic_mic_off"

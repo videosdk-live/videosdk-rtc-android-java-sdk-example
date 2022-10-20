@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:textColor="@color/md_blue_grey_200"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:fontFamily="sans-serif-medium"
             android:textFontWeight="500"/>
 

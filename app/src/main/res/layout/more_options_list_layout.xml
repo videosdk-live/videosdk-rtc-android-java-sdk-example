@@ -16,11 +16,12 @@
 
         <ImageView
             android:id="@+id/iv_item_icon"
-            android:layout_width="wrap_content"
+            android:layout_width="30sp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5sp"
             android:visibility="visible"
-            app:tint="@color/white" />
+            app:tint="@color/white"
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/tv_item_name"
