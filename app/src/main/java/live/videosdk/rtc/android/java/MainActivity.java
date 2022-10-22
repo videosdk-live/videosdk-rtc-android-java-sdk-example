@@ -700,7 +700,14 @@ public class MainActivity extends AppCompatActivity {
                             audioDevice = AppRTCAudioManager.AudioDevice.EARPIECE;
                             break;
                     }
-                    meeting.changeMic(audioDevice);
+                    JSONObject noiseConfig = new JSONObject();
+                    JsonUtils.jsonPut(noiseConfig, "acousticEchoCancellation", true);
+                    JsonUtils.jsonPut(noiseConfig, "noiseSuppression", true);
+                    JsonUtils.jsonPut(noiseConfig, "autoGainControl", true);
+
+                    CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", noiseConfig, this);
+
+                    meeting.changeMic(audioDevice, audioCustomTrack);
                 })
                 .show();
     }
