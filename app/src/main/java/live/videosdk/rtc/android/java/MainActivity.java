@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         Map<String, CustomStreamTrack> customTracks = new HashMap<>();
 
-        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h240p_w320p", "front", this);
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h240p_w320p", "front", CustomStreamTrack.VideoMode.DETAIL, this);
         customTracks.put("video", videoCustomTrack);
 
         JSONObject noiseConfig =new JSONObject();
@@ -617,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
             if (webcamEnabled) {
                 meeting.disableWebcam();
             } else {
-                meeting.enableWebcam(VideoSDK.createCameraVideoTrack("h240p_w320p", "back", this));
+                meeting.enableWebcam(VideoSDK.createCameraVideoTrack("h240p_w320p", "back", CustomStreamTrack.VideoMode.DETAIL, this));
             }
         });
 
@@ -700,7 +700,14 @@ public class MainActivity extends AppCompatActivity {
                             audioDevice = AppRTCAudioManager.AudioDevice.EARPIECE;
                             break;
                     }
-                    meeting.changeMic(audioDevice);
+                    JSONObject noiseConfig = new JSONObject();
+                    JsonUtils.jsonPut(noiseConfig, "acousticEchoCancellation", true);
+                    JsonUtils.jsonPut(noiseConfig, "noiseSuppression", true);
+                    JsonUtils.jsonPut(noiseConfig, "autoGainControl", true);
+
+                    CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", noiseConfig, this);
+
+                    meeting.changeMic(audioDevice, audioCustomTrack);
                 })
                 .show();
     }
