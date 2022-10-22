@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -85,6 +86,7 @@ import live.videosdk.rtc.android.java.Common.Adapter.MoreOptionsListAdapter;
 import live.videosdk.rtc.android.java.Common.Adapter.ParticipantListAdapter;
 import live.videosdk.rtc.android.java.Common.Listener.ResponseListener;
 import live.videosdk.rtc.android.java.Common.Modal.ListItem;
+import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
@@ -122,7 +124,6 @@ public class OneToOneCallActivity extends AppCompatActivity {
     private boolean recording = false;
     private boolean localScreenShare = false;
     private boolean fullScreen = false;
-    private boolean createMeeting = false;
     private static String token;
     int clickCount = 0;
     long startTime;
@@ -198,7 +199,6 @@ public class OneToOneCallActivity extends AppCompatActivity {
         final String meetingId = getIntent().getStringExtra("meetingId");
         micEnabled = getIntent().getBooleanExtra("micEnabled", true);
         webcamEnabled = getIntent().getBooleanExtra("webcamEnabled", true);
-        createMeeting = getIntent().getBooleanExtra("createMeeting", false);
 
         String localParticipantName = getIntent().getStringExtra("participantName");
         if (localParticipantName == null) {
@@ -271,6 +271,14 @@ public class OneToOneCallActivity extends AppCompatActivity {
                                     for (int i = 0; i < toolbar.getChildCount(); i++) {
                                         toolbar.getChildAt(i).setVisibility(View.VISIBLE);
                                     }
+
+                                    Toolbar.LayoutParams params = new Toolbar.LayoutParams(
+                                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                                            ViewGroup.LayoutParams.WRAP_CONTENT
+                                    );
+                                    params.setMargins(30, 10, 0, 0);
+                                    findViewById(R.id.meetingLayout).setLayoutParams(params);
+
                                     TranslateAnimation toolbarAnimation = new TranslateAnimation(
                                             0,
                                             0,
@@ -436,18 +444,42 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (!isDestroyed())
-                                new MaterialAlertDialogBuilder(OneToOneCallActivity.this)
-                                        .setTitle("Meeting Left")
-                                        .setMessage("Demo app limits meeting to 10 Minutes")
-                                        .setCancelable(false)
-                                        .setPositiveButton("Ok", (dialog, which) -> {
-                                            if (!isDestroyed())
-                                                meeting.leave();
-                                        })
-                                        .create().show();
+                            if (!isDestroyed()) {
+                                AlertDialog alertDialog = new MaterialAlertDialogBuilder(OneToOneCallActivity.this, R.style.AlertDialogCustom).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+
+                                LayoutInflater inflater = OneToOneCallActivity.this.getLayoutInflater();
+                                View dialogView = inflater.inflate(R.layout.alert_dialog_layout, null);
+                                alertDialog.setView(dialogView);
+
+                                TextView title = (TextView) dialogView.findViewById(R.id.title);
+                                title.setText("Meeting Left");
+                                TextView message = (TextView) dialogView.findViewById(R.id.message);
+                                message.setText("Demo app limits meeting to 10 Minutes");
+
+                                Button positiveButton = dialogView.findViewById(R.id.positiveBtn);
+                                positiveButton.setText("Ok");
+                                positiveButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (!isDestroyed()) {
+                                            ParticipantState.destroy();
+                                            unSubscribeTopics();
+                                            meeting.leave();
+                                        }
+                                        alertDialog.dismiss();
+                                    }
+                                });
+
+                                Button negativeButton = dialogView.findViewById(R.id.negativeBtn);
+                                negativeButton.setVisibility(View.GONE);
+
+                                alertDialog.show();
+                            }
+
                         }
                     }, 600000);
+
                 } else {
                     View progressLayout = LayoutInflater.from(getApplicationContext()).inflate(R.layout.progress_layout, findViewById(R.id.layout_progress));
 
@@ -468,7 +500,6 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         @Override
         public void onMeetingLeft() {
-
             if (!isDestroyed()) {
                 Intent intents = new Intent(OneToOneCallActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -493,7 +524,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         @Override
         public void onParticipantLeft(Participant participant) {
-           if (meeting.getParticipants().size() < 1) {
+            if (meeting.getParticipants().size() < 1) {
                 hideParticipantCard();
                 if (screenshareTrack != null) {
                     if (participantTrack != null) participantTrack.removeSink(svrLocal);
@@ -525,7 +556,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
             recording = true;
 
             recordingStatusSnackbar.dismiss();
-            (findViewById(R.id.recordIcon)).setVisibility(View.VISIBLE);
+            (findViewById(R.id.recordingLottie)).setVisibility(View.VISIBLE);
             Toast.makeText(OneToOneCallActivity.this, "Recording started",
                     Toast.LENGTH_SHORT).show();
         }
@@ -534,7 +565,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         public void onRecordingStopped() {
             recording = false;
 
-            (findViewById(R.id.recordIcon)).setVisibility(View.GONE);
+            (findViewById(R.id.recordingLottie)).setVisibility(View.GONE);
 
             Toast.makeText(OneToOneCallActivity.this, "Recording stopped",
                     Toast.LENGTH_SHORT).show();
@@ -670,11 +701,6 @@ public class OneToOneCallActivity extends AppCompatActivity {
             return;
         }
 
-        //Used custom track for screen share.
-//        VideoSDK.createScreenShareVideoTrack("h720p_15fps", data, this, (track) -> {
-//            meeting.enableScreenShare(track);
-//        });
-
         meeting.enableScreenShare(data);
     }
 
@@ -706,7 +732,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         if (participantName != null)
             txtLocalParticipantName.setText(participantName.substring(0, 1));
 
-        tvName.setText(participantName+ " is presenting");
+        tvName.setText(participantName + " is presenting");
         onTrackChange();
 
         screenShareParticipantNameSnackbar = Snackbar.make(findViewById(R.id.mainLayout), participant.getDisplayName() + " started presenting",
@@ -795,7 +821,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         if (webcamEnabled) {
             meeting.disableWebcam();
         } else {
-            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h240p_w320p", "front", this);
+            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, this);
             meeting.enableWebcam(videoCustomTrack);
         }
         webcamEnabled = !webcamEnabled;
@@ -867,10 +893,12 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 .setAdapter(arrayAdapter, (dialog, which) -> {
                     switch (which) {
                         case 0: {
+                            unSubscribeTopics();
                             meeting.leave();
                             break;
                         }
                         case 1: {
+                            unSubscribeTopics();
                             meeting.end();
                             break;
                         }
@@ -880,7 +908,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
 
         ListView listView = alertDialog.getListView();
-        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
+        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200))); // set color
         listView.setFooterDividersEnabled(false);
         listView.addFooterView(new View(OneToOneCallActivity.this));
         listView.setDividerHeight(2);
@@ -930,13 +958,19 @@ public class OneToOneCallActivity extends AppCompatActivity {
                             audioDevice = AppRTCAudioManager.AudioDevice.EARPIECE;
                             break;
                     }
-                    meeting.changeMic(audioDevice);
+                    JSONObject noiseConfig = new JSONObject();
+                    JsonUtils.jsonPut(noiseConfig, "acousticEchoCancellation", true);
+                    JsonUtils.jsonPut(noiseConfig, "noiseSuppression", true);
+                    JsonUtils.jsonPut(noiseConfig, "autoGainControl", true);
+
+                    meeting.changeMic(audioDevice, VideoSDK.createAudioTrack("high_quality", noiseConfig, this));
+
                 });
 
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
 
         ListView listView = alertDialog.getListView();
-        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
+        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200))); // set color
         listView.setFooterDividersEnabled(false);
         listView.addFooterView(new View(OneToOneCallActivity.this));
         listView.setDividerHeight(2);
@@ -999,7 +1033,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
 
         ListView listView = alertDialog.getListView();
-        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.divider_color))); // set color
+        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200))); // set color
         listView.setFooterDividersEnabled(false);
         listView.addFooterView(new View(OneToOneCallActivity.this));
         listView.setDividerHeight(2);
@@ -1032,12 +1066,9 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-
         if (meeting != null) {
             meeting.removeAllListeners();
             meeting.getLocalParticipant().removeAllListeners();
-            meeting.pubSub.unsubscribe("CHAT", chatListener);
-
             meeting.leave();
             meeting = null;
         }
@@ -1057,6 +1088,13 @@ public class OneToOneCallActivity extends AppCompatActivity {
         timer.cancel();
 
         super.onDestroy();
+    }
+
+    private void unSubscribeTopics() {
+        if (meeting != null) {
+            meeting.pubSub.unsubscribe("CHAT", chatListener);
+        }
+
     }
 
     private void onTrackChange() {
@@ -1169,7 +1207,9 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 }
             }
             if (stream.getKind().equalsIgnoreCase("audio")) {
-                stream.pause();
+                if (meeting.getParticipants().size() >= 2) {
+                    stream.pause();
+                }
             }
         }
     };
@@ -1470,19 +1510,77 @@ public class OneToOneCallActivity extends AppCompatActivity {
     }
 
     private void showMicRequestDialog(MicRequestListener listener) {
-        new MaterialAlertDialogBuilder(OneToOneCallActivity.this,R.style.AlertDialogCustom)
-                .setMessage("Host is asking you to unmute your mic, do you want to allow ?")
-                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
-                .setNegativeButton("No", (dialog, which) -> listener.reject())
-                .show();
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(OneToOneCallActivity.this, R.style.AlertDialogCustom).create();
+        alertDialog.setCanceledOnTouchOutside(false);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_layout, null);
+        alertDialog.setView(dialogView);
+
+        TextView title = (TextView) dialogView.findViewById(R.id.title);
+        title.setVisibility(View.GONE);
+        TextView message = (TextView) dialogView.findViewById(R.id.message);
+        message.setText("Host is asking you to unmute your mic, do you want to allow ?");
+
+        Button positiveButton = dialogView.findViewById(R.id.positiveBtn);
+        positiveButton.setText("Yes");
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.accept();
+                alertDialog.dismiss();
+            }
+        });
+
+        Button negativeButton = dialogView.findViewById(R.id.negativeBtn);
+        negativeButton.setText("No");
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.reject();
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
     }
 
+
     private void showWebcamRequestDialog(WebcamRequestListener listener) {
-        new MaterialAlertDialogBuilder(OneToOneCallActivity.this,R.style.AlertDialogCustom)
-                .setMessage("Host is asking you to enable your webcam, do you want to allow ?")
-                .setPositiveButton("Yes", (dialog, which) -> listener.accept())
-                .setNegativeButton("No", (dialog, which) -> listener.reject())
-                .show();
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(OneToOneCallActivity.this, R.style.AlertDialogCustom).create();
+        alertDialog.setCanceledOnTouchOutside(false);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_layout, null);
+        alertDialog.setView(dialogView);
+
+        TextView title = (TextView) dialogView.findViewById(R.id.title);
+        title.setVisibility(View.GONE);
+        TextView message = (TextView) dialogView.findViewById(R.id.message);
+        message.setText("Host is asking you to enable your webcam, do you want to allow ?");
+
+        Button positiveButton = dialogView.findViewById(R.id.positiveBtn);
+        positiveButton.setText("Yes");
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.accept();
+                alertDialog.dismiss();
+            }
+        });
+
+        Button negativeButton = dialogView.findViewById(R.id.negativeBtn);
+        negativeButton.setText("No");
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.reject();
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+
     }
 
 

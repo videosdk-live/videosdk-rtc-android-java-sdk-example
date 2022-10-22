@@ -36,7 +36,7 @@ public class AudioDeviceListAdapter extends ArrayAdapter<ListItem> {
         TextView deviceName = rowView.findViewById(R.id.tv_device_name);
         ListItem audioDevice = audioDeviceList.get(position);
         if (audioDevice.isSelected())
-            rowView.setBackgroundColor(context.getResources().getColor(R.color.divider_color));
+            rowView.setBackgroundColor(context.getResources().getColor(R.color.md_grey_200));
         deviceName.setText(audioDevice.getItemName());
 
         return rowView;

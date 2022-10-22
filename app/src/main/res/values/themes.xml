@@ -17,7 +17,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
-        <item name="android:dropDownListViewStyle">@style/MatchSpinnerStyle</item>
+        <item name="android:dropDownListViewStyle">@style/ListViewStyle</item>
         <item name="popupMenuBackground">@drawable/et_style</item>
         <item name="android:popupMenuStyle">@style/popupBg</item>
         <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge</item>
@@ -91,8 +91,9 @@
         <item name="colorOnSurface">@color/white</item>
     </style>
 
-    <style name="MatchSpinnerStyle" parent="android:style/Widget.ListView.DropDown">
-        <item name="android:divider">@color/divider_color</item>
+    <style name="ListViewStyle" parent="android:style/Widget.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selector_popup_menu_dropdown</item>
+        <item name="android:divider">@color/md_grey_200</item>
         <item name="android:dividerHeight">2dp</item>
     </style>
 
@@ -101,6 +102,7 @@
         <item name="android:popupBackground">@drawable/popup_style</item>
         <item name="android:dropDownHorizontalOffset">-4dp</item>
         <item name="android:dropDownVerticalOffset">4dp</item>
+        <item name="android:dropDownSelector">@drawable/selector_popup_menu_dropdown</item>
     </style>
 
 

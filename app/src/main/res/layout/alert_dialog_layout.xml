@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_marginBottom="10dp"
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="17sp"
+        android:fontFamily="sans-serif-medium" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif-medium" />
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/negativeBtn"
+            android:layout_marginEnd="10dp"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textFontWeight="500"
+            android:text="No"
+            android:textColor="@color/md_blue_grey_200"
+            android:background="@color/transparentColor"
+            android:fontFamily="sans-serif-medium" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/positiveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0"
+            android:padding="5dp"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            app:cornerRadius="8sp"
+            android:text="Yes"
+            android:textFontWeight="500"
+            android:fontFamily="sans-serif-medium" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

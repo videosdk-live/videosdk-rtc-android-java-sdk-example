@@ -48,7 +48,7 @@
 
 
     <color name="md_grey_1000">#383838</color>
-    <color name="divider_color">#404B53</color>
+    <color name="md_grey_200">#404B53</color>
     <color name="md_grey_100A">#2B3034</color>
     <color name="text_color">#9A9FA5</color>
     <color name="md_grey_2000">#6F767E</color>

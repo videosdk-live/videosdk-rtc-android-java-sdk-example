@@ -6,11 +6,11 @@
         <shape>
             <stroke
                 android:width="2dp"
-                android:color="@color/divider_color" />
+                android:color="@color/md_grey_200" />
 
             <corners android:radius="8dp"></corners>
 
-            <solid android:color="@color/divider_color" />
+            <solid android:color="@color/md_grey_200" />
 
         </shape>
     </item>

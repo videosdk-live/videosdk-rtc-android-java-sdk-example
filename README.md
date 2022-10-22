@@ -25,8 +25,8 @@ At Video SDK, we’re building tools to help companies create world-class collab
 - [x] Screen share
 - [x] Chat
 - [x] Raise hand
-- [x] [External call detection](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/external-call-detection)
 - [x] Recording
+- [x] [External call detection](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/external-call-detection)
 
 <br/>
 
@@ -72,10 +72,18 @@ Run the android app with **Shift+F10** or the **▶ Run** from toolbar.
 <br/>
 
 ## Key Concepts
+
 - `Meeting` - A Meeting represents Real time audio and video communication.
-- `Sessions` - A particular duration you spend in a given meeting is a referred as session, you can have multiple session of a particular meetingId.
-- `Participant` - Participant represents someone who is attending the meeting's session, `local partcipant` represents self (You), for this self, other participants are `remote participants`.
-- `Stream` - Stream means video or audio media content that is either published by `local participant` or `remote participants`.
+
+  **`Note : Don't confuse with Room and Meeting keyword, both are same thing 😃`**
+
+- `Sessions` - A particular duration you spend in a given meeting is a referred as session, you can
+  have multiple session of a particular meetingId.
+- `Participant` - Participant represents someone who is attending the meeting's
+  session, `local partcipant` represents self (You), for this self, other participants
+  are `remote participants`.
+- `Stream` - Stream means video or audio media content that is either published
+  by `local participant` or `remote participants`.
 
 <br/>
 
