@@ -937,7 +937,13 @@ public class GroupCallActivity extends AppCompatActivity {
                             audioDevice = AppRTCAudioManager.AudioDevice.EARPIECE;
                             break;
                     }
-                    meeting.changeMic(audioDevice);
+
+                    JSONObject noiseConfig = new JSONObject();
+                    JsonUtils.jsonPut(noiseConfig, "acousticEchoCancellation", true);
+                    JsonUtils.jsonPut(noiseConfig, "noiseSuppression", true);
+                    JsonUtils.jsonPut(noiseConfig, "autoGainControl", true);
+
+                    meeting.changeMic(audioDevice, VideoSDK.createAudioTrack("high_quality", noiseConfig, this));
                 });
 
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
