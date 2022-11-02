@@ -5,7 +5,7 @@
 ---
 
 [![Documentation](https://img.shields.io/badge/Read-Documentation-blue)](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/getting-started)
-[![Firebase](https://img.shields.io/badge/Download%20Android-Firebase-green)](https://appdistribution.firebase.google.com/pub/i/0f3ac650239a944b)
+[![Firebase](https://img.shields.io/badge/Download%20Android-Firebase-green)](https://appdistribution.firebase.dev/i/99ae2c5db3a7e446)
 [![Discord](https://img.shields.io/discord/876774498798551130?label=Join%20on%20Discord)](https://discord.gg/bGZtAbwvab)
 [![Register](https://img.shields.io/badge/Contact-Know%20More-blue)](https://app.videosdk.live/signup)
 
@@ -13,7 +13,7 @@ At Video SDK, we’re building tools to help companies create world-class collab
 
 ## Demo App
 
-📱 Download the sample Android app here: https://appdistribution.firebase.google.com/pub/i/0f3ac650239a944b
+📱 Download the sample Android app here: https://appdistribution.firebase.dev/i/99ae2c5db3a7e446
 
 ## Features
 
