@@ -241,7 +241,8 @@
                 app:backgroundTint="@color/md_red_400"
                 app:fabSize="normal"
                 app:shapeAppearanceOverlay="@style/fab_square"
-                app:tint="@color/white" />
+                app:tint="@color/white"
+                app:maxImageSize="27sp" />
 
 
             <LinearLayout
@@ -255,19 +256,21 @@
 
                 <ImageButton
                     android:id="@+id/btnMic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="21sp"
+                    android:layout_height="21sp"
                     android:layout_margin="8dp"
                     android:background="@color/transparentColor"
-                    android:src="@drawable/ic_mic_on" />
+                    android:src="@drawable/ic_mic_on"
+                    android:scaleType="fitXY" />
 
                 <ImageButton
                     android:id="@+id/btnAudioSelection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
                     android:layout_margin="3dp"
                     android:background="@color/transparentColor"
-                    android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+                    android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                    android:scaleType="fitXY" />
 
             </LinearLayout>
 
@@ -283,6 +286,7 @@
                 app:backgroundTint="@color/md_grey_1000"
                 app:borderWidth="1dp"
                 app:fabSize="normal"
+                app:maxImageSize="26sp"
                 app:shapeAppearanceOverlay="@style/fab_square" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton

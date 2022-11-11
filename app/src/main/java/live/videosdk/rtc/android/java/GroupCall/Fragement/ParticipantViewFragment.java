@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -36,6 +37,7 @@ import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
+import pl.droidsonroids.gif.GifImageView;
 
 public class ParticipantViewFragment extends Fragment {
 
@@ -52,16 +54,15 @@ public class ParticipantViewFragment extends Fragment {
     TabLayoutMediator tabLayoutMediator;
     ViewPager2 viewPager2;
     TabLayout tabLayout;
-    private boolean screenShareFlag =false;
+    private boolean screenShareFlag = false;
 
     public ParticipantViewFragment() {
         // Required empty public constructor
     }
 
-    public ParticipantViewFragment(Meeting meeting, int position)
-    {
-        this.meeting=meeting;
-        this.position=position;
+    public ParticipantViewFragment(Meeting meeting, int position) {
+        this.meeting = meeting;
+        this.position = position;
     }
 
 
@@ -75,11 +76,11 @@ public class ParticipantViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view= inflater.inflate(R.layout.fragment_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_view, container, false);
 
         participantGridLayout = view.findViewById(R.id.participantGridLayout);
 
-        viewPager2= getActivity().findViewById(R.id.view_pager_video_grid);
+        viewPager2 = getActivity().findViewById(R.id.view_pager_video_grid);
         tabLayout = getActivity().findViewById(R.id.tab_layout_dots);
 
         eglContext = PeerConnectionUtils.getEglContext();
@@ -92,51 +93,63 @@ public class ParticipantViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        participantGridLayout.setOnTouchListener(((GroupCallActivity)getActivity()).getOnTouchListener());
+        participantGridLayout.setOnTouchListener(((GroupCallActivity) getActivity()).getOnTouchListener());
 
-        participantChangeListener=new ParticipantChangeListener() {
+        participantChangeListener = new ParticipantChangeListener() {
             @Override
             public void onChangeParticipant(List<List<Participant>> participantList) {
-                participantListArr =participantList;
-                if (position < participantList.size()) {
-                        participants = participantList.get(position);
-                        updateGridLayout();
-                        showInGUI();
-                        tabLayoutMediator=new TabLayoutMediator(tabLayout, viewPager2,true,
-                                (tab, position) -> Log.d("TAG", "onCreate: ")
-                        );
-
-                        if(tabLayoutMediator.isAttached()) {
-                            tabLayoutMediator.detach();
-                        }
-
-                        tabLayoutMediator.attach();
-
-                        if(participantList.size() == 1){
-                            tabLayout.setVisibility(View.GONE);
-                        }else{
-                            tabLayout.setVisibility(View.VISIBLE);
-                        }
-
-                }
+                changeLayout(participantList, null);
             }
 
-             @Override
-             public void onPresenterChanged(boolean screenShare) {
-                screenShareFlag=screenShare;
-                 updateGridLayout();
-                 showInGUI();
-             }
-         };
+            @Override
+            public void onPresenterChanged(boolean screenShare) {
+                screenShareFlag = screenShare;
+                updateGridLayout();
+                showInGUI(null);
+            }
 
-         participantState=ParticipantState.getInstance(meeting);
-         participantState.addParticipantChangeListener(participantChangeListener);
+            @Override
+            public void onSpeakerChanged(List<List<Participant>> participantList, Participant activeSpeaker) {
+                if (participantList != null)
+                    changeLayout(participantList, activeSpeaker);
+                else
+                    activeSpeakerLayout(activeSpeaker);
+            }
+        };
 
+        participantState = ParticipantState.getInstance(meeting);
+        participantState.addParticipantChangeListener(participantChangeListener);
+
+    }
+
+    private void changeLayout(List<List<Participant>> participantList, Participant activeSpeaker) {
+        participantListArr = participantList;
+        if (position < participantList.size()) {
+            participants = participantList.get(position);
+            updateGridLayout();
+            showInGUI(activeSpeaker);
+            tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager2, true,
+                    (tab, position) -> Log.d("TAG", "onCreate: ")
+            );
+
+            if (tabLayoutMediator.isAttached()) {
+                tabLayoutMediator.detach();
+            }
+
+            tabLayoutMediator.attach();
+
+            if (participantList.size() == 1) {
+                tabLayout.setVisibility(View.GONE);
+            } else {
+                tabLayout.setVisibility(View.VISIBLE);
+            }
+
+        }
     }
 
     @Override
     public void onResume() {
-        if(position < participantListArr.size()) {
+        if (position < participantListArr.size()) {
 
             List<Participant> currentParticipants = participantListArr.get(position);
             for (int i = 0; i < currentParticipants.size(); i++) {
@@ -156,7 +169,7 @@ public class ParticipantViewFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if(position < participantListArr.size()) {
+        if (position < participantListArr.size()) {
             List<Participant> otherParticipants = new ArrayList<>();
 
             for (int i = 0; i < participantListArr.size(); i++) {
@@ -182,23 +195,42 @@ public class ParticipantViewFragment extends Fragment {
     }
 
     // Call where View ready.
-    private void showInGUI()  {
+    private void showInGUI(Participant activeSpeaker) {
+        for (int i = 0; i < participants.size(); i++) {
 
-        for(int i = 0; i< participants.size(); i++) {
+            Participant participant = participants.get(i);
 
-            Participant participant= participants.get(i);
-
-            View participantView=LayoutInflater.from(getContext())
+            View participantView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_participant, participantGridLayout, false);
 
+            CardView participantCard = participantView.findViewById(R.id.ParticipantCard);
+            ImageView ivMicStatus = participantView.findViewById(R.id.ivMicStatus);
+            GifImageView img_participantActiveSpeaker = participantView.findViewById(R.id.img_participantActiveSpeaker);
+
+            if (activeSpeaker == null) {
+                participantCard.setForeground(null);
+                img_participantActiveSpeaker.setVisibility(View.GONE);
+                ivMicStatus.setVisibility(View.VISIBLE);
+            } else {
+                if (participant.getId().equals(activeSpeaker.getId())) {
+                    participantCard.setForeground(getContext().getDrawable(R.drawable.layout_bg));
+                    ivMicStatus.setVisibility(View.GONE);
+                    img_participantActiveSpeaker.setVisibility(View.VISIBLE);
+                } else {
+                    participantCard.setForeground(null);
+                    img_participantActiveSpeaker.setVisibility(View.GONE);
+                    ivMicStatus.setVisibility(View.VISIBLE);
+                }
+            }
+
             TextView tvName = participantView.findViewById(R.id.tvName);
-            TextView txtParticipantName=participantView.findViewById(R.id.txtParticipantName);
+            TextView txtParticipantName = participantView.findViewById(R.id.txtParticipantName);
 
             SurfaceViewRenderer svrParticipant = participantView.findViewById(R.id.svrParticipantView);
             try {
                 svrParticipant.init(eglContext, null);
-            }catch (Exception e){
-                Log.e("Error", "showInGUI: "+ e.getMessage() );
+            } catch (Exception e) {
+                Log.e("Error", "showInGUI: " + e.getMessage());
             }
 
             if (participant.getId().equals(meeting.getLocalParticipant().getId())) {
@@ -207,8 +239,6 @@ public class ParticipantViewFragment extends Fragment {
                 tvName.setText(participant.getDisplayName());
             }
             txtParticipantName.setText(participant.getDisplayName().substring(0, 1));
-
-            ImageView ivMicStatus = participantView.findViewById(R.id.ivMicStatus);
 
             for (Map.Entry<String, Stream> entry : participant.getStreams().entrySet()) {
                 Stream stream = entry.getValue();
@@ -258,16 +288,43 @@ public class ParticipantViewFragment extends Fragment {
         }
     }
 
+    public void activeSpeakerLayout(Participant activeSpeaker) {
+        for (int j = 0; j < participantGridLayout.getChildCount(); j++) {
+            Participant participant = participants.get(j);
+            View participantView = participantGridLayout.getChildAt(j);
+
+            CardView participantCard = participantView.findViewById(R.id.ParticipantCard);
+            ImageView ivMicStatus = participantView.findViewById(R.id.ivMicStatus);
+            GifImageView img_participantActiveSpeaker = participantView.findViewById(R.id.img_participantActiveSpeaker);
+
+            if (activeSpeaker == null) {
+                participantCard.setForeground(null);
+                img_participantActiveSpeaker.setVisibility(View.GONE);
+                ivMicStatus.setVisibility(View.VISIBLE);
+            } else {
+                if (participant.getId().equals(activeSpeaker.getId())) {
+                    participantCard.setForeground(getContext().getDrawable(R.drawable.layout_bg));
+                    ivMicStatus.setVisibility(View.GONE);
+                    img_participantActiveSpeaker.setVisibility(View.VISIBLE);
+                } else {
+                    participantCard.setForeground(null);
+                    img_participantActiveSpeaker.setVisibility(View.GONE);
+                    ivMicStatus.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
     @Override
     public void onDestroy() {
-        if(participantChangeListener!= null ) {
+        if (participantChangeListener != null) {
             participantState.removeParticipantChangeListener(participantChangeListener);
         }
 
-        for(int i=0;i<participantGridLayout.getChildCount();i++) {
+        for (int i = 0; i < participantGridLayout.getChildCount(); i++) {
             View view = participantGridLayout.getChildAt(i);
             SurfaceViewRenderer surfaceViewRenderer = view.findViewById(R.id.svrParticipantView);
-            if(surfaceViewRenderer!=null) {
+            if (surfaceViewRenderer != null) {
                 surfaceViewRenderer.clearImage();
                 surfaceViewRenderer.setVisibility(View.GONE);
                 surfaceViewRenderer.release();
@@ -279,12 +336,11 @@ public class ParticipantViewFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void updateGridLayout()
-    {
-        for(int i=0;i<participantGridLayout.getChildCount();i++) {
+    public void updateGridLayout() {
+        for (int i = 0; i < participantGridLayout.getChildCount(); i++) {
             View view = participantGridLayout.getChildAt(i);
             SurfaceViewRenderer surfaceViewRenderer = view.findViewById(R.id.svrParticipantView);
-            if(surfaceViewRenderer!=null) {
+            if (surfaceViewRenderer != null) {
                 surfaceViewRenderer.clearImage();
                 surfaceViewRenderer.setVisibility(View.GONE);
                 surfaceViewRenderer.release();
@@ -293,20 +349,17 @@ public class ParticipantViewFragment extends Fragment {
 
         participantGridLayout.removeAllViews();
 
-        if(screenShareFlag)
-        {
+        if (screenShareFlag) {
             participantGridLayout.setColumnCount(2);
             participantGridLayout.setRowCount(1);
-        }else
-        {
-            if(participants.size() == 1){
+        } else {
+            if (participants.size() == 1) {
                 participantGridLayout.setColumnCount(1);
                 participantGridLayout.setRowCount(1);
-            }
-            else if(participants.size() == 2) {
+            } else if (participants.size() == 2) {
                 participantGridLayout.setColumnCount(1);
                 participantGridLayout.setRowCount(2);
-            }else{
+            } else {
                 participantGridLayout.setColumnCount(2);
                 participantGridLayout.setRowCount(2);
             }
