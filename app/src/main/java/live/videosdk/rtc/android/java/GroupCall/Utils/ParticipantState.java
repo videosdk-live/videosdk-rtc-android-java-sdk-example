@@ -21,6 +21,7 @@ public class ParticipantState {
     List<ParticipantChangeListener> participantChangeListenerList = new ArrayList<>();
     private boolean screenShare = false;
     private List<List<Participant>> activeSpeakerParticipantList;
+    private List<List<Participant>> participantsArr;
 
     // static method to create instance of Singleton class
     public static ParticipantState getInstance(Meeting meeting) {
@@ -95,6 +96,9 @@ public class ParticipantState {
                     if (activeSpeakerParticipantList == null) {
                         participants = getParticipantList().get(0);
                     } else {
+                        if (!activeSpeakerParticipantList.equals(participantsArr)) {
+                            activeSpeakerParticipantList = participantsArr;
+                        }
                         participants = activeSpeakerParticipantList.get(0);
                     }
 
@@ -108,6 +112,7 @@ public class ParticipantState {
 
                     if (updateGrid) {
                         activeSpeakerParticipantList = getActiveSpeakerParticipantList(activeSpeaker);
+                        participantsArr = activeSpeakerParticipantList;
                     }
                 } else {
                     updateGrid = false;
@@ -149,6 +154,8 @@ public class ParticipantState {
             }
 
         }
+
+        participantsArr = participantListArr;
 
         return participantListArr;
 

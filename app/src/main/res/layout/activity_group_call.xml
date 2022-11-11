@@ -208,8 +208,7 @@
                     android:background="@color/transparentColor"
                     app:tabBackground="@drawable/dot_selector"
                     app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp"
-                    android:visibility="gone" />
+                    app:tabIndicatorHeight="0dp" />
 
             </LinearLayout>
 
