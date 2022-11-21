@@ -598,12 +598,12 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 int code = error.getInt("code");
                 if (code == errorCodes.getInt("PREV_RECORDING_PROCESSING")) {
                     recordingStatusSnackbar.dismiss();
-                    Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), "Please try again after sometime",
-                            Snackbar.LENGTH_LONG);
-                    HelperClass.setSnackBarStyle(snackbar.getView(), 0);
-                    snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
-                    snackbar.show();
                 }
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), error.optString("message"),
+                        Snackbar.LENGTH_LONG);
+                HelperClass.setSnackBarStyle(snackbar.getView(), 0);
+                snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
+                snackbar.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
