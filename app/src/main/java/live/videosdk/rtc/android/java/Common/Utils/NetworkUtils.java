@@ -108,8 +108,13 @@ public class NetworkUtils {
                     @Override
                     public void onError(ANError anError) {
                         anError.printStackTrace();
-                        Toast.makeText(context, anError.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject errorRes = new JSONObject(anError.getErrorBody());
+                            Toast.makeText(context, errorRes.optString("error"),
+                                    Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
     }
@@ -129,8 +134,13 @@ public class NetworkUtils {
                     @Override
                     public void onError(ANError anError) {
                         anError.printStackTrace();
-                        Toast.makeText(context, anError.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject errorRes = new JSONObject(anError.getErrorBody());
+                            Toast.makeText(context, errorRes.optString("error"),
+                                    Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
     }
@@ -164,8 +174,13 @@ public class NetworkUtils {
                     @Override
                     public void onError(ANError anError) {
                         anError.printStackTrace();
-                        Toast.makeText(context, anError.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject errorRes = new JSONObject(anError.getErrorBody());
+                            Toast.makeText(context, errorRes.optString("error"),
+                                    Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
