@@ -93,7 +93,6 @@ import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
-import live.videosdk.rtc.android.lib.JsonUtils;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
@@ -127,7 +126,6 @@ public class GroupCallActivity extends AppCompatActivity {
     private static final int CAPTURE_PERMISSION_REQUEST_CODE = 1;
 
     private boolean screenshareEnabled = false;
-    private VideoTrack localTrack = null;
     private BottomSheetDialog bottomSheetDialog;
     private String selectedAudioDeviceName;
 
@@ -274,8 +272,8 @@ public class GroupCallActivity extends AppCompatActivity {
                                     params.setMargins(22, 10, 0, 0);
                                     findViewById(R.id.meetingLayout).setLayoutParams(params);
 
-                                    shareLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(420, GroupCallActivity.this)));
-                                    ((LinearLayout) findViewById(R.id.localScreenShareView)).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(420, GroupCallActivity.this)));
+                                    shareLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, HelperClass.dpToPx(420, GroupCallActivity.this)));
+                                    ((LinearLayout) findViewById(R.id.localScreenShareView)).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, HelperClass.dpToPx(420, GroupCallActivity.this)));
 
                                     TranslateAnimation toolbarAnimation = new TranslateAnimation(
                                             0,
@@ -306,9 +304,9 @@ public class GroupCallActivity extends AppCompatActivity {
                                         toolbar.getChildAt(i).setVisibility(View.GONE);
                                     }
 
-                                    shareLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(500, GroupCallActivity.this)));
+                                    shareLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, HelperClass.dpToPx(500, GroupCallActivity.this)));
 
-                                    ((LinearLayout) findViewById(R.id.localScreenShareView)).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(500, GroupCallActivity.this)));
+                                    ((LinearLayout) findViewById(R.id.localScreenShareView)).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, HelperClass.dpToPx(500, GroupCallActivity.this)));
 
                                     TranslateAnimation toolbarAnimation = new TranslateAnimation(
                                             0,
@@ -353,11 +351,6 @@ public class GroupCallActivity extends AppCompatActivity {
 
     public View.OnTouchListener getOnTouchListener() {
         return onTouchListener;
-    }
-
-    public static int dpToPx(int dp, Context context) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -410,13 +403,9 @@ public class GroupCallActivity extends AppCompatActivity {
 
                 setLocalListeners();
 
-                new NetworkUtils(GroupCallActivity.this).fetchMeetingTime(meeting.getMeetingId(), token, new ResponseListener() {
+                new NetworkUtils(GroupCallActivity.this).fetchMeetingTime(meeting.getMeetingId(), token, new ResponseListener<Integer>() {
                     @Override
-                    public void onResponse(String meetingId) {
-                    }
-
-                    @Override
-                    public void onMeetingTimeChanged(int meetingTime) {
+                    public void onResponse(Integer meetingTime) {
                         meetingSeconds = meetingTime;
                         showMeetingTime();
                     }
@@ -722,12 +711,7 @@ public class GroupCallActivity extends AppCompatActivity {
         if (micEnabled) {
             meeting.muteMic();
         } else {
-            JSONObject noiseConfig = new JSONObject();
-            JsonUtils.jsonPut(noiseConfig, "acousticEchoCancellation", true);
-            JsonUtils.jsonPut(noiseConfig, "noiseSuppression", true);
-            JsonUtils.jsonPut(noiseConfig, "autoGainControl", true);
-
-            CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", noiseConfig, this);
+            CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", this);
 
             meeting.unmuteMic(audioCustomTrack);
         }
@@ -938,12 +922,7 @@ public class GroupCallActivity extends AppCompatActivity {
                             break;
                     }
 
-                    JSONObject noiseConfig = new JSONObject();
-                    JsonUtils.jsonPut(noiseConfig, "acousticEchoCancellation", true);
-                    JsonUtils.jsonPut(noiseConfig, "noiseSuppression", true);
-                    JsonUtils.jsonPut(noiseConfig, "autoGainControl", true);
-
-                    meeting.changeMic(audioDevice, VideoSDK.createAudioTrack("high_quality", noiseConfig, this));
+                    meeting.changeMic(audioDevice, VideoSDK.createAudioTrack("high_quality", this));
                 });
 
         AlertDialog alertDialog = materialAlertDialogBuilder.create();

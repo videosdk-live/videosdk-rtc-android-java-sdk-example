@@ -132,14 +132,6 @@
                 android:textFontWeight="500"
                 android:textSize="40dp" />
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/img_participantActiveSpeaker"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:layout_margin="12dp"
-                android:src="@drawable/active_speaker"
-                android:visibility="gone"/>
 
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/svrParticipant"
@@ -147,24 +139,54 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/ivParticipantNetwork"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:layout_gravity="right"
+                android:padding="6dp"
+                android:layout_marginEnd="2dp"
+                android:src="@drawable/green_signal" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                android:layout_gravity="bottom"
+                android:layout_margin="3dp"
+                android:background="@drawable/name_style"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
                     android:fontFamily="sans-serif-medium"
-                    android:textFontWeight="600"
-                    android:textColor="@color/white"
-                    android:layout_margin="8dp"
                     android:padding="6dp"
-                    android:background="@drawable/name_style"/>
+                    android:textColor="@color/white"
+                    android:textFontWeight="600"
+                    android:textSize="16dp" />
 
-            </FrameLayout>
+                <!--                <pl.droidsonroids.gif.GifImageView-->
+                <!--                    android:id="@+id/img_participantActiveSpeaker"-->
+                <!--                    android:layout_width="30dp"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:layout_marginLeft="4dp"-->
+                <!--                    android:src="@drawable/active_speaker"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:visibility="gone" />-->
+
+                <ImageView
+                    android:id="@+id/ivParticipantMicStatus"
+                    android:layout_width="35sp"
+                    android:layout_height="35sp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/mic_turned_off"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_audio_off" />
+
+            </LinearLayout>
 
 
         </androidx.cardview.widget.CardView>
@@ -202,14 +224,6 @@
                 android:textFontWeight="500"
                 android:textSize="40dp" />
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/img_localActiveSpeaker"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:layout_margin="12dp"
-                android:src="@drawable/active_speaker"
-                android:visibility="gone"/>
 
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/svrLocal"
@@ -217,25 +231,45 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/ivLocalNetwork"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:layout_gravity="right"
+                android:padding="6dp"
+                android:layout_marginEnd="2dp"
+                android:src="@drawable/green_signal"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                android:layout_gravity="bottom"
+                android:layout_margin="3dp"
+                android:background="@drawable/name_style">
 
                 <TextView
                     android:id="@+id/tvLocalParticipantName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
                     android:fontFamily="sans-serif-medium"
-                    android:textFontWeight="600"
-                    android:textColor="@color/white"
-                    android:layout_margin="8dp"
                     android:padding="6dp"
-                    android:background="@drawable/name_style"/>
+                    android:textColor="@color/white"
+                    android:textFontWeight="600"
+                    android:textSize="16dp" />
 
-            </FrameLayout>
+                <!--                <pl.droidsonroids.gif.GifImageView-->
+                <!--                    android:id="@+id/img_localActiveSpeaker"-->
+                <!--                    android:layout_width="30dp"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:layout_marginLeft="4dp"-->
+                <!--                    android:src="@drawable/active_speaker"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:visibility="gone" />-->
 
+            </LinearLayout>
 
 
         </androidx.cardview.widget.CardView>
@@ -265,6 +299,7 @@
                 android:src="@drawable/ic_end_call"
                 app:backgroundTint="@color/md_red_400"
                 app:fabSize="normal"
+                app:maxImageSize="27sp"
                 app:shapeAppearanceOverlay="@style/fab_square"
                 app:tint="@color/white" />
 
@@ -280,18 +315,20 @@
 
                 <ImageButton
                     android:id="@+id/btnMic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="21sp"
+                    android:layout_height="21sp"
                     android:layout_margin="8dp"
                     android:background="@color/transparentColor"
+                    android:scaleType="fitXY"
                     android:src="@drawable/ic_mic_on" />
 
                 <ImageButton
                     android:id="@+id/btnAudioSelection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
                     android:layout_margin="3dp"
                     android:background="@color/transparentColor"
+                    android:scaleType="fitXY"
                     android:src="@drawable/ic_baseline_arrow_drop_down_24" />
 
             </LinearLayout>
@@ -308,6 +345,7 @@
                 app:backgroundTint="@color/md_grey_1000"
                 app:borderWidth="1dp"
                 app:fabSize="normal"
+                app:maxImageSize="26sp"
                 app:shapeAppearanceOverlay="@style/fab_square" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton

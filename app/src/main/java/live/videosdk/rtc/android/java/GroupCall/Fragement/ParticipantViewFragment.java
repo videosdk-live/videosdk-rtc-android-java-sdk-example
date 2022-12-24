@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -30,8 +31,10 @@ import java.util.Map;
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
+import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.GroupCall.Activity.GroupCallActivity;
 import live.videosdk.rtc.android.java.GroupCall.Listener.ParticipantChangeListener;
+import live.videosdk.rtc.android.java.Common.Listener.ParticipantStreamChangeListener;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
@@ -52,16 +55,16 @@ public class ParticipantViewFragment extends Fragment {
     TabLayoutMediator tabLayoutMediator;
     ViewPager2 viewPager2;
     TabLayout tabLayout;
-    private boolean screenShareFlag =false;
+    private boolean screenShareFlag = false;
+    private PopupWindow popupwindow_obj;
 
     public ParticipantViewFragment() {
         // Required empty public constructor
     }
 
-    public ParticipantViewFragment(Meeting meeting, int position)
-    {
-        this.meeting=meeting;
-        this.position=position;
+    public ParticipantViewFragment(Meeting meeting, int position) {
+        this.meeting = meeting;
+        this.position = position;
     }
 
 
@@ -92,31 +95,34 @@ public class ParticipantViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        participantGridLayout.setOnTouchListener(((GroupCallActivity)getActivity()).getOnTouchListener());
+        participantGridLayout.setOnTouchListener(((GroupCallActivity) getActivity()).getOnTouchListener());
 
-        participantChangeListener=new ParticipantChangeListener() {
+        participantChangeListener = new ParticipantChangeListener() {
             @Override
             public void onChangeParticipant(List<List<Participant>> participantList) {
-                participantListArr =participantList;
+                participantListArr = participantList;
                 if (position < participantList.size()) {
-                        participants = participantList.get(position);
-                        updateGridLayout();
-                        showInGUI();
-                        tabLayoutMediator=new TabLayoutMediator(tabLayout, viewPager2,true,
-                                (tab, position) -> Log.d("TAG", "onCreate: ")
-                        );
+                    participants = participantList.get(position);
+                    if (popupwindow_obj != null && popupwindow_obj.isShowing())
+                        popupwindow_obj.dismiss();
 
-                        if(tabLayoutMediator.isAttached()) {
-                            tabLayoutMediator.detach();
-                        }
+                    updateGridLayout();
+                    showInGUI();
+                    tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager2, true,
+                            (tab, position) -> Log.d("TAG", "onCreate: ")
+                    );
 
-                        tabLayoutMediator.attach();
+                    if (tabLayoutMediator.isAttached()) {
+                        tabLayoutMediator.detach();
+                    }
 
-                        if(participantList.size() == 1){
-                            tabLayout.setVisibility(View.GONE);
-                        }else{
-                            tabLayout.setVisibility(View.VISIBLE);
-                        }
+                    tabLayoutMediator.attach();
+
+                    if (participantList.size() == 1) {
+                        tabLayout.setVisibility(View.GONE);
+                    } else {
+                        tabLayout.setVisibility(View.VISIBLE);
+                    }
 
                 }
             }
@@ -186,19 +192,42 @@ public class ParticipantViewFragment extends Fragment {
 
         for(int i = 0; i< participants.size(); i++) {
 
-            Participant participant= participants.get(i);
+            ParticipantStreamChangeListener participantStreamChangeListener;
 
-            View participantView=LayoutInflater.from(getContext())
+            Participant participant = participants.get(i);
+            View participantView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_participant, participantGridLayout, false);
 
+            ImageView ivNetwork = participantView.findViewById(R.id.ivNetwork);
+
+            participantStreamChangeListener = new ParticipantStreamChangeListener() {
+                @Override
+                public void onStreamChanged() {
+                    if (participant.getStreams().isEmpty()) {
+                        ivNetwork.setVisibility(View.GONE);
+                    } else {
+                        ivNetwork.setVisibility(View.VISIBLE);
+                    }
+                }
+            };
+
+
+            ivNetwork.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupwindow_obj = HelperClass.callStatsPopupDisplay(participant, ivNetwork, getContext());
+                    popupwindow_obj.showAsDropDown(ivNetwork, -350, -85);
+                }
+            });
+
             TextView tvName = participantView.findViewById(R.id.tvName);
-            TextView txtParticipantName=participantView.findViewById(R.id.txtParticipantName);
+            TextView txtParticipantName = participantView.findViewById(R.id.txtParticipantName);
 
             SurfaceViewRenderer svrParticipant = participantView.findViewById(R.id.svrParticipantView);
             try {
                 svrParticipant.init(eglContext, null);
-            }catch (Exception e){
-                Log.e("Error", "showInGUI: "+ e.getMessage() );
+            } catch (Exception e) {
+                Log.e("Error", "showInGUI: " + e.getMessage());
             }
 
             if (participant.getId().equals(meeting.getLocalParticipant().getId())) {
@@ -218,9 +247,13 @@ public class ParticipantViewFragment extends Fragment {
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     videoTrack.addSink(svrParticipant);
 
+                    participantStreamChangeListener.onStreamChanged();
+
                     break;
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                    ivMicStatus.setImageResource(R.drawable.ic_mic_on);
+                    participantStreamChangeListener.onStreamChanged();
+
+                    ivMicStatus.setImageResource(R.drawable.ic_audio_on);
                 }
 
             }
@@ -233,9 +266,11 @@ public class ParticipantViewFragment extends Fragment {
 
                         VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                         videoTrack.addSink(svrParticipant);
+                        participantStreamChangeListener.onStreamChanged();
 
                     } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                        ivMicStatus.setImageResource(R.drawable.ic_mic_on);
+                        participantStreamChangeListener.onStreamChanged();
+                        ivMicStatus.setImageResource(R.drawable.ic_audio_on);
                     }
                 }
 
@@ -247,9 +282,10 @@ public class ParticipantViewFragment extends Fragment {
 
                         svrParticipant.clearImage();
                         svrParticipant.setVisibility(View.GONE);
-
+                        participantStreamChangeListener.onStreamChanged();
                     } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                        ivMicStatus.setImageResource(R.drawable.ic_mic_off);
+                        ivMicStatus.setImageResource(R.drawable.ic_audio_off);
+                        participantStreamChangeListener.onStreamChanged();
                     }
                 }
             });

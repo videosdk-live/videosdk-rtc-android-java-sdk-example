@@ -89,10 +89,10 @@ public class JoinMeetingFragment extends Fragment {
             } else {
                 NetworkUtils networkUtils = new NetworkUtils(getContext());
                 if (networkUtils.isNetworkAvailable()) {
-                    networkUtils.getToken(new ResponseListener() {
+                    networkUtils.getToken(new ResponseListener<String>() {
                         @Override
                         public void onResponse(String token) {
-                            networkUtils.joinMeeting(token, etMeetingId.getText().toString().trim(), new ResponseListener() {
+                            networkUtils.joinMeeting(token, etMeetingId.getText().toString().trim(), new ResponseListener<String>() {
                                 @Override
                                 public void onResponse(String meetingId) {
                                     Intent intent = null;
@@ -114,17 +114,7 @@ public class JoinMeetingFragment extends Fragment {
                                                 "Please Choose Meeting Type", Toast.LENGTH_SHORT).show();
                                     }
                                 }
-
-                                @Override
-                                public void onMeetingTimeChanged(int meetingTime) {
-
-                                }
                             });
-                        }
-
-                        @Override
-                        public void onMeetingTimeChanged(int meetingTime) {
-
                         }
                     });
 
