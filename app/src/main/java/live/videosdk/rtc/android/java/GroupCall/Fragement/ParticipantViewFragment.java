@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -31,6 +32,8 @@ import java.util.Map;
 import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
+import live.videosdk.rtc.android.java.Common.Listener.ParticipantStreamChangeListener;
+import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.GroupCall.Activity.GroupCallActivity;
 import live.videosdk.rtc.android.java.GroupCall.Listener.ParticipantChangeListener;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
@@ -55,6 +58,7 @@ public class ParticipantViewFragment extends Fragment {
     ViewPager2 viewPager2;
     TabLayout tabLayout;
     private boolean screenShareFlag = false;
+    private PopupWindow popupwindow_obj;
 
     public ParticipantViewFragment() {
         // Required empty public constructor
@@ -126,6 +130,8 @@ public class ParticipantViewFragment extends Fragment {
         participantListArr = participantList;
         if (position < participantList.size()) {
             participants = participantList.get(position);
+            if (popupwindow_obj != null && popupwindow_obj.isShowing())
+                popupwindow_obj.dismiss();
             updateGridLayout();
             showInGUI(activeSpeaker);
             tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager2, true,
@@ -205,23 +211,48 @@ public class ParticipantViewFragment extends Fragment {
 
             CardView participantCard = participantView.findViewById(R.id.ParticipantCard);
             ImageView ivMicStatus = participantView.findViewById(R.id.ivMicStatus);
-            GifImageView img_participantActiveSpeaker = participantView.findViewById(R.id.img_participantActiveSpeaker);
+//            GifImageView img_participantActiveSpeaker = participantView.findViewById(R.id.img_participantActiveSpeaker);
 
             if (activeSpeaker == null) {
                 participantCard.setForeground(null);
-                img_participantActiveSpeaker.setVisibility(View.GONE);
-                ivMicStatus.setVisibility(View.VISIBLE);
+//                img_participantActiveSpeaker.setVisibility(View.GONE);
+//                ivMicStatus.setVisibility(View.VISIBLE);
             } else {
                 if (participant.getId().equals(activeSpeaker.getId())) {
                     participantCard.setForeground(getContext().getDrawable(R.drawable.layout_bg));
-                    ivMicStatus.setVisibility(View.GONE);
-                    img_participantActiveSpeaker.setVisibility(View.VISIBLE);
+//                    ivMicStatus.setVisibility(View.GONE);
+//                    img_participantActiveSpeaker.setVisibility(View.VISIBLE);
                 } else {
                     participantCard.setForeground(null);
-                    img_participantActiveSpeaker.setVisibility(View.GONE);
-                    ivMicStatus.setVisibility(View.VISIBLE);
+//                    img_participantActiveSpeaker.setVisibility(View.GONE);
+//                    ivMicStatus.setVisibility(View.VISIBLE);
                 }
             }
+
+            ParticipantStreamChangeListener participantStreamChangeListener;
+
+            ImageView ivNetwork = participantView.findViewById(R.id.ivNetwork);
+
+            participantStreamChangeListener = new ParticipantStreamChangeListener() {
+                @Override
+                public void onStreamChanged() {
+                    if (participant.getStreams().isEmpty()) {
+                        ivNetwork.setVisibility(View.GONE);
+                    } else {
+                        ivNetwork.setVisibility(View.VISIBLE);
+                    }
+                }
+            };
+
+
+            ivNetwork.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupwindow_obj = HelperClass.callStatsPopupDisplay(participant, ivNetwork,getContext());
+                    popupwindow_obj.showAsDropDown(ivNetwork, -350, -85);
+                }
+            });
+
 
             TextView tvName = participantView.findViewById(R.id.tvName);
             TextView txtParticipantName = participantView.findViewById(R.id.txtParticipantName);
@@ -247,10 +278,12 @@ public class ParticipantViewFragment extends Fragment {
 
                     VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                     videoTrack.addSink(svrParticipant);
+                    participantStreamChangeListener.onStreamChanged();
 
                     break;
                 } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                    ivMicStatus.setImageResource(R.drawable.ic_mic_on);
+                    participantStreamChangeListener.onStreamChanged();
+                    ivMicStatus.setImageResource(R.drawable.ic_audio_on);
                 }
 
             }
@@ -263,9 +296,11 @@ public class ParticipantViewFragment extends Fragment {
 
                         VideoTrack videoTrack = (VideoTrack) stream.getTrack();
                         videoTrack.addSink(svrParticipant);
+                        participantStreamChangeListener.onStreamChanged();
 
                     } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                        ivMicStatus.setImageResource(R.drawable.ic_mic_on);
+                        participantStreamChangeListener.onStreamChanged();
+                        ivMicStatus.setImageResource(R.drawable.ic_audio_on);
                     }
                 }
 
@@ -279,7 +314,7 @@ public class ParticipantViewFragment extends Fragment {
                         svrParticipant.setVisibility(View.GONE);
 
                     } else if (stream.getKind().equalsIgnoreCase("audio")) {
-                        ivMicStatus.setImageResource(R.drawable.ic_mic_off);
+                        ivMicStatus.setImageResource(R.drawable.ic_audio_off);
                     }
                 }
             });
@@ -294,22 +329,22 @@ public class ParticipantViewFragment extends Fragment {
             View participantView = participantGridLayout.getChildAt(j);
 
             CardView participantCard = participantView.findViewById(R.id.ParticipantCard);
-            ImageView ivMicStatus = participantView.findViewById(R.id.ivMicStatus);
-            GifImageView img_participantActiveSpeaker = participantView.findViewById(R.id.img_participantActiveSpeaker);
+//            ImageView ivMicStatus = participantView.findViewById(R.id.ivMicStatus);
+//            GifImageView img_participantActiveSpeaker = participantView.findViewById(R.id.img_participantActiveSpeaker);
 
             if (activeSpeaker == null) {
                 participantCard.setForeground(null);
-                img_participantActiveSpeaker.setVisibility(View.GONE);
-                ivMicStatus.setVisibility(View.VISIBLE);
+//                img_participantActiveSpeaker.setVisibility(View.GONE);
+//                ivMicStatus.setVisibility(View.VISIBLE);
             } else {
                 if (participant.getId().equals(activeSpeaker.getId())) {
                     participantCard.setForeground(getContext().getDrawable(R.drawable.layout_bg));
-                    ivMicStatus.setVisibility(View.GONE);
-                    img_participantActiveSpeaker.setVisibility(View.VISIBLE);
+//                    ivMicStatus.setVisibility(View.GONE);
+//                    img_participantActiveSpeaker.setVisibility(View.VISIBLE);
                 } else {
                     participantCard.setForeground(null);
-                    img_participantActiveSpeaker.setVisibility(View.GONE);
-                    ivMicStatus.setVisibility(View.VISIBLE);
+//                    img_participantActiveSpeaker.setVisibility(View.GONE);
+//                    ivMicStatus.setVisibility(View.VISIBLE);
                 }
             }
         }

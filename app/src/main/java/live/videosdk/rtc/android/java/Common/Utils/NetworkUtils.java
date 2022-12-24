@@ -43,7 +43,7 @@ public class NetworkUtils {
         return isAvailable;
     }
 
-    public void getToken(ResponseListener responseListener) {
+    public void getToken(ResponseListener<String> responseListener) {
 
         if (!HelperClass.isNullOrEmpty(AUTH_TOKEN) && !HelperClass.isNullOrEmpty(AUTH_URL)) {
             Toast.makeText(context,
@@ -88,7 +88,7 @@ public class NetworkUtils {
 
     }
 
-    public void createMeeting(String token, ResponseListener meetingEventListener) {
+    public void createMeeting(String token, ResponseListener<String> meetingEventListener) {
 
         AndroidNetworking.post("https://api.videosdk.live/v2/rooms")
                 .addHeaders("Authorization", token)
@@ -108,18 +108,13 @@ public class NetworkUtils {
                     @Override
                     public void onError(ANError anError) {
                         anError.printStackTrace();
-                        try {
-                            JSONObject errorRes = new JSONObject(anError.getErrorBody());
-                            Toast.makeText(context, errorRes.optString("error"),
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Toast.makeText(context, anError.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    public void joinMeeting(String token, String roomId, ResponseListener meetingEventListener) {
+    public void joinMeeting(String token, String roomId, ResponseListener<String> meetingEventListener) {
 
 
         AndroidNetworking.get("https://api.videosdk.live/v2/rooms/validate/" + roomId)
@@ -134,18 +129,13 @@ public class NetworkUtils {
                     @Override
                     public void onError(ANError anError) {
                         anError.printStackTrace();
-                        try {
-                            JSONObject errorRes = new JSONObject(anError.getErrorBody());
-                            Toast.makeText(context, errorRes.optString("error"),
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Toast.makeText(context, anError.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    public void fetchMeetingTime(String meetingId, String token,ResponseListener responseListener) {
+    public void fetchMeetingTime(String meetingId, String token,ResponseListener<Integer> responseListener) {
         AndroidNetworking.get("https://api.videosdk.live/v2/sessions/?roomId=" + meetingId)
                 .addHeaders("Authorization", token)
                 .build()
@@ -165,7 +155,7 @@ public class NetworkUtils {
 
                             activeMeetingSeconds = Math.toIntExact(TimeUnit.MILLISECONDS.toSeconds(difference));
 
-                             responseListener.onMeetingTimeChanged(activeMeetingSeconds);
+                            responseListener.onResponse(activeMeetingSeconds);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -174,13 +164,8 @@ public class NetworkUtils {
                     @Override
                     public void onError(ANError anError) {
                         anError.printStackTrace();
-                        try {
-                            JSONObject errorRes = new JSONObject(anError.getErrorBody());
-                            Toast.makeText(context, errorRes.optString("error"),
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Toast.makeText(context, anError.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
 

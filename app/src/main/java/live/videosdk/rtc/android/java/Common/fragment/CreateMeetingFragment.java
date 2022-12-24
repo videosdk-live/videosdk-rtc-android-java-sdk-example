@@ -79,10 +79,10 @@ public class CreateMeetingFragment extends Fragment {
             } else {
                 NetworkUtils networkUtils = new NetworkUtils(getContext());
                 if (networkUtils.isNetworkAvailable()) {
-                    networkUtils.getToken(new ResponseListener() {
+                    networkUtils.getToken(new ResponseListener<String>() {
                         @Override
                         public void onResponse(String token) {
-                            networkUtils.createMeeting(token, new ResponseListener() {
+                            networkUtils.createMeeting(token, new ResponseListener<String>() {
                                 @Override
                                 public void onResponse(String meetingId) {
                                     Intent intent = null;
@@ -105,18 +105,9 @@ public class CreateMeetingFragment extends Fragment {
                                     }
                                 }
 
-                                @Override
-                                public void onMeetingTimeChanged(int meetingTime) {
-
-                                }
-
                             });
                         }
 
-                        @Override
-                        public void onMeetingTimeChanged(int meetingTime) {
-
-                        }
                     });
 
                 } else {
