@@ -1,9 +1,7 @@
 package live.videosdk.rtc.android.java.Common.Listener;
 
-public interface ResponseListener {
+public interface ResponseListener<T> {
 
-    void onResponse(String meetingId);
-
-    void onMeetingTimeChanged(int meetingTime);
+    void onResponse(T response);
 
 }

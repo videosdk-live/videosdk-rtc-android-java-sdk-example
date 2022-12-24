@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:strokeColor="#9A9FA5"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:gravity="center"
+            android:padding="6dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quality Score : "
+                    android:textColor="@color/white"
+                    android:textFontWeight="600"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/txtScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textFontWeight="600"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnDismiss"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:background="@color/transparentColor"
+                android:src="@drawable/ic_baseline_close_24"></ImageButton>
+
+        </LinearLayout>
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:padding="5dp"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Audio"
+                    android:textColor="@color/white"
+                    android:textFontWeight="500"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Video"
+                    android:textColor="@color/white"
+                    android:textFontWeight="500"
+                    android:textSize="12sp" />
+            </TableRow>
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="Latency"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/audio_latency"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/video_latency"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+            </TableRow>
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:paddingLeft="5dp"
+                    android:text="Jitter"
+                    android:paddingVertical="5dp"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/audio_jitter"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/video_jitter"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+            </TableRow>
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="Packet Loss"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/audio_packetLoss"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/video_packetLoss"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+            </TableRow>
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="Bitrate"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/audio_bitrate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/video_bitrate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+            </TableRow>
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:paddingLeft="5dp"
+                    android:text="Frame rate"
+                    android:paddingVertical="5dp"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/audio_frameRate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/video_frameRate"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+            </TableRow>
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="Resolution"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/video_resolution"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+            </TableRow>
+
+            <TableRow android:background="@color/colorPrimaryVariant">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="Codec"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/audio_codec"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/video_codec"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_border"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingVertical="5dp"
+                    android:text="-"
+                    android:textColor="@color/white"
+                    android:textFontWeight="450"
+                    android:textSize="12sp" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
+
