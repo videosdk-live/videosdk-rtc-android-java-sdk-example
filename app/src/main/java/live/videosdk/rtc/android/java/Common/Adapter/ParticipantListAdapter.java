@@ -139,22 +139,6 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
 
         }
 
-        participant.addEventListener(new ParticipantEventListener() {
-            @Override
-            public void onStreamEnabled(Stream stream) {
-                if (stream.getKind().equalsIgnoreCase("video")) {
-                    webCamOn[0] = true;
-                }
-            }
-
-            @Override
-            public void onStreamDisabled(Stream stream) {
-                if (stream.getKind().equalsIgnoreCase("video")) {
-                    webCamOn[0] = false;
-                }
-            }
-        });
-
         return webCamOn[0];
     }
 
@@ -168,22 +152,6 @@ public class ParticipantListAdapter extends RecyclerView.Adapter<ParticipantList
             }
 
         }
-
-        participant.addEventListener(new ParticipantEventListener() {
-            @Override
-            public void onStreamEnabled(Stream stream) {
-                if (stream.getKind().equalsIgnoreCase("audio")) {
-                    micOn[0] = true;
-                }
-            }
-
-            @Override
-            public void onStreamDisabled(Stream stream) {
-                if (stream.getKind().equalsIgnoreCase("audio")) {
-                    micOn[0] = false;
-                }
-            }
-        });
 
         return micOn[0];
     }

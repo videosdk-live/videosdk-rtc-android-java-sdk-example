@@ -68,9 +68,11 @@ import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import live.videosdk.rtc.android.CustomStreamTrack;
@@ -192,10 +194,23 @@ public class GroupCallActivity extends AppCompatActivity {
         // pass the token generated from api server
         VideoSDK.config(token);
 
+        Map<String, CustomStreamTrack> customTracks = new HashMap<>();
+
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, this);
+        customTracks.put("video", videoCustomTrack);
+
+        JSONObject noiseConfig = new JSONObject();
+        JsonUtils.jsonPut(noiseConfig, "acousticEchoCancellation", true);
+        JsonUtils.jsonPut(noiseConfig, "noiseSuppression", true);
+        JsonUtils.jsonPut(noiseConfig, "autoGainControl", true);
+
+        CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", noiseConfig, this);
+        customTracks.put("mic", audioCustomTrack);
+
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 GroupCallActivity.this, meetingId, localParticipantName,
-                micEnabled, webcamEnabled, null, null
+                micEnabled, webcamEnabled, null, customTracks
         );
 
         //
@@ -551,12 +566,13 @@ public class GroupCallActivity extends AppCompatActivity {
                 int code = error.getInt("code");
                 if (code == errorCodes.getInt("PREV_RECORDING_PROCESSING")) {
                     recordingStatusSnackbar.dismiss();
-                    Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), "Please try again after sometime",
-                            Snackbar.LENGTH_LONG);
-                    HelperClass.setSnackBarStyle(snackbar.getView(), 0);
-                    snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
-                    snackbar.show();
+
                 }
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout),error.optString("message"),
+                        Snackbar.LENGTH_LONG);
+                HelperClass.setSnackBarStyle(snackbar.getView(), 0);
+                snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
+                snackbar.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
