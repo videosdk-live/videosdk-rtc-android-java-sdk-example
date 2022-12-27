@@ -30,6 +30,7 @@ import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.fragment.CreateOrJoinFragment;
@@ -188,17 +189,21 @@ public class CreateOrJoinActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-        String[] permissions = {
-                Manifest.permission.INTERNET,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_PHONE_STATE
+        List<String> permissionList = new ArrayList<String>();
+        permissionList.add(Manifest.permission.INTERNET);
+        permissionList.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
+        permissionList.add(Manifest.permission.RECORD_AUDIO);
+        permissionList.add(Manifest.permission.CAMERA);
+        permissionList.add(Manifest.permission.READ_PHONE_STATE);
 
-        };
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            permissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+
+        String[] permissions = {};
         String rationale = "Please provide permissions";
         Permissions.Options options =
                 new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
-        Permissions.check(this, permissions, rationale, options, permissionHandler);
+        Permissions.check(this, permissionList.toArray(permissions), rationale, options, permissionHandler);
     }
 
     private void changeFloatingActionButtonLayout(FloatingActionButton btn, boolean enabled) {
