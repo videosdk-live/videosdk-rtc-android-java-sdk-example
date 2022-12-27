@@ -248,7 +248,7 @@ public class ParticipantViewFragment extends Fragment {
             ivNetwork.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    popupwindow_obj = HelperClass.callStatsPopupDisplay(participant, ivNetwork,getContext());
+                    popupwindow_obj = HelperClass.callStatsPopupDisplay(participant, ivNetwork,getContext(),false);
                     popupwindow_obj.showAsDropDown(ivNetwork, -350, -85);
                 }
             });

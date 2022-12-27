@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,7 +104,7 @@ public class HelperClass {
         return "null".equals(str) || "".equals(str) || null == str;
     }
 
-    public static PopupWindow callStatsPopupDisplay(Participant participant, ImageView ivNetwork, Context context) {
+    public static PopupWindow callStatsPopupDisplay(Participant participant, ImageView ivNetwork, Context context,boolean isScreenShare) {
 
         PopupWindow popupWindow = new PopupWindow(context);
 
@@ -131,8 +130,15 @@ public class HelperClass {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                JSONObject audio_stats = participant.getAudioStats();
-                JSONObject video_stats = participant.getVideoStats();
+                JSONObject audio_stats = null;
+                JSONObject video_stats;
+                if(isScreenShare)
+                {
+                    video_stats = participant.getShareStats();
+                }else {
+                    audio_stats = participant.getAudioStats();
+                    video_stats = participant.getVideoStats();
+                }
 
                 int score = 0;
                 if (video_stats != null)
@@ -170,7 +176,6 @@ public class HelperClass {
                         audio_codec = audio_stats.has("codec") ? audio_stats.getString("codec") : "-";
                     }
                     if (video_stats != null) {
-                        Log.d("TAG", "run: size" + video_stats.getJSONObject("size").get("framerate"));
                         video_latency = video_stats.has("rtt") ? String.valueOf(video_stats.getInt("rtt")).concat(" ms ") : "-";
                         video_jitter = video_stats.has("jitter") ? String.format("%.2f", video_stats.getDouble("jitter")).concat(" ms ") : "-";
                         video_packetLoss = video_stats.has("packetsLost") && video_stats.has("totalPackets") && video_stats.getInt("packetsLost") > 0 && video_stats.getInt("totalPackets") > 0 ? String.format("%.2f", video_stats.getDouble("packetsLost") * 100 / video_stats.getDouble("totalPackets")).concat("% ") : "-";

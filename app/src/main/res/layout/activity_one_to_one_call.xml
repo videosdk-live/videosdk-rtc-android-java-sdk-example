@@ -106,6 +106,72 @@
         android:layout_weight="1">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/localScreenShareView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="3dp"
+            android:backgroundTint="#2B3034"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:strokeColor="#2B3034">
+
+            <ImageView
+                android:id="@+id/ivLocalScreenShareNetwork"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:layout_gravity="right"
+                android:padding="6dp"
+                android:layout_marginEnd="2dp"
+                android:src="@drawable/green_signal" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="38sp"
+                    android:layout_height="33sp"
+                    android:src="@drawable/ic_screen_share"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="You are presenting to everyone"
+                    android:textColor="@color/white"
+                    android:textFontWeight="500"
+                    android:textSize="18dp"
+                    android:layout_marginVertical="10dp">
+
+
+                </TextView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnStopScreenShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0"
+                    android:padding="10dp"
+                    android:text="Stop Presenting"
+                    android:textAllCaps="false"
+                    android:textFontWeight="500"
+                    android:textSize="17dp"
+                    app:cornerRadius="10dp"
+                    android:layout_gravity="center"/>
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/ParticipantCard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -146,6 +212,7 @@
                 android:layout_gravity="right"
                 android:padding="6dp"
                 android:layout_marginEnd="2dp"
+                android:visibility="gone"
                 android:src="@drawable/green_signal" />
 
             <LinearLayout
@@ -168,14 +235,14 @@
                     android:textFontWeight="600"
                     android:textSize="16dp" />
 
-<!--                <pl.droidsonroids.gif.GifImageView-->
-<!--                    android:id="@+id/img_participantActiveSpeaker"-->
-<!--                    android:layout_width="30dp"-->
-<!--                    android:layout_height="30dp"-->
-<!--                    android:layout_marginLeft="4dp"-->
-<!--                    android:src="@drawable/active_speaker"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:visibility="gone" />-->
+                <!--                <pl.droidsonroids.gif.GifImageView-->
+                <!--                    android:id="@+id/img_participantActiveSpeaker"-->
+                <!--                    android:layout_width="30dp"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:layout_marginLeft="4dp"-->
+                <!--                    android:src="@drawable/active_speaker"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:visibility="gone" />-->
 
                 <ImageView
                     android:id="@+id/ivParticipantMicStatus"
@@ -260,14 +327,14 @@
                     android:textFontWeight="600"
                     android:textSize="16dp" />
 
-<!--                <pl.droidsonroids.gif.GifImageView-->
-<!--                    android:id="@+id/img_localActiveSpeaker"-->
-<!--                    android:layout_width="30dp"-->
-<!--                    android:layout_height="30dp"-->
-<!--                    android:layout_marginLeft="4dp"-->
-<!--                    android:src="@drawable/active_speaker"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:visibility="gone" />-->
+                <!--                <pl.droidsonroids.gif.GifImageView-->
+                <!--                    android:id="@+id/img_localActiveSpeaker"-->
+                <!--                    android:layout_width="30dp"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:layout_marginLeft="4dp"-->
+                <!--                    android:src="@drawable/active_speaker"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:visibility="gone" />-->
 
             </LinearLayout>
 

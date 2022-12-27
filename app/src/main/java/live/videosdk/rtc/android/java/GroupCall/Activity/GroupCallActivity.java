@@ -50,6 +50,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +97,6 @@ import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
-import live.videosdk.rtc.android.lib.JsonUtils;
 import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
@@ -359,6 +359,24 @@ public class GroupCallActivity extends AppCompatActivity {
         };
 
         findViewById(R.id.participants_Layout).setOnTouchListener(onTouchListener);
+
+        findViewById(R.id.ivParticipantScreenShareNetwork).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Participant> participantList = getAllParticipants();
+                Participant participant = participantList.get(0);
+                PopupWindow popupwindow_obj = HelperClass.callStatsPopupDisplay(participant, findViewById(R.id.ivParticipantScreenShareNetwork), GroupCallActivity.this, true);
+                popupwindow_obj.showAsDropDown(findViewById(R.id.ivParticipantScreenShareNetwork), -350, -85);
+            }
+        });
+
+        findViewById(R.id.ivLocalScreenShareNetwork).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupWindow popupwindow_obj = HelperClass.callStatsPopupDisplay(meeting.getLocalParticipant(), findViewById(R.id.ivLocalScreenShareNetwork), GroupCallActivity.this, true);
+                popupwindow_obj.showAsDropDown(findViewById(R.id.ivLocalScreenShareNetwork), -350, -85);
+            }
+        });
     }
 
     public View.OnTouchListener getOnTouchListener() {
@@ -690,16 +708,21 @@ public class GroupCallActivity extends AppCompatActivity {
     };
 
     private void checkPermissions() {
-        String[] permissions = {
-                Manifest.permission.INTERNET,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_PHONE_STATE
-        };
+        List<String> permissionList = new ArrayList<String>();
+        permissionList.add(Manifest.permission.INTERNET);
+        permissionList.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
+        permissionList.add(Manifest.permission.RECORD_AUDIO);
+        permissionList.add(Manifest.permission.CAMERA);
+        permissionList.add(Manifest.permission.READ_PHONE_STATE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            permissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+
+        String[] permissions = {};
         String rationale = "Please provide permissions";
         Permissions.Options options =
                 new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
-        Permissions.check(this, permissions, rationale, options, permissionHandler);
+        Permissions.check(this, permissionList.toArray(permissions), rationale, options, permissionHandler);
     }
 
     private void setAudioDeviceListeners() {
@@ -817,6 +840,7 @@ public class GroupCallActivity extends AppCompatActivity {
         if (shareStream == null) return;
         ((TextView) findViewById(R.id.tvScreenShareParticipantName)).setText(participant.getDisplayName() + " is presenting");
         findViewById(R.id.tvScreenShareParticipantName).setVisibility(View.VISIBLE);
+        findViewById(R.id.ivParticipantScreenShareNetwork).setVisibility(View.VISIBLE);
 
         // display share video
         shareLayout.setVisibility(View.VISIBLE);
@@ -846,6 +870,7 @@ public class GroupCallActivity extends AppCompatActivity {
                     svrShare.setVisibility(View.GONE);
                     shareLayout.setVisibility(View.GONE);
                     findViewById(R.id.tvScreenShareParticipantName).setVisibility(View.GONE);
+                    findViewById(R.id.ivParticipantScreenShareNetwork).setVisibility(View.GONE);
                     localScreenShare = false;
                 }
             }
