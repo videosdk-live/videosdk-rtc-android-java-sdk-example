@@ -38,8 +38,8 @@
                     android:backgroundTint="@color/md_grey_700"
                     app:strokeColor="@color/md_grey_700">
 
-                <org.webrtc.SurfaceViewRenderer
-                    android:id="@+id/svrJoiningView"
+                <live.videosdk.rtc.android.VideoView
+                    android:id="@+id/joiningView"
                     android:layout_width="250dp"
                     android:layout_height="340dp" />
 

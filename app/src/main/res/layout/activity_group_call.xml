@@ -171,8 +171,8 @@
                 android:layout_height="420dp"
                 android:visibility="gone">
 
-                <org.webrtc.SurfaceViewRenderer
-                    android:id="@+id/svrShare"
+                <live.videosdk.rtc.android.VideoView
+                    android:id="@+id/shareView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
