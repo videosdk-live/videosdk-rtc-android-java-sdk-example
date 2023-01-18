@@ -32,8 +32,8 @@
             android:textSize="40dp" />
 
 
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/svrParticipantView"
+        <live.videosdk.rtc.android.VideoView
+            android:id="@+id/participantVideoView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />

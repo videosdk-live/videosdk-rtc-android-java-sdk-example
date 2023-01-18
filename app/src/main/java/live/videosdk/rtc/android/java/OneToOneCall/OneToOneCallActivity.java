@@ -64,7 +64,6 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import org.json.JSONObject;
-import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
@@ -81,6 +80,7 @@ import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
+import live.videosdk.rtc.android.VideoView;
 import live.videosdk.rtc.android.java.Common.Activity.CreateOrJoinActivity;
 import live.videosdk.rtc.android.java.Common.Adapter.AudioDeviceListAdapter;
 import live.videosdk.rtc.android.java.Common.Adapter.LeaveOptionListAdapter;
@@ -95,7 +95,6 @@ import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
-import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
@@ -106,8 +105,8 @@ import live.videosdk.rtc.android.model.PubSubPublishOptions;
 
 public class OneToOneCallActivity extends AppCompatActivity {
     private static Meeting meeting;
-    private SurfaceViewRenderer svrLocal;
-    private SurfaceViewRenderer svrParticipant;
+    private VideoView localVideoView;
+    private VideoView participantVideoView;
     private FloatingActionButton btnWebcam;
     private ImageButton btnMic, btnAudioSelection, btnSwitchCameraMode;
     private FloatingActionButton btnLeave, btnChat, btnMore;
@@ -186,12 +185,10 @@ public class OneToOneCallActivity extends AppCompatActivity {
         tvName = findViewById(R.id.tvName);
         tvLocalParticipantName = findViewById(R.id.tvLocalParticipantName);
 
-        svrLocal = findViewById(R.id.svrLocal);
-        svrLocal.init(PeerConnectionUtils.getEglContext(), null);
-        svrLocal.setMirror(true);
+        localVideoView = findViewById(R.id.localVideoView);
+        localVideoView.setMirror(true);
 
-        svrParticipant = findViewById(R.id.svrParticipant);
-        svrParticipant.init(PeerConnectionUtils.getEglContext(), null);
+        participantVideoView = findViewById(R.id.participantVideoView);
 
         btnMic = findViewById(R.id.btnMic);
         btnWebcam = findViewById(R.id.btnWebcam);
@@ -593,16 +590,15 @@ public class OneToOneCallActivity extends AppCompatActivity {
             if (meeting.getParticipants().size() < 1) {
                 hideParticipantCard();
                 if (screenshareTrack != null) {
-                    if (participantTrack != null) participantTrack.removeSink(svrLocal);
-                    svrLocal.clearImage();
-                    svrLocal.setVisibility(View.GONE);
+                    if (participantTrack != null) localVideoView.removeTrack();
+                    localVideoView.setVisibility(View.GONE);
                     showParticipantCard();
                     if (localTrack != null) {
-                        localTrack.addSink(svrLocal);
-                        svrLocal.setVisibility(View.VISIBLE);
+                        localVideoView.addTrack(localTrack);
+                        localVideoView.setVisibility(View.VISIBLE);
                     }
-                    screenshareTrack.addSink(svrParticipant);
-                    svrParticipant.setVisibility(View.VISIBLE);
+                    participantVideoView.addTrack(screenshareTrack);
+                    participantVideoView.setVisibility(View.VISIBLE);
                 }
                 if (popupwindow_obj != null && popupwindow_obj.isShowing())
                     popupwindow_obj.dismiss();
@@ -824,9 +820,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 if (stream.getKind().equals("share")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     screenshareTrack = null;
-                    track.removeSink(svrParticipant);
-                    svrParticipant.clearImage();
-                    svrParticipant.setVisibility(View.GONE);
+                    participantVideoView.removeTrack();
+                    participantVideoView.setVisibility(View.GONE);
                     removeTrack(participantTrack, true);
                     txtLocalParticipantName.setText(meeting.getLocalParticipant().getDisplayName().substring(0, 1));
                     tvName.setText(participantName);
@@ -1147,16 +1142,14 @@ public class OneToOneCallActivity extends AppCompatActivity {
             meeting = null;
         }
 
-        if (svrParticipant != null) {
-            svrParticipant.clearImage();
-            svrParticipant.setVisibility(View.GONE);
-            svrParticipant.release();
+        if (participantVideoView != null) {
+            participantVideoView.setVisibility(View.GONE);
+            participantVideoView.releaseSurfaceViewRenderer();
         }
 
-        if (svrLocal != null) {
-            svrLocal.clearImage();
-            svrLocal.setVisibility(View.GONE);
-            svrLocal.release();
+        if (localVideoView != null) {
+            localVideoView.setVisibility(View.GONE);
+            localVideoView.releaseSurfaceViewRenderer();
         }
 
         timer.cancel();
@@ -1177,44 +1170,43 @@ public class OneToOneCallActivity extends AppCompatActivity {
             if (meeting.getParticipants().size() == 0) {
                 showParticipantCard();
                 if (localTrack != null) {
-                    localTrack.addSink(svrLocal);
-                    svrLocal.setVisibility(View.VISIBLE);
+                    localVideoView.addTrack(localTrack);
+                    localVideoView.setVisibility(View.VISIBLE);
                 }
 
             } else {
                 if (localTrack != null) {
-                    localTrack.removeSink(svrLocal);
-                    svrLocal.clearImage();
-                    svrLocal.setVisibility(View.GONE);
+                    localVideoView.removeTrack();
+                    localVideoView.setVisibility(View.GONE);
                 }
 
                 if (participantTrack != null) {
-                    participantTrack.removeSink(svrParticipant);
-                    svrParticipant.clearImage();
-                    participantTrack.addSink(svrLocal);
+                    participantVideoView.removeTrack();
+                    participantVideoView.clearImage();
+                    localVideoView.addTrack(participantTrack);
                     if (participantName != null)
                         txtLocalParticipantName.setText(participantName.substring(0, 1));
-                    svrLocal.setVisibility(View.VISIBLE);
+                    localVideoView.setVisibility(View.VISIBLE);
                 }
             }
             if (localScreenShare) {
                 participantCard.setVisibility(View.GONE);
                 findViewById(R.id.localScreenShareView).setVisibility(View.VISIBLE);
             } else {
-                screenshareTrack.addSink(svrParticipant);
-                svrParticipant.setVisibility(View.VISIBLE);
+                participantVideoView.addTrack(screenshareTrack);
+                participantVideoView.setVisibility(View.VISIBLE);
             }
         } else {
 
             if (participantTrack != null) {
-                svrParticipant.setVisibility(View.VISIBLE);
-                participantTrack.addSink(svrParticipant);
+                participantVideoView.setVisibility(View.VISIBLE);
+                participantVideoView.addTrack(participantTrack);
 //                ((View) img_participantActiveSpeaker).bringToFront();
             }
             if (localTrack != null) {
-                svrLocal.setVisibility(View.VISIBLE);
-                svrLocal.setZOrderMediaOverlay(true);
-                localTrack.addSink(svrLocal);
+                localVideoView.setVisibility(View.VISIBLE);
+                localVideoView.setZOrderMediaOverlay(true);
+                localVideoView.addTrack(localTrack);
 //                ((View) img_localActiveSpeaker).bringToFront();
                 ((View) localCard).bringToFront();
 
@@ -1243,29 +1235,24 @@ public class OneToOneCallActivity extends AppCompatActivity {
             findViewById(R.id.localScreenShareView).setVisibility(View.GONE);
             participantCard.setVisibility(View.VISIBLE);
             if (isLocal) {
-                if (track != null) track.removeSink(svrLocal);
-                svrLocal.clearImage();
-                svrLocal.setVisibility(View.GONE);
+                if (track != null) localVideoView.removeTrack();
+                localVideoView.setVisibility(View.GONE);
             } else {
-                if (track != null) track.removeSink(svrParticipant);
-                svrParticipant.clearImage();
-                svrParticipant.setVisibility(View.GONE);
+                if (track != null) participantVideoView.removeTrack();
+                participantVideoView.setVisibility(View.GONE);
             }
         } else {
             if (!isLocal) {
-                if (track != null) track.removeSink(svrLocal);
-                svrLocal.clearImage();
-                svrLocal.setVisibility(View.GONE);
+                if (track != null) localVideoView.removeTrack();
+                localVideoView.setVisibility(View.GONE);
                 onTrackChange();
             } else {
                 if (meeting.getParticipants().size() == 0) {
-                    if (track != null) track.removeSink(svrLocal);
-                    svrLocal.clearImage();
-                    svrLocal.setVisibility(View.GONE);
+                    if (track != null) localVideoView.removeTrack();
+                    localVideoView.setVisibility(View.GONE);
                 } else {
-                    if (track != null) track.removeSink(svrParticipant);
-                    svrParticipant.clearImage();
-                    svrParticipant.setVisibility(View.GONE);
+                    if (track != null) participantVideoView.removeTrack();
+                    participantVideoView.setVisibility(View.GONE);
                     onTrackChange();
                 }
             }
@@ -1440,9 +1427,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 } else if (stream.getKind().equalsIgnoreCase("share")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     if (track != null) screenshareTrack = null;
-                    track.removeSink(svrParticipant);
-                    svrParticipant.clearImage();
-                    svrParticipant.setVisibility(View.GONE);
+                    participantVideoView.removeTrack();
+                    participantVideoView.setVisibility(View.GONE);
                     if (meeting.getParticipants().size() == 0) hideParticipantCard();
 
                     removeTrack(participantTrack, true);

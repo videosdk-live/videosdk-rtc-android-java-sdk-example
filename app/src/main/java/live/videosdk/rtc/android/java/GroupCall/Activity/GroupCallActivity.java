@@ -66,7 +66,6 @@ import com.nabinbhandari.android.permissions.Permissions;
 
 import org.json.JSONObject;
 import org.webrtc.RendererCommon;
-import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
@@ -82,6 +81,7 @@ import live.videosdk.rtc.android.Meeting;
 import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
+import live.videosdk.rtc.android.VideoView;
 import live.videosdk.rtc.android.java.GroupCall.Adapter.ParticipantViewAdapter;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
@@ -97,7 +97,6 @@ import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
-import live.videosdk.rtc.android.lib.PeerConnectionUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
@@ -105,7 +104,6 @@ import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 import live.videosdk.rtc.android.listeners.PubSubMessageListener;
 import live.videosdk.rtc.android.listeners.WebcamRequestListener;
 import live.videosdk.rtc.android.model.PubSubPublishOptions;
-
 
 public class GroupCallActivity extends AppCompatActivity {
 
@@ -116,7 +114,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
     private LinearLayout micLayout;
     ArrayList<Participant> participants;
-    private SurfaceViewRenderer svrShare;
+    private VideoView shareView;
     private FrameLayout shareLayout;
 
     private boolean micEnabled = true;
@@ -180,8 +178,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
         viewPager2 = findViewById(R.id.view_pager_video_grid);
         shareLayout = findViewById(R.id.shareLayout);
-        svrShare = findViewById(R.id.svrShare);
-        svrShare.init(PeerConnectionUtils.getEglContext(), null);
+        shareView = findViewById(R.id.shareView);
 
         token = getIntent().getStringExtra("token");
         final String meetingId = getIntent().getStringExtra("meetingId");
@@ -814,8 +811,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
     private void updatePresenter(String participantId) {
         if (participantId == null) {
-            svrShare.clearImage();
-            svrShare.setVisibility(View.GONE);
+            shareView.setVisibility(View.GONE);
             shareLayout.setVisibility(View.GONE);
             screenshareEnabled = false;
             return;
@@ -844,12 +840,12 @@ public class GroupCallActivity extends AppCompatActivity {
 
         // display share video
         shareLayout.setVisibility(View.VISIBLE);
-        svrShare.setVisibility(View.VISIBLE);
-        svrShare.setZOrderMediaOverlay(true);
-        svrShare.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+        shareView.setVisibility(View.VISIBLE);
+        shareView.setZOrderMediaOverlay(true);
+        shareView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
 
         VideoTrack videoTrack = (VideoTrack) shareStream.getTrack();
-        videoTrack.addSink(svrShare);
+        shareView.addTrack(videoTrack);
 
         screenShareParticipantNameSnackbar = Snackbar.make(findViewById(R.id.mainLayout), participant.getDisplayName() + " started presenting",
                 Snackbar.LENGTH_SHORT);
@@ -864,10 +860,9 @@ public class GroupCallActivity extends AppCompatActivity {
             public void onStreamDisabled(Stream stream) {
                 if (stream.getKind().equals("share")) {
                     VideoTrack track = (VideoTrack) stream.getTrack();
-                    if (track != null) track.removeSink(svrShare);
+                    shareView.removeTrack();
 
-                    svrShare.clearImage();
-                    svrShare.setVisibility(View.GONE);
+                    shareView.setVisibility(View.GONE);
                     shareLayout.setVisibility(View.GONE);
                     findViewById(R.id.tvScreenShareParticipantName).setVisibility(View.GONE);
                     findViewById(R.id.ivParticipantScreenShareNetwork).setVisibility(View.GONE);
@@ -1081,11 +1076,10 @@ public class GroupCallActivity extends AppCompatActivity {
             meeting.leave();
             meeting = null;
         }
-        if (svrShare != null) {
-            svrShare.clearImage();
-            svrShare.setVisibility(View.GONE);
+        if (shareView != null) {
+            shareView.setVisibility(View.GONE);
             shareLayout.setVisibility(View.GONE);
-            svrShare.release();
+            shareView.releaseSurfaceViewRenderer();
         }
 
         super.onDestroy();

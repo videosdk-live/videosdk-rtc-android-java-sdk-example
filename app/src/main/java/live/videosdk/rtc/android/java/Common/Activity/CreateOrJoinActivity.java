@@ -1,6 +1,7 @@
 package live.videosdk.rtc.android.java.Common.Activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -24,7 +25,6 @@ import com.nabinbhandari.android.permissions.Permissions;
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.SurfaceTextureHelper;
-import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
@@ -32,6 +32,7 @@ import org.webrtc.VideoTrack;
 import java.util.ArrayList;
 import java.util.List;
 
+import live.videosdk.rtc.android.VideoView;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.fragment.CreateOrJoinFragment;
 import live.videosdk.rtc.android.java.Common.fragment.JoinMeetingFragment;
@@ -44,7 +45,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
     private boolean webcamEnabled = false;
 
     private FloatingActionButton btnMic, btnWebcam;
-    private SurfaceViewRenderer svrJoin;
+    private VideoView joinView;
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -88,6 +89,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
     };
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +105,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
         btnMic = findViewById(R.id.btnMic);
         btnWebcam = findViewById(R.id.btnWebcam);
-        svrJoin = findViewById(R.id.svrJoiningView);
+        joinView = findViewById(R.id.joiningView);
 
         checkPermissions();
 
@@ -255,8 +257,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
             peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
 
 
-            svrJoin.init(PeerConnectionUtils.getEglContext(), null);
-            svrJoin.setMirror(true);
+            joinView.setMirror(true);
 
             SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", PeerConnectionUtils.getEglContext());
 
@@ -270,11 +271,10 @@ public class CreateOrJoinActivity extends AppCompatActivity {
             videoTrack = peerConnectionFactory.createVideoTrack("100", videoSource);
 
             // display in localView
-            videoTrack.addSink(svrJoin);
+            joinView.addTrack(videoTrack);
         } else {
-            if (videoTrack != null) videoTrack.removeSink(svrJoin);
-            svrJoin.clearImage();
-            svrJoin.release();
+            joinView.removeTrack();
+            joinView.releaseSurfaceViewRenderer();
         }
     }
 
@@ -310,10 +310,9 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (videoTrack != null) videoTrack.removeSink(svrJoin);
+        joinView.removeTrack();
 
-        svrJoin.clearImage();
-        svrJoin.release();
+        joinView.releaseSurfaceViewRenderer();
 
         closeCapturer();
 
@@ -322,10 +321,9 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if (videoTrack != null) videoTrack.removeSink(svrJoin);
+        joinView.removeTrack();
 
-        svrJoin.clearImage();
-        svrJoin.release();
+        joinView.releaseSurfaceViewRenderer();
 
         closeCapturer();
         super.onPause();
