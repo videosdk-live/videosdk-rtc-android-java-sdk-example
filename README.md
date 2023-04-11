@@ -162,7 +162,7 @@ Token is used to create and validate a meeting using API and also initialise a m
 
 <br/>
 
-## [Mute/Unmute Local Audio](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/mic-controls)
+## [Mute/Unmute Local Audio](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/handling-media/mute-unmute-mic)
 ```js
 // unmute mic
 meeting.unmuteMic();
@@ -173,7 +173,7 @@ meeting.muteMic();
 
 <br/>
 
-## [Change Audio Device](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/mic-controls#2-change-audio-device)
+## [Change Audio Device](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/handling-media/change-input-output-device#changing-inputoutput-audio-device)
 - The `meeting.getMics()` function allows a participant to list all of the attached microphones (e.g., Bluetooth and Earphone).
 
 ```js
@@ -192,7 +192,7 @@ Please consult our documentation [Change Audio Device](https://docs.videosdk.liv
 
 <br/>
 
-## [Enable/Disable Local Webcam](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/camera-controls)
+## [Enable/Disable Local Webcam](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/handling-media/on-off-camera)
 ```js
 // enable webcam
 meeting.enableWebcam();
@@ -203,7 +203,7 @@ meeting.disableWebcam();
 
 <br/>
 
-## [Switch Local Webcam](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/camera-controls)
+## [Switch Local Webcam](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/handling-media/change-input-output-device#changing-camera-input-device)
 ```js
 // switch webcam
 meeting.changeWebcam();
@@ -211,7 +211,7 @@ meeting.changeWebcam();
 
 <br/>
 
-## [Chat](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/pubsub)
+## [Chat](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/collaboration-in-meeting/chat-using-pubsub)
 The chat feature allows participants to send and receive messages about specific topics to which they have subscribed.
 
 ```js
@@ -241,7 +241,7 @@ PubSubMessageListener pubSubMessageListener = new PubSubMessageListener() {
 
 <br/>
 
-## [Leave or End Meeting](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/leave-end-meeting)
+## [Leave or End Meeting](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/setup-call/leave-end-meeting)
 ```js
 // Only one participant will leave/exit the meeting; the rest of the participants will remain.
 meeting.leave();
@@ -252,7 +252,7 @@ meeting.end();
 
 <br/>
 
-## [Setup MeetingEventListener](https://docs.videosdk.live/android/api/sdk-reference/meeting-class/meeting-event-listener-class)
+## [Setup MeetingEventListener](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/get-notified/meeting-events)
 By implementing `MeetingEventListener`, VideoSDK sends callbacks to the client app whenever there is a change or update in the meeting after a user joins.
 
 ```js
@@ -315,7 +315,7 @@ By implementing `MeetingEventListener`, VideoSDK sends callbacks to the client a
 
 <br/>
 
-## [Setup ParticipantEventListener](https://docs.videosdk.live/android/api/sdk-reference/participant-class/participant-event-listener-class)
+## [Setup ParticipantEventListener](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/get-notified/participant-events)
 By implementing `ParticipantEventListener`, VideoSDK sends callbacks to the client app whenever a participant's video, audio, or screen share stream is enabled or disabled.
 
 ```js
@@ -333,7 +333,7 @@ By implementing `ParticipantEventListener`, VideoSDK sends callbacks to the clie
 
 ```
 
-If you want to learn more about, read the complete documentation of [Android VideoSDK](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/getting-started)
+If you want to learn more about, read the complete documentation of [Android VideoSDK](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/concept-and-architecture)
 
 <br/>
 
