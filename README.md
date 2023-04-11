@@ -4,7 +4,7 @@
 
 ---
 
-[![Documentation](https://img.shields.io/badge/Read-Documentation-blue)](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/getting-started)
+[![Documentation](https://img.shields.io/badge/Read-Documentation-blue)](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/concept-and-architecture)
 [![Firebase](https://img.shields.io/badge/Download%20Android-Firebase-green)](https://appdistribution.firebase.dev/i/99ae2c5db3a7e446)
 [![Discord](https://img.shields.io/discord/876774498798551130?label=Join%20on%20Discord)](https://discord.gg/bGZtAbwvab)
 [![Register](https://img.shields.io/badge/Contact-Know%20More-blue)](https://app.videosdk.live/signup)
@@ -26,16 +26,14 @@ At Video SDK, we’re building tools to help companies create world-class collab
 - [x] Chat
 - [x] Raise hand
 - [x] Recording
-- [x] [External call detection](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/features/external-call-detection)
+- [x] [External call detection](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/get-notified/external-call-detection-event)
 
 <br/>
 
 ## Setup Guide
 - Sign up on [VideoSDK](https://app.videosdk.live) and visit [API Keys](https://app.videosdk.live/api-keys) section to get your API key and Secret key.
 
-- Get familiarized with [API key and Secret key](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/signup-and-create-api).
-
-- Get familiarized with [Token](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/server-setup).
+- Get familiarized with [Authentication and Token](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/authentication-and-token).
 
 <br/>
 
@@ -122,10 +120,6 @@ Token is used to create and validate a meeting using API and also initialise a m
 🌐 `Production Environment`:
 
 - For production, you have to set up an authentication server to authorize users. Follow our official example repositories to setup authentication server, [videosdk-rtc-api-server-examples](https://github.com/videosdk-live/videosdk-rtc-api-server-examples)
-
-> **Note** :
->
-> The expiry of development environment token lasts 7 days only.
 
 <br/>
 
