@@ -97,6 +97,7 @@ import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
+import live.videosdk.rtc.android.lib.JsonUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
@@ -195,7 +196,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
         Map<String, CustomStreamTrack> customTracks = new HashMap<>();
 
-        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, this);
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, true, this);
         customTracks.put("video", videoCustomTrack);
 
         CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", this);
@@ -204,7 +205,7 @@ public class GroupCallActivity extends AppCompatActivity {
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 GroupCallActivity.this, meetingId, localParticipantName,
-                micEnabled, webcamEnabled, null, customTracks
+                micEnabled, webcamEnabled, null, null, true, customTracks
         );
 
         //
@@ -580,7 +581,7 @@ public class GroupCallActivity extends AppCompatActivity {
                     recordingStatusSnackbar.dismiss();
 
                 }
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout),error.optString("message"),
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.mainLayout), error.optString("message"),
                         Snackbar.LENGTH_LONG);
                 HelperClass.setSnackBarStyle(snackbar.getView(), 0);
                 snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
@@ -754,7 +755,7 @@ public class GroupCallActivity extends AppCompatActivity {
         if (webcamEnabled) {
             meeting.disableWebcam();
         } else {
-            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, this);
+            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true, this);
             meeting.enableWebcam(videoCustomTrack);
         }
     }
@@ -1055,7 +1056,15 @@ public class GroupCallActivity extends AppCompatActivity {
     private void toggleRecording() {
         if (!recording) {
             recordingStatusSnackbar.show();
-            meeting.startRecording(null);
+            JSONObject config = new JSONObject();
+            JSONObject layout = new JSONObject();
+            JsonUtils.jsonPut(layout, "type", "SPOTLIGHT");
+            JsonUtils.jsonPut(layout, "priority", "PIN");
+            JsonUtils.jsonPut(layout, "gridSize", 12);
+            JsonUtils.jsonPut(config, "layout", layout);
+            JsonUtils.jsonPut(config, "orientation", "portrait");
+            JsonUtils.jsonPut(config, "theme", "DARK");
+            meeting.startRecording(null, null, config);
 
         } else {
             meeting.stopRecording();

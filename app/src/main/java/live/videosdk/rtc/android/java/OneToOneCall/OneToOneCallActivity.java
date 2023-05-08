@@ -95,6 +95,7 @@ import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
+import live.videosdk.rtc.android.lib.JsonUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
@@ -226,7 +227,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         Map<String, CustomStreamTrack> customTracks = new HashMap<>();
 
-        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, this);
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, true,this);
         customTracks.put("video", videoCustomTrack);
 
         CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", this);
@@ -235,7 +236,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 OneToOneCallActivity.this, meetingId, localParticipantName,
-                false, false, null, customTracks
+                false, false, null, null, true, customTracks
         );
 
         meeting.addEventListener(meetingEventListener);
@@ -894,7 +895,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         if (webcamEnabled) {
             meeting.disableWebcam();
         } else {
-            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, this);
+            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true,this);
             meeting.enableWebcam(videoCustomTrack);
         }
         webcamEnabled = !webcamEnabled;
@@ -1121,7 +1122,15 @@ public class OneToOneCallActivity extends AppCompatActivity {
     private void toggleRecording() {
         if (!recording) {
             recordingStatusSnackbar.show();
-            meeting.startRecording(null);
+            JSONObject config = new JSONObject();
+            JSONObject layout = new JSONObject();
+            JsonUtils.jsonPut(layout, "type", "SPOTLIGHT");
+            JsonUtils.jsonPut(layout, "priority", "PIN");
+            JsonUtils.jsonPut(layout, "gridSize", 12);
+            JsonUtils.jsonPut(config, "layout", layout);
+            JsonUtils.jsonPut(config, "orientation", "portrait");
+            JsonUtils.jsonPut(config, "theme", "DARK");
+            meeting.startRecording(null,null,config);
 
         } else {
             meeting.stopRecording();
