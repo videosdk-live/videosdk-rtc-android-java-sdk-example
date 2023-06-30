@@ -55,7 +55,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.26'
     implementation "com.airbnb.android:lottie:5.2.0"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
