@@ -235,8 +235,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
-                OneToOneCallActivity.this, meetingId, localParticipantName,
-                false, false, null, null, true, customTracks
+                OneToOneCallActivity.this, meetingId, localParticipantName,micEnabled,
+                webcamEnabled, null, null, false, customTracks,null
         );
 
         meeting.addEventListener(meetingEventListener);
@@ -1139,6 +1139,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         showLeaveOrEndDialog();
     }
 
