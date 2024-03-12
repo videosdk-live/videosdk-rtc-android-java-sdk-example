@@ -205,7 +205,7 @@ public class GroupCallActivity extends AppCompatActivity {
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 GroupCallActivity.this, meetingId, localParticipantName,
-                micEnabled, webcamEnabled, null, null, true, customTracks
+                micEnabled, webcamEnabled, null, null, true, customTracks,null
         );
 
         //
@@ -1073,6 +1073,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         showLeaveOrEndDialog();
     }
 
