@@ -236,7 +236,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 OneToOneCallActivity.this, meetingId, localParticipantName,micEnabled,
-                webcamEnabled, null, null, false, customTracks,null
+                webcamEnabled, null, null, false, customTracks,null, null
         );
 
         meeting.addEventListener(meetingEventListener);
@@ -1130,7 +1130,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
             JsonUtils.jsonPut(config, "layout", layout);
             JsonUtils.jsonPut(config, "orientation", "portrait");
             JsonUtils.jsonPut(config, "theme", "DARK");
-            meeting.startRecording(null,null,config);
+            meeting.startRecording(null,null,config,null);
 
         } else {
             meeting.stopRecording();
