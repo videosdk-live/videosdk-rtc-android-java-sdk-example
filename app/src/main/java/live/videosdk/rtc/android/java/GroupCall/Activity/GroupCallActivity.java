@@ -106,6 +106,14 @@ import live.videosdk.rtc.android.listeners.PubSubMessageListener;
 import live.videosdk.rtc.android.listeners.WebcamRequestListener;
 import live.videosdk.rtc.android.model.PubSubPublishOptions;
 
+import live.videosdk.rtc.android.lib.transcription.TranscriptionConfig;
+import live.videosdk.rtc.android.lib.transcription.TranscriptionState;
+import live.videosdk.rtc.android.lib.transcription.TranscriptionText;
+
+import live.videosdk.rtc.android.lib.transcription.PostTranscriptionConfig;
+import live.videosdk.rtc.android.lib.transcription.SummaryConfig;
+
+
 public class GroupCallActivity extends AppCompatActivity {
 
     private static Meeting meeting;
@@ -151,6 +159,10 @@ public class GroupCallActivity extends AppCompatActivity {
     final Handler handler = new Handler();
     private PubSubMessageListener chatListener;
     private PubSubMessageListener raiseHandListener;
+
+    private boolean transcriptionEnabled = false;
+
+//    private boolean hls = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,7 +217,7 @@ public class GroupCallActivity extends AppCompatActivity {
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 GroupCallActivity.this, meetingId, localParticipantName,
-                micEnabled, webcamEnabled, null, null, true, customTracks,null,null
+                micEnabled, webcamEnabled, null, null, true, null,null,null
         );
 
         //
@@ -987,6 +999,10 @@ public class GroupCallActivity extends AppCompatActivity {
         ListItem stop_screen_share = new ListItem("Stop screen share", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_screen_share));
         ListItem start_recording = new ListItem("Start recording", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_recording));
         ListItem stop_recording = new ListItem("Stop recording", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_recording));
+        ListItem start_transcription = new ListItem("Start Transcription", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_typewritter));
+        ListItem stop_transcription = new ListItem("Stop Transcription", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_typewritter));
+//        ListItem start_hls = new ListItem("Start HLS", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_outline_content_copy_24));
+//        ListItem stop_hls = new ListItem("Stop HLS", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_outline_content_copy_24));
         ListItem participant_list = new ListItem("Participants (" + participantSize + ")", AppCompatResources.getDrawable(GroupCallActivity.this, R.drawable.ic_people));
 
         moreOptionsArrayList.add(raised_hand);
@@ -1001,11 +1017,21 @@ public class GroupCallActivity extends AppCompatActivity {
             moreOptionsArrayList.add(stop_recording);
         } else {
             moreOptionsArrayList.add(start_recording);
-
         }
 
-        moreOptionsArrayList.add(participant_list);
+        if (transcriptionEnabled) {
+            moreOptionsArrayList.add(stop_transcription);
+        } else {
+            moreOptionsArrayList.add(start_transcription);
+        }
 
+//        if (hls) {
+//            moreOptionsArrayList.add(stop_hls);
+//        } else {
+//            moreOptionsArrayList.add(start_hls);
+//        }
+
+        moreOptionsArrayList.add(participant_list);
 
         ArrayAdapter arrayAdapter = new MoreOptionsListAdapter(GroupCallActivity.this, R.layout.more_options_list_layout, moreOptionsArrayList);
         MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(GroupCallActivity.this, R.style.AlertDialogCustom)
@@ -1024,6 +1050,14 @@ public class GroupCallActivity extends AppCompatActivity {
                             break;
                         }
                         case 3: {
+                            toggleTranscription();
+                            break;
+                        }
+//                        case 4: {
+//                            toggleHLS();
+//                            break;
+//                        }
+                        case 5: {
                             openParticipantList();
                             break;
                         }
@@ -1049,6 +1083,59 @@ public class GroupCallActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+
+
+    private void toggleTranscription() {
+        if (!transcriptionEnabled) {
+            try {
+
+                SummaryConfig summaryConfig = new SummaryConfig(
+                        true,
+                        "Write summary in sections like Title, Agenda, Speakers, Action Items, Outlines, Notes and Summary"
+                );
+
+                TranscriptionConfig transcriptionConfig = new TranscriptionConfig(
+                        null,
+                        summaryConfig
+                );
+
+                meeting.startTranscription(transcriptionConfig);
+                transcriptionEnabled = true;
+                Toast.makeText(this, "Transcription started", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "Failed to start transcription: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            meeting.stopTranscription();
+            transcriptionEnabled = false;
+            Toast.makeText(this, "Transcription stopped", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+//    private void toggleHLS() {
+//        if (!hls) {
+//            // Configure the layout settings in a JSONObject
+//            JSONObject config = new JSONObject();
+//            JSONObject layout = new JSONObject();
+//            JsonUtils.jsonPut(layout, "type", "GRID");
+//            JsonUtils.jsonPut(layout, "gridSize", 4);
+//            JsonUtils.jsonPut(config, "layout", layout);
+//            JsonUtils.jsonPut(config, "orientation", "portrait");
+//
+//            // Create the transcription configuration
+//            SummaryConfig summaryConfig = new SummaryConfig(false, null);
+//            PostTranscriptionConfig transcription = new PostTranscriptionConfig(true, summaryConfig);
+//
+//            // Start HLS with separate config and transcription objects
+//            meeting.startHls(config, transcription);
+//        } else {
+//            meeting.stopHls();
+//        }
+//    }
+
+
+
+
     private void raisedHand() {
         meeting.pubSub.publish("RAISE_HAND", "Raise Hand by Me", new PubSubPublishOptions());
     }
@@ -1064,12 +1151,18 @@ public class GroupCallActivity extends AppCompatActivity {
             JsonUtils.jsonPut(config, "layout", layout);
             JsonUtils.jsonPut(config, "orientation", "portrait");
             JsonUtils.jsonPut(config, "theme", "DARK");
-            meeting.startRecording(null, null, config,null);
+
+
+            SummaryConfig summaryConfig = new SummaryConfig(true, null);
+            PostTranscriptionConfig transcription = new PostTranscriptionConfig(true, summaryConfig);
+
+            meeting.startRecording(null, null, config, transcription);
 
         } else {
             meeting.stopRecording();
         }
     }
+
 
     @Override
     public void onBackPressed() {

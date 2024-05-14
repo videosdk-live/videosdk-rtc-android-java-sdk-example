@@ -97,6 +97,9 @@ import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
 import live.videosdk.rtc.android.lib.JsonUtils;
 import live.videosdk.rtc.android.lib.PubSubMessage;
+import live.videosdk.rtc.android.lib.transcription.PostTranscriptionConfig;
+import live.videosdk.rtc.android.lib.transcription.SummaryConfig;
+import live.videosdk.rtc.android.lib.transcription.TranscriptionConfig;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
@@ -157,6 +160,9 @@ public class OneToOneCallActivity extends AppCompatActivity {
     final Handler handler = new Handler();
 
     private PubSubMessageListener chatListener;
+
+    private boolean transcriptionEnabled = false;
+//    private boolean hls = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -236,7 +242,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
                 OneToOneCallActivity.this, meetingId, localParticipantName,micEnabled,
-                webcamEnabled, null, null, false, customTracks,null, null
+                webcamEnabled, null, null, true, customTracks,null, null
         );
 
         meeting.addEventListener(meetingEventListener);
@@ -1064,7 +1070,12 @@ public class OneToOneCallActivity extends AppCompatActivity {
         ListItem stop_screen_share = new ListItem("Stop screen share", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_screen_share));
         ListItem start_recording = new ListItem("Start recording", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_recording));
         ListItem stop_recording = new ListItem("Stop recording", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_recording));
+        ListItem start_transcription = new ListItem("Start Transcription", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_typewritter));
+        ListItem stop_transcription = new ListItem("Stop Transcription", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_typewritter));
+//        ListItem start_hls = new ListItem("Start HLS", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_outline_content_copy_24));
+//        ListItem stop_hls = new ListItem("Stop HLS", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_outline_content_copy_24));
         ListItem participant_list = new ListItem("Participants (" + participantSize + ")", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_people));
+
         if (localScreenShare) {
             moreOptionsArrayList.add(stop_screen_share);
         } else {
@@ -1075,11 +1086,21 @@ public class OneToOneCallActivity extends AppCompatActivity {
             moreOptionsArrayList.add(stop_recording);
         } else {
             moreOptionsArrayList.add(start_recording);
-
         }
 
-        moreOptionsArrayList.add(participant_list);
+        if (transcriptionEnabled) {
+            moreOptionsArrayList.add(stop_transcription);
+        } else {
+            moreOptionsArrayList.add(start_transcription);
+        }
 
+//        if (hls) {
+//            moreOptionsArrayList.add(stop_hls);
+//        } else {
+//            moreOptionsArrayList.add(start_hls);
+//        }
+
+        moreOptionsArrayList.add(participant_list);
 
         ArrayAdapter arrayAdapter = new MoreOptionsListAdapter(OneToOneCallActivity.this, R.layout.more_options_list_layout, moreOptionsArrayList);
         MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(OneToOneCallActivity.this, R.style.AlertDialogCustom)
@@ -1094,6 +1115,14 @@ public class OneToOneCallActivity extends AppCompatActivity {
                             break;
                         }
                         case 2: {
+                            toggleTranscription();
+                            break;
+                        }
+//                        case 3: {
+//                            toggleHLS();
+//                            break;
+//                        }
+                        case 4: {
                             openParticipantList();
                             break;
                         }
@@ -1103,7 +1132,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         AlertDialog alertDialog = materialAlertDialogBuilder.create();
 
         ListView listView = alertDialog.getListView();
-        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200))); // set color
+        listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.md_grey_200)));
         listView.setFooterDividersEnabled(false);
         listView.addFooterView(new View(OneToOneCallActivity.this));
         listView.setDividerHeight(2);
@@ -1119,6 +1148,56 @@ public class OneToOneCallActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+
+    private void toggleTranscription() {
+        if (!transcriptionEnabled) {
+            try {
+
+                SummaryConfig summaryConfig = new SummaryConfig(
+                        true,
+                        "Write summary in sections like Title, Agenda, Speakers, Action Items, Outlines, Notes and Summary"
+                );
+
+                TranscriptionConfig transcriptionConfig = new TranscriptionConfig(
+                        null,
+                        summaryConfig
+                );
+
+                meeting.startTranscription(transcriptionConfig);
+                transcriptionEnabled = true;
+                Toast.makeText(this, "Transcription started", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "Failed to start transcription: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            meeting.stopTranscription();
+            transcriptionEnabled = false;
+            Toast.makeText(this, "Transcription stopped", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+//    private void toggleHLS() {
+//        if (!hls) {
+//            // Configure the layout settings in a JSONObject
+//            JSONObject config = new JSONObject();
+//            JSONObject layout = new JSONObject();
+//            JsonUtils.jsonPut(layout, "type", "GRID");
+//            JsonUtils.jsonPut(layout, "gridSize", 4);
+//            JsonUtils.jsonPut(config, "layout", layout);
+//            JsonUtils.jsonPut(config, "orientation", "portrait");
+//
+//            // Create the transcription configuration
+//            SummaryConfig summaryConfig = new SummaryConfig(false, null);
+//            PostTranscriptionConfig transcription = new PostTranscriptionConfig(true, summaryConfig);
+//
+//            // Start HLS with separate config and transcription objects
+//            meeting.startHls(config, transcription);
+//        } else {
+//            meeting.stopHls();
+//        }
+//    }
+
     private void toggleRecording() {
         if (!recording) {
             recordingStatusSnackbar.show();
@@ -1130,7 +1209,11 @@ public class OneToOneCallActivity extends AppCompatActivity {
             JsonUtils.jsonPut(config, "layout", layout);
             JsonUtils.jsonPut(config, "orientation", "portrait");
             JsonUtils.jsonPut(config, "theme", "DARK");
-            meeting.startRecording(null,null,config,null);
+
+            SummaryConfig summaryConfig = new SummaryConfig(true, null);
+            PostTranscriptionConfig transcription = new PostTranscriptionConfig(true, summaryConfig);
+
+            meeting.startRecording(null, null, config, transcription);
 
         } else {
             meeting.stopRecording();
