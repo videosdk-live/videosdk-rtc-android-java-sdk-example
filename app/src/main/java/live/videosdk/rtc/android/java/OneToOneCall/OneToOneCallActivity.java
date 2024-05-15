@@ -21,6 +21,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -63,6 +64,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.VideoTrack;
 
@@ -100,6 +102,7 @@ import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.lib.transcription.PostTranscriptionConfig;
 import live.videosdk.rtc.android.lib.transcription.SummaryConfig;
 import live.videosdk.rtc.android.lib.transcription.TranscriptionConfig;
+import live.videosdk.rtc.android.lib.transcription.TranscriptionText;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
 import live.videosdk.rtc.android.listeners.ParticipantEventListener;
@@ -711,6 +714,27 @@ public class OneToOneCallActivity extends AppCompatActivity {
             showWebcamRequestDialog(listener);
         }
 
+        @Override
+        public void onTranscriptionStateChanged(JSONObject data) {
+            String status;
+            try {
+                status = data.getString("status");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            Log.d("MeetingActivity", "Transcription status: " + status);
+        }
+
+        @Override
+        public void onTranscriptionText(TranscriptionText data) {
+            String participantId = data.getParticipantId();
+            String participantName = data.getParticipantName();
+            String text = data.getText();
+            int timestamp = data.getTimestamp();
+            String type = data.getType();
+
+            Log.d("MeetingActivity", participantName + ": " + text + " " + timestamp);
+        }
     };
 
     private void showParticipantCard() {
@@ -1070,8 +1094,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
         ListItem stop_screen_share = new ListItem("Stop screen share", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_screen_share));
         ListItem start_recording = new ListItem("Start recording", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_recording));
         ListItem stop_recording = new ListItem("Stop recording", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_recording));
-        ListItem start_transcription = new ListItem("Start Transcription", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_typewritter));
-        ListItem stop_transcription = new ListItem("Stop Transcription", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_typewritter));
+        ListItem start_transcription = new ListItem("Start Transcription", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.transcription_icon));
+        ListItem stop_transcription = new ListItem("Stop Transcription", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.transcription_icon));
 //        ListItem start_hls = new ListItem("Start HLS", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_outline_content_copy_24));
 //        ListItem stop_hls = new ListItem("Stop HLS", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_outline_content_copy_24));
         ListItem participant_list = new ListItem("Participants (" + participantSize + ")", AppCompatResources.getDrawable(OneToOneCallActivity.this, R.drawable.ic_people));
