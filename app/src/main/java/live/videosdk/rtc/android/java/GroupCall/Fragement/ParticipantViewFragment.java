@@ -118,6 +118,24 @@ public class ParticipantViewFragment extends Fragment {
                 else
                     activeSpeakerLayout(activeSpeaker);
             }
+
+            @Override
+            public void onMeetingStateChanged(String state) {
+                if(state == "FAILED")
+                {
+                    if(participantGridLayout != null) {
+                        for (int i = 0; i < participantGridLayout.getChildCount(); i++) {
+                            View view = participantGridLayout.getChildAt(i);
+                            VideoView videoView = view.findViewById(R.id.participantVideoView);
+                            if (videoView != null) {
+                                videoView.clearImage();
+                                videoView.removeTrack();
+                                videoView.releaseSurfaceViewRenderer();
+                            }
+                        }
+                    }
+                }
+            }
         };
 
         participantState = ParticipantState.getInstance(meeting);

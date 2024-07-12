@@ -125,6 +125,14 @@ public class ParticipantState {
                         participantChangeListenerList.get(i).onSpeakerChanged(null, activeSpeaker);
                 }
             }
+
+            @Override
+            public void onMeetingStateChanged(String state) {
+                for (int i = 0; i < participantChangeListenerList.size(); i++) {
+                    participantChangeListenerList.get(i).onMeetingStateChanged(state);
+                }
+                super.onMeetingStateChanged(state);
+            }
         });
 
     }

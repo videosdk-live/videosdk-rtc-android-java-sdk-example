@@ -67,7 +67,6 @@ import org.json.JSONObject;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -225,18 +224,12 @@ public class OneToOneCallActivity extends AppCompatActivity {
         // pass the token generated from api server
         VideoSDK.config(token);
 
-        Map<String, CustomStreamTrack> customTracks = new HashMap<>();
-
-        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, true,this);
-        customTracks.put("video", videoCustomTrack);
-
-        CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", this);
-        customTracks.put("mic", audioCustomTrack);
+        VideoSDK.setActivityForLifeCycle(OneToOneCallActivity.this);
 
         // create a new meeting instance
         meeting = VideoSDK.initMeeting(
-                OneToOneCallActivity.this, meetingId, localParticipantName,micEnabled,
-                webcamEnabled, null, null, false, customTracks,null
+                OneToOneCallActivity.this, meetingId, localParticipantName,false,
+                false, null, null, false, null,null
         );
 
         meeting.addEventListener(meetingEventListener);
@@ -688,6 +681,16 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 HelperClass.setSnackBarStyle(snackbar.getView(), getResources().getColor(R.color.md_red_400));
                 snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                 snackbar.show();
+                if(localVideoView != null){
+                    localVideoView.clearImage();
+                    localVideoView.removeTrack();
+                    localVideoView.releaseSurfaceViewRenderer();
+                }
+                if(participantVideoView != null){
+                    participantVideoView.clearImage();
+                    participantVideoView.removeTrack();
+                    participantVideoView.releaseSurfaceViewRenderer();
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     if (handler.hasCallbacks(runnable))
                         handler.removeCallbacks(runnable);
@@ -895,12 +898,11 @@ public class OneToOneCallActivity extends AppCompatActivity {
         if (webcamEnabled) {
             meeting.disableWebcam();
         } else {
-            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true,this);
+            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true,this,null);
             meeting.enableWebcam(videoCustomTrack);
         }
         webcamEnabled = !webcamEnabled;
         toggleWebcamIcon(webcamEnabled);
-
     }
 
     private void setActionListeners() {
@@ -1130,7 +1132,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
             JsonUtils.jsonPut(config, "layout", layout);
             JsonUtils.jsonPut(config, "orientation", "portrait");
             JsonUtils.jsonPut(config, "theme", "DARK");
-            meeting.startRecording(null,null,config);
+            meeting.startRecording(null,null,config,null);
 
         } else {
             meeting.stopRecording();
