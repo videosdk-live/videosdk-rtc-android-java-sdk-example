@@ -16,7 +16,9 @@
         app:theme="@style/ToolbarColoredBackArrow"
         app:popupTheme="@style/Theme.VideoSDKRTC"
         app:contentInsetStartWithNavigation="0dp"
-        app:titleMarginStart="0dp"/>
+        app:titleMarginStart="0dp"
+        app:menu="@menu/top_app_bar"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -37,6 +39,15 @@
                     app:cardCornerRadius="8dp"
                     android:backgroundTint="@color/md_grey_700"
                     app:strokeColor="@color/md_grey_700">
+
+                    <TextView
+                        android:id="@+id/cameraOffText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/camera_is_turned_off"
+                        android:textColor="@color/white"
+                        />
 
                 <live.videosdk.rtc.android.VideoView
                     android:id="@+id/joiningView"
@@ -63,7 +74,7 @@
                             android:id="@+id/btnWebcam"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:src="@drawable/ic_video_camera_off"
                             app:backgroundTint="@color/md_red_400"
                             app:tint="@color/white" />

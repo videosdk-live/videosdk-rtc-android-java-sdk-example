@@ -44,11 +44,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 
-    implementation 'live.videosdk:rtc-android-sdk:0.1.26'
+    implementation 'live.videosdk:rtc-android-sdk:0.1.30'
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 
@@ -61,6 +64,8 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     implementation 'com.android.support:multidex:2.0.1'
+    implementation 'androidx.navigation:navigation-fragment:2.6.0'
+    implementation 'androidx.navigation:navigation-ui:2.6.0'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

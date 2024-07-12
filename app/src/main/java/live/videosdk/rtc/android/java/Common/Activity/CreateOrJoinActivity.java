@@ -1,5 +1,6 @@
 package live.videosdk.rtc.android.java.Common.Activity;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
@@ -8,41 +9,55 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.PeerConnectionFactory;
-import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import live.videosdk.rtc.android.CustomStreamTrack;
+import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.VideoView;
+import live.videosdk.rtc.android.java.Common.Adapter.DeviceAdaptor;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.fragment.CreateOrJoinFragment;
 import live.videosdk.rtc.android.java.Common.fragment.JoinMeetingFragment;
 import live.videosdk.rtc.android.java.Common.fragment.CreateMeetingFragment;
-import live.videosdk.rtc.android.lib.PeerConnectionUtils;
+import live.videosdk.rtc.android.mediaDevice.AudioDeviceInfo;
+import live.videosdk.rtc.android.mediaDevice.FacingMode;
+import live.videosdk.rtc.android.mediaDevice.VideoDeviceInfo;
+import live.videosdk.rtc.android.permission.Permission;
+import live.videosdk.rtc.android.permission.PermissionHandler;
+import live.videosdk.rtc.android.permission.Permissions;
 
 public class CreateOrJoinActivity extends AppCompatActivity {
 
     private boolean micEnabled = false;
     private boolean webcamEnabled = false;
+    private Menu optionsMenu;
+    private TextView cameraOffText;
 
     private FloatingActionButton btnMic, btnWebcam;
     private VideoView joinView;
@@ -50,27 +65,16 @@ public class CreateOrJoinActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar;
 
-    VideoTrack videoTrack;
+    CustomStreamTrack videoTrack;
     VideoCapturer videoCapturer;
     PeerConnectionFactory.InitializationOptions initializationOptions;
     PeerConnectionFactory peerConnectionFactory;
     VideoSource videoSource;
 
     boolean permissionsGranted = false;
-    private final PermissionHandler permissionHandler = new PermissionHandler() {
+    private final com.nabinbhandari.android.permissions.PermissionHandler permissionHandler = new com.nabinbhandari.android.permissions.PermissionHandler() {
         @Override
         public void onGranted() {
-            permissionsGranted = true;
-
-            micEnabled = true;
-            btnMic.setImageResource(R.drawable.ic_mic_on);
-            changeFloatingActionButtonLayout(btnMic, micEnabled);
-
-            webcamEnabled = true;
-            btnWebcam.setImageResource(R.drawable.ic_video_camera);
-            changeFloatingActionButtonLayout(btnWebcam, webcamEnabled);
-
-            updateCameraView();
         }
 
         @Override
@@ -85,6 +89,48 @@ public class CreateOrJoinActivity extends AppCompatActivity {
             Toast.makeText(CreateOrJoinActivity.this,
                     "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
             return super.onBlocked(context, blockedList);
+        }
+    };
+
+
+    private PermissionHandler permissionHandlerSDK = new PermissionHandler() {
+        @Override
+        public void onGranted() {
+            permissionsGranted = true;
+
+            micEnabled = true;
+            btnMic.setImageResource(R.drawable.ic_mic_on);
+            changeFloatingActionButtonLayout(btnMic, micEnabled);
+
+            webcamEnabled = true;
+            btnWebcam.setImageResource(R.drawable.ic_video_camera);
+            changeFloatingActionButtonLayout(btnWebcam, webcamEnabled);
+
+            updateCameraView(null);
+        }
+
+        @Override
+        public boolean onBlocked(Context context, ArrayList<Permission> blockedList) {
+            for (Permission blockedPermission : blockedList) {
+                Log.d("VideoSDK Permission", "onBlocked: " + blockedPermission);
+            }
+            return super.onBlocked(context, blockedList);
+        }
+
+        @Override
+        public void onDenied(Context context, ArrayList<Permission> deniedPermissions) {
+            for (Permission deniedPermission : deniedPermissions) {
+                Log.d("VideoSDK Permission", "onDenied: " + deniedPermission);
+            }
+            super.onDenied(context, deniedPermissions);
+        }
+
+        @Override
+        public void onJustBlocked(Context context, ArrayList<Permission> justBlockedList, ArrayList<Permission> deniedPermissions) {
+            for (Permission justBlockedPermission : justBlockedList) {
+                Log.d("VideoSDK Permission", "onJustBlocked: " + justBlockedPermission);
+            }
+            super.onJustBlocked(context, justBlockedList, deniedPermissions);
         }
     };
 
@@ -106,6 +152,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
         btnMic = findViewById(R.id.btnMic);
         btnWebcam = findViewById(R.id.btnWebcam);
         joinView = findViewById(R.id.joiningView);
+        cameraOffText= findViewById(R.id.cameraOffText);
 
         checkPermissions();
 
@@ -114,7 +161,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.HORIZONTAL);
 
-        getFragmentManager().beginTransaction().add(R.id.fragContainer, new CreateOrJoinFragment(), "CreateOrJoinFragment").commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragContainer, new CreateOrJoinFragment(), "CreateOrJoinFragment").commit();
 
         fragContainer.addView(ll);
 
@@ -140,6 +187,9 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_app_bar, menu);
+        optionsMenu = menu;
+        setAudioDeviceChangeListener();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -161,8 +211,147 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
             getFragmentManager().popBackStack();
         }
+
+        switch (item.getItemId()) {
+            case R.id.Camera:
+                changeCamera();
+                return true;
+            case R.id.Audio:
+                getAudioDevices();
+                return true;
+            default:super.onOptionsItemSelected(item);
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    private List<String> previousAvailableDevices = new ArrayList<>();
+
+    private void setAudioDeviceChangeListener() {
+        VideoSDK.setAudioDeviceChangeListener(new VideoSDK.AudioDeviceChangeEvent() {
+            @Override
+            public void onAudioDeviceChanged(AudioDeviceInfo selectedAudioDevice, Set<AudioDeviceInfo> availableAudioDevices) {
+                Log.d(TAG, "setAudioDeviceChangeListener: " + selectedAudioDevice.getLabel());
+
+                List<String> currentAvailableDevices = new ArrayList<>();
+                for (AudioDeviceInfo device : availableAudioDevices) {
+                    currentAvailableDevices.add(device.getLabel());
+                }
+                Log.d(TAG, "Current available : " + currentAvailableDevices);
+
+                List<String> addedDevices = new ArrayList<>();
+                for (String device : currentAvailableDevices) {
+                    if (!previousAvailableDevices.contains(device)) {
+                        addedDevices.add(device);
+                    }
+                }
+                Log.d(TAG, "Added audio devices: " + addedDevices);
+
+                List<String> removedDevices = new ArrayList<>();
+                for (String device : previousAvailableDevices) {
+                    if (!currentAvailableDevices.contains(device)) {
+                        removedDevices.add(device);
+                    }
+                }
+                Log.d(TAG, "Removed audio devices: " + removedDevices);
+
+                previousAvailableDevices = currentAvailableDevices;
+
+                if (!addedDevices.isEmpty() && !addedDevices.equals(previousAvailableDevices)) {
+                    Toast.makeText(getApplicationContext(), addedDevices + " Connected", Toast.LENGTH_SHORT).show();
+                }
+                if (!removedDevices.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), removedDevices + " Removed", Toast.LENGTH_SHORT).show();
+                }
+
+                switch (selectedAudioDevice.getLabel()) {
+                    case "BLUETOOTH":
+                        optionsMenu.findItem(R.id.Audio).setIcon(R.drawable.baseline_bluetooth_connected_24);
+                        break;
+                    case "WIRED_HEADSET":
+                        optionsMenu.findItem(R.id.Audio).setIcon(R.drawable.baseline_headphones_24);
+                        break;
+                    case "SPEAKER_PHONE":
+                        optionsMenu.findItem(R.id.Audio).setIcon(R.drawable.baseline_volume_up_24);
+                        break;
+                    case "EARPIECE":
+                        optionsMenu.findItem(R.id.Audio).setIcon(R.drawable.phone_call);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void getAudioDevices() {
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        RecyclerView recyclerView = bottomSheetView.findViewById(R.id.rvItems);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Set<AudioDeviceInfo> audioDevice = VideoSDK.getAudioDevices();
+        List<String> labels = new ArrayList<>();
+
+        for (AudioDeviceInfo device : audioDevice) {
+            String label = device.getLabel();
+            labels.add(label);
+        }
+
+        DeviceAdaptor preCallListAdaptor = new DeviceAdaptor(labels, new DeviceAdaptor.ClickListener() {
+            @Override
+            public void onClick(String itemDto) {
+                for (AudioDeviceInfo device : audioDevice) {
+                    if (device.getLabel().equals(itemDto)) {
+                        VideoSDK.setSelectedAudioDevice(device);
+                    }
+                }
+                bottomSheetDialog.cancel();
+                Toast.makeText(getApplicationContext(), "Selected " + itemDto, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        recyclerView.setAdapter(preCallListAdaptor);
+        bottomSheetDialog.show();
+    }
+
+    private void changeCamera() {
+
+        Set<VideoDeviceInfo> videoDevices = VideoSDK.getVideoDevices();
+
+        VideoDeviceInfo currentDevice = VideoSDK.getSelectedVideoDevice();
+
+        FacingMode currentFacingMode = currentDevice.getFacingMode();
+
+        FacingMode facingMode = FacingMode.front;
+        VideoDeviceInfo videoDevice = null;
+
+        if (currentFacingMode.equals(FacingMode.front)) {
+            facingMode = FacingMode.back;
+        } else if (currentFacingMode.equals(FacingMode.back)) {
+            facingMode = FacingMode.front;
+        }
+
+        for (VideoDeviceInfo device : videoDevices) {
+            if (device.getFacingMode().equals(facingMode)) {
+                videoDevice = device;
+            }
+        }
+
+        if (!facingMode.equals(FacingMode.front)) {
+            joinView.setMirror(false);
+        }
+
+        if (videoDevice != null) {
+            VideoSDK.setSelectedVideoDevice(videoDevice);
+            updateCameraView(videoDevice);
+        }
+
+        Toast.makeText(this, "Camera switched", Toast.LENGTH_SHORT).show();
+
+
+    }
+
 
     public void CreateMeetingFragment() {
         setActionBar();
@@ -191,21 +380,23 @@ public class CreateOrJoinActivity extends AppCompatActivity {
     }
 
     private void checkPermissions() {
-        List<String> permissionList = new ArrayList<String>();
+        List<String> permissionList = new ArrayList<>();
         permissionList.add(Manifest.permission.INTERNET);
-        permissionList.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
-        permissionList.add(Manifest.permission.RECORD_AUDIO);
-        permissionList.add(Manifest.permission.CAMERA);
         permissionList.add(Manifest.permission.READ_PHONE_STATE);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-            permissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        com.nabinbhandari.android.permissions.Permissions.Options options = new com.nabinbhandari.android.permissions.Permissions.Options().sendDontAskAgainToSettings(false);
+        com.nabinbhandari.android.permissions.Permissions.check(this, permissionList.toArray(new String[0]), null, options, permissionHandler);
 
-        String[] permissions = {};
-        String rationale = "Please provide permissions";
-        Permissions.Options options =
-                new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
-        Permissions.check(this, permissionList.toArray(permissions), rationale, options, permissionHandler);
+        List<Permission> permissionListSDK = new ArrayList<>();
+        permissionListSDK.add(Permission.audio);
+        permissionListSDK.add(Permission.video);
+        permissionListSDK.add(Permission.bluetooth);
+
+            Permissions.Options optionsSDK = new Permissions.Options()
+                .setRationaleDialogTitle("Info")
+                .setSettingsDialogTitle("Warning");
+
+        VideoSDK.checkPermissions(this, permissionListSDK, optionsSDK, permissionHandlerSDK);
     }
 
     private void changeFloatingActionButtonLayout(FloatingActionButton btn, boolean enabled) {
@@ -243,38 +434,48 @@ public class CreateOrJoinActivity extends AppCompatActivity {
         } else {
             btnWebcam.setImageResource(R.drawable.ic_video_camera_off);
         }
-        updateCameraView();
+        updateCameraView(null);
         changeFloatingActionButtonLayout(btnWebcam, webcamEnabled);
     }
 
 
-    private void updateCameraView() {
+    private void updateCameraView(VideoDeviceInfo videoDevice) {
         if (webcamEnabled) {
+
+            if (cameraOffText != null) {
+                cameraOffText.setVisibility(View.GONE);
+            }
+
+            if (joinView != null) {
+                joinView.setVisibility(View.VISIBLE);
+            }
             // create PeerConnectionFactory
             initializationOptions =
                     PeerConnectionFactory.InitializationOptions.builder(this).createInitializationOptions();
             PeerConnectionFactory.initialize(initializationOptions);
             peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
 
-
-            joinView.setMirror(true);
-
-            SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", PeerConnectionUtils.getEglContext());
-
-            // create VideoCapturer
-            videoCapturer = createCameraCapturer();
-            videoSource = peerConnectionFactory.createVideoSource(videoCapturer.isScreencast());
-            videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
-            videoCapturer.startCapture(480, 640, 30);
-
-            // create VideoTrack
-            videoTrack = peerConnectionFactory.createVideoTrack("100", videoSource);
+            videoTrack = VideoSDK.createCameraVideoTrack(
+                    "h720p_w960p",
+                    "front",
+                    CustomStreamTrack.VideoMode.TEXT,
+                    true,
+                    this,videoDevice
+            );
 
             // display in localView
-            joinView.addTrack(videoTrack);
+            joinView.addTrack((VideoTrack) videoTrack.getTrack());
         } else {
             joinView.removeTrack();
             joinView.releaseSurfaceViewRenderer();
+//
+            if (joinView != null) {
+                joinView.setVisibility(View.INVISIBLE);
+            }
+
+            if (cameraOffText != null) {
+                cameraOffText.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -331,7 +532,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
-        updateCameraView();
+        updateCameraView(null);
         super.onRestart();
     }
 

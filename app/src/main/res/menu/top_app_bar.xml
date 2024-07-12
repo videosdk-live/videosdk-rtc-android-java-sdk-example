@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/Audio"
+        android:icon="@drawable/baseline_volume_up_24"
+        android:title="Choose audio options"
+        app:showAsAction="always" />
+
+    <item
+
+        android:id="@+id/Camera"
+        android:icon="@drawable/baseline_flip_camera_android_24"
+        android:title="Choose camera options"
+        app:showAsAction="always"
+        />
+</menu>
