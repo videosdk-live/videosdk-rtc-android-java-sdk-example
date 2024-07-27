@@ -11,4 +11,6 @@ public interface ParticipantChangeListener {
     void onPresenterChanged(boolean screenShare);
 
     void onSpeakerChanged(List<List<Participant>> participantList, Participant activeSpeaker);
+
+    void onMeetingStateChanged(String state);
 }

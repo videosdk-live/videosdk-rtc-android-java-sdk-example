@@ -82,6 +82,7 @@ import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.VideoView;
+import live.videosdk.rtc.android.java.Common.Services.MicrophoneService;
 import live.videosdk.rtc.android.java.GroupCall.Adapter.ParticipantViewAdapter;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
@@ -194,9 +195,11 @@ public class GroupCallActivity extends AppCompatActivity {
         // pass the token generated from api server
         VideoSDK.config(token);
 
+        VideoSDK.setActivityForLifeCycle(GroupCallActivity.this);
+
         Map<String, CustomStreamTrack> customTracks = new HashMap<>();
 
-        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, true, this);
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, true, this,null);
         customTracks.put("video", videoCustomTrack);
 
         CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", this);
@@ -254,6 +257,9 @@ public class GroupCallActivity extends AppCompatActivity {
         recordingStatusSnackbar.setGestureInsetBottomIgnored(true);
 
         viewAdapter = new ParticipantViewAdapter(GroupCallActivity.this, meeting);
+
+        viewPager2.setOffscreenPageLimit(1);
+        viewPager2.setAdapter(viewAdapter);
 
         onTouchListener = new View.OnTouchListener() {
             @Override
@@ -429,6 +435,10 @@ public class GroupCallActivity extends AppCompatActivity {
                 toggleMicIcon();
                 toggleWebcamIcon();
 
+                if(micEnabled){
+                    GroupCallActivity.this.startService(new Intent(GroupCallActivity.this, MicrophoneService.class));
+                }
+
                 setLocalListeners();
 
                 new NetworkUtils(GroupCallActivity.this).fetchMeetingTime(meeting.getMeetingId(), token, new ResponseListener<Integer>() {
@@ -438,10 +448,6 @@ public class GroupCallActivity extends AppCompatActivity {
                         showMeetingTime();
                     }
                 });
-
-                viewPager2.setOffscreenPageLimit(1);
-                viewPager2.setAdapter(viewAdapter);
-
 
                 raiseHandListener = new PubSubMessageListener() {
                     @Override
@@ -534,6 +540,7 @@ public class GroupCallActivity extends AppCompatActivity {
         public void onMeetingLeft() {
             handler.removeCallbacks(runnable);
             if (!isDestroyed()) {
+                GroupCallActivity.this.stopService(new Intent(GroupCallActivity.this, MicrophoneService.class));
                 Intent intents = new Intent(GroupCallActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -755,7 +762,7 @@ public class GroupCallActivity extends AppCompatActivity {
         if (webcamEnabled) {
             meeting.disableWebcam();
         } else {
-            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true, this);
+            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true, this,null);
             meeting.enableWebcam(videoCustomTrack);
         }
     }
@@ -1064,7 +1071,7 @@ public class GroupCallActivity extends AppCompatActivity {
             JsonUtils.jsonPut(config, "layout", layout);
             JsonUtils.jsonPut(config, "orientation", "portrait");
             JsonUtils.jsonPut(config, "theme", "DARK");
-            meeting.startRecording(null, null, config);
+            meeting.startRecording(null, null, config,null);
 
         } else {
             meeting.stopRecording();
