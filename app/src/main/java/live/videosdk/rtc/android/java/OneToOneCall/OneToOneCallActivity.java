@@ -88,6 +88,7 @@ import live.videosdk.rtc.android.java.Common.Adapter.MoreOptionsListAdapter;
 import live.videosdk.rtc.android.java.Common.Adapter.ParticipantListAdapter;
 import live.videosdk.rtc.android.java.Common.Listener.ResponseListener;
 import live.videosdk.rtc.android.java.Common.Modal.ListItem;
+import live.videosdk.rtc.android.java.Common.Services.MicrophoneService;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.Roboto_font;
@@ -461,6 +462,10 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     micEnabled = !micEnabled;
                     webcamEnabled = !webcamEnabled;
 
+                    if(!micEnabled){
+                        OneToOneCallActivity.this.startService(new Intent(OneToOneCallActivity.this, MicrophoneService.class));
+                    }
+
                     toggleMic();
                     toggleWebCam();
 
@@ -556,6 +561,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
         @Override
         public void onMeetingLeft() {
             if (!isDestroyed()) {
+                OneToOneCallActivity.this.stopService(new Intent(OneToOneCallActivity.this, MicrophoneService.class));
                 Intent intents = new Intent(OneToOneCallActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);

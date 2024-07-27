@@ -82,6 +82,7 @@ import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.VideoView;
+import live.videosdk.rtc.android.java.Common.Services.MicrophoneService;
 import live.videosdk.rtc.android.java.GroupCall.Adapter.ParticipantViewAdapter;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
@@ -434,6 +435,10 @@ public class GroupCallActivity extends AppCompatActivity {
                 toggleMicIcon();
                 toggleWebcamIcon();
 
+                if(micEnabled){
+                    GroupCallActivity.this.startService(new Intent(GroupCallActivity.this, MicrophoneService.class));
+                }
+
                 setLocalListeners();
 
                 new NetworkUtils(GroupCallActivity.this).fetchMeetingTime(meeting.getMeetingId(), token, new ResponseListener<Integer>() {
@@ -535,6 +540,7 @@ public class GroupCallActivity extends AppCompatActivity {
         public void onMeetingLeft() {
             handler.removeCallbacks(runnable);
             if (!isDestroyed()) {
+                GroupCallActivity.this.stopService(new Intent(GroupCallActivity.this, MicrophoneService.class));
                 Intent intents = new Intent(GroupCallActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
