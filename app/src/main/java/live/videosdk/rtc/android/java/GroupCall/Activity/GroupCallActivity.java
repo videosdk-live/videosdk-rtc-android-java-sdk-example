@@ -35,6 +35,7 @@ import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -61,8 +62,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
 
 import org.json.JSONObject;
 import org.webrtc.RendererCommon;
@@ -84,6 +83,7 @@ import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.VideoView;
 import live.videosdk.rtc.android.java.GroupCall.Adapter.ParticipantViewAdapter;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
+import live.videosdk.rtc.android.java.OneToOneCall.OneToOneCallActivity;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.Activity.CreateOrJoinActivity;
 import live.videosdk.rtc.android.java.Common.Adapter.AudioDeviceListAdapter;
@@ -105,6 +105,7 @@ import live.videosdk.rtc.android.listeners.ParticipantEventListener;
 import live.videosdk.rtc.android.listeners.PubSubMessageListener;
 import live.videosdk.rtc.android.listeners.WebcamRequestListener;
 import live.videosdk.rtc.android.model.PubSubPublishOptions;
+import live.videosdk.rtc.android.permission.Permission;
 
 public class GroupCallActivity extends AppCompatActivity {
 
@@ -196,7 +197,7 @@ public class GroupCallActivity extends AppCompatActivity {
 
         Map<String, CustomStreamTrack> customTracks = new HashMap<>();
 
-        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, true, this);
+        CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.TEXT, true, this,VideoSDK.getSelectedVideoDevice());
         customTracks.put("video", videoCustomTrack);
 
         CustomStreamTrack audioCustomTrack = VideoSDK.createAudioTrack("high_quality", this);
@@ -698,29 +699,77 @@ public class GroupCallActivity extends AppCompatActivity {
         meeting.enableScreenShare(data);
     }
 
-    private final PermissionHandler permissionHandler = new PermissionHandler() {
+    private final com.nabinbhandari.android.permissions.PermissionHandler permissionHandler = new com.nabinbhandari.android.permissions.PermissionHandler() {
+        @Override
+        public void onGranted() {
+
+        }
+
+        @Override
+        public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+            super.onDenied(context, deniedPermissions);
+            Toast.makeText(GroupCallActivity.this,
+                    "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public boolean onBlocked(Context context, ArrayList<String> blockedList) {
+            Toast.makeText(GroupCallActivity.this,
+                    "Permission(s) not granted. Some feature may not work", Toast.LENGTH_SHORT).show();
+            return super.onBlocked(context, blockedList);
+        }
+    };
+
+
+    private live.videosdk.rtc.android.permission.PermissionHandler permissionHandlerSDK = new live.videosdk.rtc.android.permission.PermissionHandler() {
         @Override
         public void onGranted() {
             if (meeting != null) meeting.join();
         }
+
+        @Override
+        public boolean onBlocked(Context context, ArrayList<Permission> blockedList) {
+            for (Permission blockedPermission : blockedList) {
+                Log.d("VideoSDK Permission", "onBlocked: " + blockedPermission);
+            }
+            return super.onBlocked(context, blockedList);
+        }
+
+        @Override
+        public void onDenied(Context context, ArrayList<Permission> deniedPermissions) {
+            for (Permission deniedPermission : deniedPermissions) {
+                Log.d("VideoSDK Permission", "onDenied: " + deniedPermission);
+            }
+            super.onDenied(context, deniedPermissions);
+        }
+
+        @Override
+        public void onJustBlocked(Context context, ArrayList<Permission> justBlockedList, ArrayList<Permission> deniedPermissions) {
+            for (Permission justBlockedPermission : justBlockedList) {
+                Log.d("VideoSDK Permission", "onJustBlocked: " + justBlockedPermission);
+            }
+            super.onJustBlocked(context, justBlockedList, deniedPermissions);
+        }
     };
 
     private void checkPermissions() {
-        List<String> permissionList = new ArrayList<String>();
+        List<String> permissionList = new ArrayList<>();
         permissionList.add(Manifest.permission.INTERNET);
-        permissionList.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
-        permissionList.add(Manifest.permission.RECORD_AUDIO);
-        permissionList.add(Manifest.permission.CAMERA);
         permissionList.add(Manifest.permission.READ_PHONE_STATE);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-            permissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        com.nabinbhandari.android.permissions.Permissions.Options options = new com.nabinbhandari.android.permissions.Permissions.Options().sendDontAskAgainToSettings(false);
+        com.nabinbhandari.android.permissions.Permissions.check(this, permissionList.toArray(new String[0]), null, options, permissionHandler);
 
-        String[] permissions = {};
-        String rationale = "Please provide permissions";
-        Permissions.Options options =
-                new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
-        Permissions.check(this, permissionList.toArray(permissions), rationale, options, permissionHandler);
+        List<Permission> permissionListSDK = new ArrayList<>();
+        permissionListSDK.add(Permission.audio);
+        permissionListSDK.add(Permission.video);
+        permissionListSDK.add(Permission.bluetooth);
+
+        live.videosdk.rtc.android.permission.Permissions.Options optionsSDK = new live.videosdk.rtc.android.permission.Permissions.Options()
+                .setRationaleDialogTitle("Info")
+                .setSettingsDialogTitle("Warning");
+
+        VideoSDK.checkPermissions(this, permissionListSDK, optionsSDK, permissionHandlerSDK);
     }
 
     private void setAudioDeviceListeners() {
@@ -755,7 +804,7 @@ public class GroupCallActivity extends AppCompatActivity {
         if (webcamEnabled) {
             meeting.disableWebcam();
         } else {
-            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true, this);
+            CustomStreamTrack videoCustomTrack = VideoSDK.createCameraVideoTrack("h720p_w960p", "front", CustomStreamTrack.VideoMode.DETAIL, true, this,VideoSDK.getSelectedVideoDevice());
             meeting.enableWebcam(videoCustomTrack);
         }
     }
@@ -1064,7 +1113,7 @@ public class GroupCallActivity extends AppCompatActivity {
             JsonUtils.jsonPut(config, "layout", layout);
             JsonUtils.jsonPut(config, "orientation", "portrait");
             JsonUtils.jsonPut(config, "theme", "DARK");
-            meeting.startRecording(null, null, config);
+            meeting.startRecording(null, null, config,null);
 
         } else {
             meeting.stopRecording();
