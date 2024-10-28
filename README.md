@@ -12,7 +12,7 @@ At Video SDK, we’re building tools to help companies create world-class collab
 
 ## 📚 **Table of Contents**
 
-- [📱 **Demo App**](#%EF%B8%8F-demo-app)
+- [📱 **Demo App**](#-demo-app)
 - [⚡ **Quick Setup**](#-quick-setup)
 - [🔧 **Prerequisites**](#-prerequisites)
 - [📦 **Running the Sample App**](#-running-the-sample-app)
@@ -61,7 +61,7 @@ Open the cloned project in Android Studio and perform a project sync.
 Generate a temporary token from your [**Video SDK Account**](https://app.videosdk.live/signup) and update the `local.properties` file:
 
 ```js title="local.properties"
-auth_token = "TEMPORARY-TOKEN";
+auth_token = TEMPORARY-TOKEN
 ```
 
 ### Step 4: Run the sample app
@@ -105,7 +105,7 @@ Understand the core components of our SDK:
 
 - `Sessions` - A particular duration you spend in a given meeting is referred as a session, you can have multiple sessions of a specific meetingId.
 - `Participant` - A participant refers to anyone attending the meeting session. The `local participant` represents yourself (You), while all other attendees are considered `remote participants`.
-- `Stream` - A stream refers to video or audio media content that is published by either the `local participant` or `remote participants`.
+- `Stream` - A stream refers to video or audio media content published by either the `local participant` or `remote participants`.
 
 
 ## 🔐 Token Generation
@@ -130,13 +130,12 @@ The token is used to create and validate a meeting using API and also initialize
 
 ## 🏗️ Project Structure
 
-- We have created 3 packages screens and widgets in the following folder structure:
-  - [`OneToOneCall`](app/src/main/java/live/videosdk/rtc/android/java/OneToOneCall) - It includes all classes/files related to OneToOne meeting.
-  - [`GroupCall`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall) - It includes all classes/files related to Group meeting.
-  - [`Common`](app/src/main/java/live/videosdk/rtc/android/java/Common) - It inclues all the classes/files that are used in both meeting type.
+- We have created 3 package screens and widgets in the following folder structure:
+  - [`OneToOneCall`](app/src/main/java/live/videosdk/rtc/android/java/OneToOneCall) - It includes all classes/files related to OneToOne meetings.
+  - [`GroupCall`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall) - It includes all classes/files related to the Group meetings.
+  - [`Common`](app/src/main/java/live/videosdk/rtc/android/java/Common) - It includes all the classes/files that are used in both meeting type.
 
 ### [Common package](app/src/main/java/live/videosdk/rtc/android/java/Common)
-
 
 ### 1. Pre-Call Setup on Join Screen
 
@@ -148,9 +147,9 @@ The token is used to create and validate a meeting using API and also initialize
 
 ### 2. Create or Join Meeting
 
-- [`NetworkUtils.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Utils/NetworkUtils.java) - This class is used to call the api to generate token, create and validate the meeting.
+- [`NetworkUtils.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Utils/NetworkUtils.java) - This class is used to call the API to generate a token, create and validate the meeting.
 
-- [`CreateOrJoinActivity.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Activity/CreateOrJoinActivity.java) and [`activity_create_or_join.xml`](app/src/main/res/layout/activity_create_or_join.xml) : This Activity allows users to either create or join a meeting. It manages microphone and webcam permissions, and handles UI interactions like enabling/disabling audio and video. It also switches between the `CreateMeetingFragment` and `JoinMeetingFragment`, depending on user actions.
+- [`CreateOrJoinActivity.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/Activity/CreateOrJoinActivity.java) and [`activity_create_or_join.xml`](app/src/main/res/layout/activity_create_or_join.xml) : This Activity allows users to either create or join a meeting. It manages microphone and webcam permissions and handles UI interactions like enabling/disabling audio and video. It also switches between the `CreateMeetingFragment` and `JoinMeetingFragment`, depending on user actions.
 
 - [`CreateOrJoinFragment.java`](app/src/main/java/live/videosdk/rtc/android/java/Common/fragment/CreateOrJoinFragment.java) and [`fragment_createorjoin.xml`](app/src/main/res/layout/fragment_createorjoin.xml) : This fragment provides two buttons for users to either create or join a meeting. On button clicks, it transitions to the respective fragments (`CreateMeetingFragment` or `JoinMeetingFragment`) within `CreateOrJoinActivity`.
 
@@ -176,16 +175,13 @@ The token is used to create and validate a meeting using API and also initialize
 
 - [ParticipantListAdapter.java](app/src/main/java/live/videosdk/rtc/android/java/Common/Adapter/ParticipantListAdapter.java) : This adapter displays the list of meeting participants in a `RecyclerView`. It includes the local user and updates in real-time as participants join or leave the meeting.
 
-- [layout_participants_list_view.xml](app/src/main/res/layout/layout_participants_list_view.xml) : This layout defines the structure for the participants list view. It includes a `RecyclerView` that lists each participant using the item_participant_list_layout.
+- [layout_participants_list_view.xml](app/src/main/res/layout/layout_participants_list_view.xml) : This layout defines the structure for the participant's list view. It includes a `RecyclerView` that lists each participant using the item_participant_list_layout.
 
-- [item_participant_list_layout.xml](app/src/main/res/layout/item_participant_list_layout.xml) : This layout defines the appearance of each participant in the list. It displays participant’s name, microphone, and camera status.
-
+- [item_participant_list_layout.xml](app/src/main/res/layout/item_participant_list_layout.xml) : This layout defines the appearance of each participant in the list. It displays the participant’s name, microphone, and camera status.
 
 ### [OneToOneCall package](app/src/main/java/live/videosdk/rtc/android/java/OneToOneCall)
 
 - [`OneToOneCallActivity.java`](app/src/main/java/live/videosdk/rtc/android/java/OneToOneCall/OneToOneCallActivity.java) : `OneToOneCallActivity.java` handles one-on-one video call, providing features like microphone and camera control, screen sharing, and participant management. It supports real-time chat and meeting event listeners for tasks like recording and screen sharing. The activity also displays session elapsed time and handles permissions for audio, video, and screen sharing.
-
-<br/>
 
 ### [GroupCall package](app/src/main/java/live/videosdk/rtc/android/java/GroupCall)
 
@@ -194,8 +190,6 @@ The token is used to create and validate a meeting using API and also initialize
 - [`ParticipantViewAdapter.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Adapter/ParticipantViewAdapter.java) : Binds participant data to a `RecyclerView`, dynamically updating the video grid as participants join, leave, or change state.
 - [`ParticipantChangeListener.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Listener/ParticipantChangeListener.java) : Listens for participant-related events (join, leave, state changes) and triggers UI updates.
 - [`ParticipantState.java`](app/src/main/java/live/videosdk/rtc/android/java/GroupCall/Utils/ParticipantState.java) : Represents the current state of a participant, such as mute and video status, for UI display and logic handling.
-
-<br/>
 
 ## 📖 Examples
 
