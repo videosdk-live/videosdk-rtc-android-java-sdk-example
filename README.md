@@ -31,7 +31,7 @@ At Video SDK, we’re building tools to help companies create world-class collab
 ## ⚡ Quick Setup
 
 1. Sign up on [VideoSDK](https://app.videosdk.live/) to grab your API Key and Secret.
-2. Familiarize yourself with [Token](https://docs.videosdk.live/react/guide/video-and-audio-calling-api-sdk/authentication-and-token)
+2. Familiarize yourself with [Token](https://docs.videosdk.live/android/guide/video-and-audio-calling-api-sdk/authentication-and-token)
 
 ## 🛠 Prerequisites
 
