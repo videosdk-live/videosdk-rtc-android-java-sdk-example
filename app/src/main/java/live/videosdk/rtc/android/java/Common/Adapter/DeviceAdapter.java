@@ -14,7 +14,7 @@ import java.util.List;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.java.R;
 
-public class DeviceAdaptor extends RecyclerView.Adapter<DeviceAdaptor.ViewHolder> {
+public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
 
     private final List<String> devices;
     private final ClickListener clickListener;
@@ -23,7 +23,7 @@ public class DeviceAdaptor extends RecyclerView.Adapter<DeviceAdaptor.ViewHolder
         void onClick(String device);
     }
 
-    public DeviceAdaptor(List<String> mList, ClickListener clickListener) {
+    public DeviceAdapter(List<String> mList, ClickListener clickListener) {
         this.devices = mList;
         this.clickListener = clickListener;
     }

@@ -40,7 +40,7 @@ import java.util.Set;
 import live.videosdk.rtc.android.CustomStreamTrack;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.VideoView;
-import live.videosdk.rtc.android.java.Common.Adapter.DeviceAdaptor;
+import live.videosdk.rtc.android.java.Common.Adapter.DeviceAdapter;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.fragment.CreateOrJoinFragment;
 import live.videosdk.rtc.android.java.Common.fragment.JoinMeetingFragment;
@@ -298,7 +298,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
             labels.add(label);
         }
 
-        DeviceAdaptor preCallListAdaptor = new DeviceAdaptor(labels, new DeviceAdaptor.ClickListener() {
+        DeviceAdapter deviceAdapter = new DeviceAdapter(labels, new DeviceAdapter.ClickListener() {
             @Override
             public void onClick(String itemDto) {
                 for (AudioDeviceInfo device : audioDevice) {
@@ -311,7 +311,7 @@ public class CreateOrJoinActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView.setAdapter(preCallListAdaptor);
+        recyclerView.setAdapter(deviceAdapter);
         bottomSheetDialog.show();
     }
 
