@@ -9,6 +9,9 @@ At Video SDK, we’re building tools to help companies create world-class collab
 
 ### 🥳 Get **10,000 minutes free** every month! **[Try it now!](https://app.videosdk.live/signup)**
 
+### ⚡️From Clone to Launch - Get Started with the Example in 5 mins!
+
+[![Java](https://cdn.videosdk.live/docs/images/youtube/Java.png)](https://youtu.be/ihF3vhKuPhk?si=64FmEMweWpzst99h "Java")
 
 ## 📚 **Table of Contents**
 
