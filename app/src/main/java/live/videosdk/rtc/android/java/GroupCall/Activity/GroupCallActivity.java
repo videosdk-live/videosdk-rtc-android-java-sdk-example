@@ -64,6 +64,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONObject;
+import org.webrtc.ApplicationContextProvider;
 import org.webrtc.RendererCommon;
 import org.webrtc.VideoTrack;
 
@@ -81,6 +82,7 @@ import live.videosdk.rtc.android.Participant;
 import live.videosdk.rtc.android.Stream;
 import live.videosdk.rtc.android.VideoSDK;
 import live.videosdk.rtc.android.VideoView;
+import live.videosdk.rtc.android.java.Common.Service.ForegroundService;
 import live.videosdk.rtc.android.java.GroupCall.Adapter.ParticipantViewAdapter;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.OneToOneCall.OneToOneCallActivity;
@@ -98,6 +100,7 @@ import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
 import live.videosdk.rtc.android.lib.JsonUtils;
+import live.videosdk.rtc.android.lib.MeetingState;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
@@ -440,6 +443,10 @@ public class GroupCallActivity extends AppCompatActivity {
                     }
                 });
 
+                Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
+                serviceIntent.setAction(ForegroundService.ACTION_START);
+                startService(serviceIntent);
+
                 viewPager2.setOffscreenPageLimit(1);
                 viewPager2.setAdapter(viewAdapter);
 
@@ -538,7 +545,11 @@ public class GroupCallActivity extends AppCompatActivity {
                 Intent intents = new Intent(GroupCallActivity.this, CreateOrJoinActivity.class);
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
                 startActivity(intents);
+                Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
+                serviceIntent.setAction(ForegroundService.ACTION_STOP);
+                startService(serviceIntent);
                 finish();
             }
         }
@@ -599,8 +610,8 @@ public class GroupCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onMeetingStateChanged(String state) {
-            if (state == "FAILED") {
+        public void onMeetingStateChanged(MeetingState state) {
+            if (state == MeetingState.DISCONNECTED) {
                 View parentLayout = findViewById(android.R.id.content);
                 SpannableStringBuilder builderTextLeft = new SpannableStringBuilder();
                 builderTextLeft.append("   Call disconnected. Reconnecting...");
@@ -696,7 +707,7 @@ public class GroupCallActivity extends AppCompatActivity {
             return;
         }
 
-        meeting.enableScreenShare(data);
+        meeting.enableScreenShare(data,true);
     }
 
     private final com.nabinbhandari.android.permissions.PermissionHandler permissionHandler = new com.nabinbhandari.android.permissions.PermissionHandler() {

@@ -88,6 +88,7 @@ import live.videosdk.rtc.android.java.Common.Adapter.MoreOptionsListAdapter;
 import live.videosdk.rtc.android.java.Common.Adapter.ParticipantListAdapter;
 import live.videosdk.rtc.android.java.Common.Listener.ResponseListener;
 import live.videosdk.rtc.android.java.Common.Modal.ListItem;
+import live.videosdk.rtc.android.java.Common.Service.ForegroundService;
 import live.videosdk.rtc.android.java.GroupCall.Utils.ParticipantState;
 import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.Roboto_font;
@@ -95,6 +96,7 @@ import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
 import live.videosdk.rtc.android.lib.JsonUtils;
+import live.videosdk.rtc.android.lib.MeetingState;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
@@ -471,6 +473,11 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     // Local participant listeners
                     setLocalListeners();
 
+                    Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
+                    serviceIntent.setAction(ForegroundService.ACTION_START);
+                    startService(serviceIntent);
+
+
                     new NetworkUtils(OneToOneCallActivity.this).fetchMeetingTime(meeting.getMeetingId(), token, new ResponseListener<Integer>() {
                         @Override
                         public void onResponse(Integer meetingTime) {
@@ -564,6 +571,10 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intents);
+
+                Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
+                serviceIntent.setAction(ForegroundService.ACTION_STOP);
+                startService(serviceIntent);
                 finish();
             }
         }
@@ -675,8 +686,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onMeetingStateChanged(String state) {
-            if (state == "FAILED") {
+        public void onMeetingStateChanged(MeetingState state) {
+            if (state == MeetingState.DISCONNECTED) {
                 View parentLayout = findViewById(android.R.id.content);
                 SpannableStringBuilder builderTextLeft = new SpannableStringBuilder();
                 builderTextLeft.append("   Call disconnected. Reconnecting...");
@@ -766,7 +777,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
             return;
         }
 
-        meeting.enableScreenShare(data);
+        meeting.enableScreenShare(data,true);
     }
 
     private void updatePresenter(String participantId) {

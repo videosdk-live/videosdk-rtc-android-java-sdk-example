@@ -13,6 +13,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".Common.MainApplication"
@@ -45,6 +49,9 @@
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true" />
 
+        <service android:name=".Common.Service.ForegroundService"
+            android:foregroundServiceType="camera|microphone"
+            android:stopWithTask="true" />
 
         <meta-data
             android:name="notificationTitle"
