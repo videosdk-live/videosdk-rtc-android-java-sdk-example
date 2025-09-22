@@ -10,13 +10,14 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
-    compileSdkVersion 34
+    namespace "live.videosdk.rtc.android.java"
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "live.videosdk.rtc.android.java"
         minSdkVersion 21
         //noinspection EditedTargetSdkVersion
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode 2
         versionName "1.1"
         multiDexEnabled true
@@ -40,9 +41,12 @@ android {
 
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
@@ -56,7 +60,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.29'
     implementation "com.airbnb.android:lottie:5.2.0"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
