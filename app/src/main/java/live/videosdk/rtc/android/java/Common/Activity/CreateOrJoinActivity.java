@@ -386,10 +386,6 @@ public class CreateOrJoinActivity extends AppCompatActivity {
         permissionList.add(Manifest.permission.INTERNET);
         permissionList.add(Manifest.permission.READ_PHONE_STATE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissionList.add(Manifest.permission.POST_NOTIFICATIONS);
-        }
-
         com.nabinbhandari.android.permissions.Permissions.Options options = new com.nabinbhandari.android.permissions.Permissions.Options().sendDontAskAgainToSettings(false);
         com.nabinbhandari.android.permissions.Permissions.check(this, permissionList.toArray(new String[0]), null, options, permissionHandler);
 

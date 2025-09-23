@@ -10,6 +10,7 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
+    namespace "live.videosdk.rtc.android.java"
     compileSdkVersion 34
 
     defaultConfig {
@@ -40,15 +41,18 @@ android {
 
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
 
-    implementation 'live.videosdk:rtc-android-sdk:0.5.1'
+    implementation 'live.videosdk:rtc-android-sdk:0.1.30'
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 
