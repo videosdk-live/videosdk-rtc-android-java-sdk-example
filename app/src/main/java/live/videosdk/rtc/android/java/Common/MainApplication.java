@@ -11,7 +11,6 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        VideoSDK.setEnableActivityLifecycle(false);
         VideoSDK.initialize(getApplicationContext());
         AndroidNetworking.initialize(getApplicationContext());
     }

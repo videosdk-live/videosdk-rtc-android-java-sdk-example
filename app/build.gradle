@@ -11,13 +11,13 @@ localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
     namespace "live.videosdk.rtc.android.java"
-    compileSdkVersion 36
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "live.videosdk.rtc.android.java"
         minSdkVersion 21
         //noinspection EditedTargetSdkVersion
-        targetSdkVersion 36
+        targetSdkVersion 34
         versionCode 2
         versionName "1.1"
         multiDexEnabled true
@@ -52,7 +52,7 @@ android {
 
 dependencies {
 
-    implementation 'live.videosdk:rtc-android-sdk:0.5.1'
+    implementation 'live.videosdk:rtc-android-sdk:0.1.30'
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 
@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.29'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
     implementation "com.airbnb.android:lottie:5.2.0"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
