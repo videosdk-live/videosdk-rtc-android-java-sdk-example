@@ -8,6 +8,8 @@
     android:animateLayoutChanges="true"
     android:gravity="center"
     android:orientation="vertical"
+    android:paddingTop="?attr/actionBarSize"
+    android:paddingBottom="?attr/actionBarSize"
     tools:context=".GroupCall.Activity.GroupCallActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
