@@ -49,6 +49,10 @@
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true" />
 
+        <service android:name=".Service.ForegroundService"
+            android:foregroundServiceType="camera|microphone"
+            android:stopWithTask="true" />
+
         <meta-data
             android:name="notificationTitle"
             android:value="@string/notificationTitle" />
