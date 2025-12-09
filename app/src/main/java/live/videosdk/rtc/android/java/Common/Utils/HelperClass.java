@@ -127,7 +127,7 @@ public class HelperClass {
         View tableLayoutView = ((LinearLayout) linearView).getChildAt(1);
 
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 JSONObject audio_stats = null;
@@ -137,7 +137,11 @@ public class HelperClass {
                     video_stats = participant.getShareStats();
                 }else {
                     audio_stats = participant.getAudioStats();
-                    video_stats = participant.getVideoStats();
+                    try {
+                        video_stats = participant.getVideoStats().getJSONObject(0);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 int score = 0;

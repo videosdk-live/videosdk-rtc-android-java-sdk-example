@@ -93,8 +93,10 @@ import live.videosdk.rtc.android.java.R;
 import live.videosdk.rtc.android.java.Common.Roboto_font;
 import live.videosdk.rtc.android.java.Common.Utils.HelperClass;
 import live.videosdk.rtc.android.java.Common.Utils.NetworkUtils;
+import live.videosdk.rtc.android.java.Service.ForegroundService;
 import live.videosdk.rtc.android.lib.AppRTCAudioManager;
 import live.videosdk.rtc.android.lib.JsonUtils;
+import live.videosdk.rtc.android.lib.MeetingState;
 import live.videosdk.rtc.android.lib.PubSubMessage;
 import live.videosdk.rtc.android.listeners.MeetingEventListener;
 import live.videosdk.rtc.android.listeners.MicRequestListener;
@@ -471,6 +473,10 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     // Local participant listeners
                     setLocalListeners();
 
+                    Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
+                    serviceIntent.setAction(ForegroundService.ACTION_START);
+                    startService(serviceIntent);
+
 
                     new NetworkUtils(OneToOneCallActivity.this).fetchMeetingTime(meeting.getMeetingId(), token, new ResponseListener<Integer>() {
                         @Override
@@ -480,25 +486,30 @@ public class OneToOneCallActivity extends AppCompatActivity {
                         }
                     });
 
-                    chatListener = new PubSubMessageListener() {
-                        @Override
-                        public void onMessageReceived(PubSubMessage pubSubMessage) {
-                            if (!pubSubMessage.getSenderId().equals(meeting.getLocalParticipant().getId())) {
-                                View parentLayout = findViewById(android.R.id.content);
-                                Snackbar snackbar =
-                                        Snackbar.make(parentLayout, pubSubMessage.getSenderName() + " says: " +
-                                                        pubSubMessage.getMessage(), Snackbar.LENGTH_SHORT)
-                                                .setDuration(2000);
-                                View snackbarView = snackbar.getView();
-                                HelperClass.setSnackBarStyle(snackbarView, 0);
-                                snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
-                                snackbar.show();
-                            }
+                chatListener = new PubSubMessageListener() {
+                    @Override
+                    public void onMessageReceived(PubSubMessage pubSubMessage) {
+                        if (!pubSubMessage.getSenderId().equals(meeting.getLocalParticipant().getId())) {
+                            View parentLayout = findViewById(android.R.id.content);
+                            Snackbar snackbar =
+                                    Snackbar.make(parentLayout, pubSubMessage.getSenderName() + " says: " +
+                                                    pubSubMessage.getMessage(), Snackbar.LENGTH_SHORT)
+                                            .setDuration(2000);
+                            View snackbarView = snackbar.getView();
+                            HelperClass.setSnackBarStyle(snackbarView, 0);
+                            snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
+                            snackbar.show();
                         }
-                    };
+                    }
 
-                    // notify user of any new messages
-                    meeting.pubSub.subscribe("CHAT", chatListener);
+                    @Override
+                    public void onOldMessagesReceived(List<PubSubMessage> messages) {
+
+                    }
+                };
+
+                // notify user of any new messages
+                meeting.pubSub.subscribe("CHAT", chatListener);
 
                     //terminate meeting in 10 minutes
                     new Handler().postDelayed(new Runnable() {
@@ -565,6 +576,10 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intents);
+
+                Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
+                serviceIntent.setAction(ForegroundService.ACTION_STOP);
+                startService(serviceIntent);
 
                 finish();
             }
@@ -677,8 +692,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onMeetingStateChanged(String state) {
-            if (state == "FAILED" ) {
+        public void onMeetingStateChanged(MeetingState state) {
+            if (state == MeetingState.DISCONNECTED) {
                 View parentLayout = findViewById(android.R.id.content);
                 SpannableStringBuilder builderTextLeft = new SpannableStringBuilder();
                 builderTextLeft.append("   Call disconnected. Reconnecting...");
@@ -768,7 +783,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
             return;
         }
 
-        meeting.enableScreenShare(data);
+        meeting.enableScreenShare(data, true);
     }
 
     private void updatePresenter(String participantId) {
@@ -1650,6 +1665,11 @@ public class OneToOneCallActivity extends AppCompatActivity {
             }
         });
 
+        messageAdapter = new MessageAdapter(this, R.layout.item_message_list, new ArrayList<>(), meeting);
+        messageRcv.setAdapter(messageAdapter);
+        messageRcv.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
+                messageRcv.scrollToPosition(messageAdapter.getItemCount() - 1));
+
         //
         pubSubMessageListener = new PubSubMessageListener() {
             @Override
@@ -1657,16 +1677,21 @@ public class OneToOneCallActivity extends AppCompatActivity {
                 messageAdapter.addItem(message);
                 messageRcv.scrollToPosition(messageAdapter.getItemCount() - 1);
             }
+
+            @Override
+            public void onOldMessagesReceived(List<PubSubMessage> messages) {
+                for (PubSubMessage message : messages) {
+                    messageAdapter.addItem(message);
+                }
+                if (messages.size() > 0) {
+                    messageRcv.scrollToPosition(messageAdapter.getItemCount() - 1);
+                }
+            }
         };
 
         // Subscribe for 'CHAT' topic
-        List<PubSubMessage> pubSubMessageList = meeting.pubSub.subscribe("CHAT", pubSubMessageListener);
+        meeting.pubSub.subscribe("CHAT", pubSubMessageListener);
 
-        //
-        messageAdapter = new MessageAdapter(this, R.layout.item_message_list, pubSubMessageList, meeting);
-        messageRcv.setAdapter(messageAdapter);
-        messageRcv.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
-                messageRcv.scrollToPosition(messageAdapter.getItemCount() - 1));
 
         v3.findViewById(R.id.btnSend).setOnClickListener(view -> {
             String message = etmessage.getText().toString();
