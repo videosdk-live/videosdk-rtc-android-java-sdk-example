@@ -384,8 +384,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
                         popupwindow_obj_local.showAsDropDown(ivLocalNetwork, -350, -85);
                 } else {
                     if (screenshareEnabled) {
-                        ArrayList<Participant> participantList = getAllParticipants();
-                        Participant participant = participantList.get(0);
+                        Participant participant = getFirstRemoteParticipant();
+                        if (participant == null) return;
                         popupwindow_obj_local = HelperClass.callStatsPopupDisplay(participant, ivLocalNetwork, OneToOneCallActivity.this, false);
                     }
                     popupwindow_obj_local.showAsDropDown(ivLocalNetwork, 100, -380);
@@ -396,8 +396,8 @@ public class OneToOneCallActivity extends AppCompatActivity {
         ivParticipantNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<Participant> participantList = getAllParticipants();
-                Participant participant = participantList.get(0);
+                Participant participant = getFirstRemoteParticipant();
+                if (participant == null) return;
                 popupwindow_obj = HelperClass.callStatsPopupDisplay(participant, ivParticipantNetwork, OneToOneCallActivity.this, screenshareEnabled);
                 popupwindow_obj.showAsDropDown(ivParticipantNetwork, -350, -85);
             }
@@ -500,11 +500,6 @@ public class OneToOneCallActivity extends AppCompatActivity {
                             snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                             snackbar.show();
                         }
-                    }
-
-                    @Override
-                    public void onOldMessagesReceived(List<PubSubMessage> messages) {
-
                     }
                 };
 
@@ -1340,12 +1335,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     participantTrack = track;
                     onTrackChange();
                     setQuality("high");
-                    ArrayList<Participant> participantList = getAllParticipants();
-                    Participant participant = participantList.get(0);
-                    if (screenshareEnabled) {
-                        checkStream(participant, ivLocalNetwork);
-                    } else
-                        checkStream(participant, ivParticipantNetwork);
+                    checkFirstRemoteParticipantStream(screenshareEnabled ? ivLocalNetwork : ivParticipantNetwork);
                 }
             }
             if (stream.getKind().equalsIgnoreCase("audio")) {
@@ -1353,12 +1343,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     stream.pause();
                 } else {
                     ivParticipantMicStatus.setImageResource(R.drawable.ic_audio_on);
-                    ArrayList<Participant> participantList = getAllParticipants();
-                    Participant participant = participantList.get(0);
-                    if (screenshareEnabled) {
-                        checkStream(participant, ivLocalNetwork);
-                    } else
-                        checkStream(participant, ivParticipantNetwork);
+                    checkFirstRemoteParticipantStream(screenshareEnabled ? ivLocalNetwork : ivParticipantNetwork);
                 }
             }
         }
@@ -1370,12 +1355,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     VideoTrack track = (VideoTrack) stream.getTrack();
                     if (track != null) participantTrack = null;
                     removeTrack(track, false);
-                    ArrayList<Participant> participantList = getAllParticipants();
-                    Participant participant = participantList.get(0);
-                    if (screenshareEnabled) {
-                        checkStream(participant, ivLocalNetwork);
-                    } else
-                        checkStream(participant, ivParticipantNetwork);
+                    checkFirstRemoteParticipantStream(screenshareEnabled ? ivLocalNetwork : ivParticipantNetwork);
 
                 }
             }
@@ -1384,12 +1364,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     stream.pause();
                 } else {
                     ivParticipantMicStatus.setImageResource(R.drawable.ic_audio_off);
-                    ArrayList<Participant> participantList = getAllParticipants();
-                    Participant participant = participantList.get(0);
-                    if (screenshareEnabled) {
-                        checkStream(participant, ivLocalNetwork);
-                    } else
-                        checkStream(participant, ivParticipantNetwork);
+                    checkFirstRemoteParticipantStream(screenshareEnabled ? ivLocalNetwork : ivParticipantNetwork);
                 }
             }
         }
@@ -1450,17 +1425,13 @@ public class OneToOneCallActivity extends AppCompatActivity {
                         if (getAllParticipants().size() == 0) {
                             checkStream(meeting.getLocalParticipant(), ivLocalNetwork);
                         } else {
-                            ArrayList<Participant> participantList = getAllParticipants();
-                            Participant participant = participantList.get(0);
-                            checkStream(participant, ivLocalNetwork);
+                            checkFirstRemoteParticipantStream(ivLocalNetwork);
                         }
                     } else {
                         if (getAllParticipants().size() == 0)
                             checkStream(meeting.getLocalParticipant(), ivLocalNetwork);
                         else {
-                            ArrayList<Participant> participantList = getAllParticipants();
-                            Participant participant = participantList.get(0);
-                            checkStream(participant, ivLocalNetwork);
+                            checkFirstRemoteParticipantStream(ivLocalNetwork);
                         }
                     }
 
@@ -1508,11 +1479,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
                     tvName.setVisibility(View.VISIBLE);
                     ivParticipantMicStatus.setVisibility(View.VISIBLE);
                     checkStream(meeting.getLocalParticipant(), ivLocalNetwork);
-                    if (getAllParticipants().size() > 0) {
-                        ArrayList<Participant> participantList = getAllParticipants();
-                        Participant participant = participantList.get(0);
-                        checkStream(participant, ivParticipantNetwork);
-                    }
+                    checkFirstRemoteParticipantStream(ivParticipantNetwork);
                     onTrackChange();
                     //
                     localScreenShare = false;
@@ -1561,7 +1528,7 @@ public class OneToOneCallActivity extends AppCompatActivity {
     }
 
     public ArrayList<Participant> getAllParticipants() {
-        ArrayList participantList = new ArrayList();
+        ArrayList<Participant> participantList = new ArrayList<>();
         final Iterator<Participant> participants = meeting.getParticipants().values().iterator();
         for (int i = 0; i < meeting.getParticipants().size(); i++) {
             final Participant participant = participants.next();
@@ -1569,6 +1536,20 @@ public class OneToOneCallActivity extends AppCompatActivity {
 
         }
         return participantList;
+    }
+
+    private Participant getFirstRemoteParticipant() {
+        ArrayList<Participant> participantList = getAllParticipants();
+        return participantList.isEmpty() ? null : participantList.get(0);
+    }
+
+    private void checkFirstRemoteParticipantStream(ImageView imageView) {
+        Participant participant = getFirstRemoteParticipant();
+        if (participant == null) {
+            imageView.setVisibility(View.GONE);
+            return;
+        }
+        checkStream(participant, imageView);
     }
 
 

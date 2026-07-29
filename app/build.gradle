@@ -27,8 +27,8 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "AUTH_TOKEN", "\"" + localProperties['auth_token'] + "\"")
-            buildConfigField("String", "AUTH_URL", "\"" + localProperties['auth_url'] + "\"")
+            buildConfigField("String", "AUTH_TOKEN", "\"" + localProperties.getProperty('auth_token', '') + "\"")
+            buildConfigField("String", "AUTH_URL", "\"" + localProperties.getProperty('auth_url', '') + "\"")
 
         }
 
@@ -36,7 +36,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField("String", "AUTH_TOKEN", "\"" + localProperties['auth_token'] + "\"")
+            buildConfigField("String", "AUTH_TOKEN", "\"" + localProperties.getProperty('auth_token', '') + "\"")
             buildConfigField("String", "AUTH_URL", "\"" + "\"")
 
         }
@@ -52,7 +52,7 @@ android {
 
 dependencies {
 
-    implementation 'live.videosdk:rtc-android-sdk:1.1.1'
+    implementation 'live.videosdk:rtc-android-sdk:2.0.1'
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 

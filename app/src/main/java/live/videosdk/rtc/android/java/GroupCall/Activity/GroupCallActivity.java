@@ -470,11 +470,6 @@ public class GroupCallActivity extends AppCompatActivity {
                         snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                         snackbar.show();
                     }
-
-                    @Override
-                    public void onOldMessagesReceived(List<PubSubMessage> messages) {
-
-                    }
                 };
 
                 // notify user for raise hand
@@ -495,11 +490,6 @@ public class GroupCallActivity extends AppCompatActivity {
                             snackbar.getView().setOnClickListener(view -> snackbar.dismiss());
                             snackbar.show();
                         }
-                    }
-
-                    @Override
-                    public void onOldMessagesReceived(List<PubSubMessage> messages) {
-
                     }
                 };
                 // notify user of any new messages
